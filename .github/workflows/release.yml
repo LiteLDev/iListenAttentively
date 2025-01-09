@@ -1,0 +1,130 @@
+on:
+  release:
+    types:
+      - published
+  
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup XMake
+        uses: xmake-io/github-action-setup-xmake@v1
+
+      - name: Cache XMake
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/AppData/Local/.xmake
+          key: xmake-${{ hashFiles('xmake.lua') }}
+          restore-keys: |
+            xmake-
+
+      - name: Update XMake Repositories
+        run: |
+          xmake repo -u
+
+      - name: Configure
+        run: |
+          xmake f -a x64 -m release -p windows -v -y
+
+      - name: Build
+        run: |
+          xmake -v -y
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          path: |
+            bin/DLL
+      
+      - name: Upload PDB
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDB-${{ github.sha }}
+          path: |
+            bin/PDB
+
+      - name: Upload SDK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SDK-${{ github.sha }}
+          path: |
+            bin/SDK
+
+  update-release-notes:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Changelog
+        id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v2
+
+      - name: Update Release Notes
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ${{ steps.extract-release-notes.outputs.release_notes }}
+
+  upload-to-release:
+    needs:
+      - build
+      - update-release-notes
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download DLL
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          path: artifact/DLL
+
+      - name: Download PDB
+        uses: actions/download-artifact@v4
+        with:
+          name: PDB-${{ github.sha }}
+          path: artifact/PDB
+
+      - name: Download SDK
+        uses: actions/download-artifact@v4
+        with:
+          name: SDK-${{ github.sha }}
+          path: artifact/SDK
+
+      - name: Copy Files
+        run: |
+          cp CHANGELOG.md LICENSE README.md README.zh.md artifact/DLL
+
+      - name: Zip DLL
+        run: |
+          zip -r ../../${{ github.event.repository.name }}-windows-x64.zip *
+        working-directory: artifact/DLL
+      
+      - name: Zip PDB
+        run: |
+          zip -r ../../PDB.zip *
+        working-directory: artifact/PDB
+      
+      - name: Zip SDK
+        run: |
+          zip -r ../../SDK.zip *
+        working-directory: artifact/SDK
+      
+      - name: Upload Files
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ github.event.repository.name }}-windows-x64.zip
+            PDB.zip
+            SDK.zip
