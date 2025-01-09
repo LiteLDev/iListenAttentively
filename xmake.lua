@@ -79,9 +79,9 @@ target("iListenAttentively")
         local library_directory = path.join(sdk_directory, "library") -- sdk库输出路径
         local includes_directory = path.join(sdk_directory, "includes") -- sdk头文件输出路径
 
-        local version, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
-        if not version then
-            version = "0.0.0"
+        local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
+        if not major then
+            major, minor, patch = 0, 0, 0
             print("Failed to parse version tag, using 0.0.0")
         end
 
@@ -100,7 +100,7 @@ target("iListenAttentively")
         local mod_define = {
             modName = target:name(),
             modFile = path.filename(target:targetfile()),
-            modVersion = version,
+            modVersion = string.format("%d.%d.%d", major, minor, patch),
             passive = not has_config("tests")
         }
         io.gsub(manifest_path, "%${(.-)}", function(var)
@@ -139,20 +139,10 @@ target("iListenAttentively")
             os.cp(headerfile, path.join(includes_directory, path.relative(headerfile:gsub("$(buildir)/config", "$(buildir)"), "build/config")))
         end
         cprint("${bright yellow}[Mod打包] ${bright green}已复制头文件至 ${bright cyan}" .. includes_directory)
-
-        -- print(target:configfiles())
-        -- headerfiles <function: 000001C3AC2FAFE0>
-        -- sourcefiles <function: 000001C3AC2ECD80>
-        -- installfiles <function: 000001C3AC24D7A0>
-        -- configfiles <function: 000001C3AC24C2D0>
-        -- extrafiles <function: 000001C3AC24D470>
-        -- dependfiles <function: 000001C3AC2FAFA0>
-        -- objectfiles <function: 000001C3AC2FB960>
     end)
 
     on_load(function (target)
-        local tag = os.iorun("git describe --tags --abbrev=0 --always")
-        local major, minor, patch, suffix = tag:match("v(%d+)%.(%d+)%.(%d+)(.*)")
+        local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
         if not major then
             print("Failed to parse version tag, using 0.0.0")
             major, minor, patch = 0, 0, 0
