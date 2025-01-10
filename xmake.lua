@@ -9,7 +9,7 @@ add_requires("nlohmann_json v3.11.3")
 
 -- Dependencies from liteldev-repo.
 add_requires("levilamina 1.0.0-rc.2")
-add_requires("levibuildscript 0.2.0")
+add_requires("levibuildscript 0.3.0")
 
 if not has_config("vs_runtime") then
     set_runtimes("MD")
@@ -135,8 +135,11 @@ target("iListenAttentively")
         for _, headerfile in ipairs(target:headerfiles()) do
             os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
         end 
-        for _, headerfile in ipairs(os.files("$(buildir)/config/**.h")) do
-            os.cp(headerfile, path.join(includes_directory, path.relative(headerfile:gsub("$(buildir)/config", "$(buildir)"), "build/config")))
+        for _, headerfile in ipairs(target:configfiles()) do
+            os.cp(
+                path.join("$(buildir)/config", path.relative(string.sub(headerfile, 0, -4), "src")), 
+                path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
+            )
         end
         cprint("${bright yellow}[Mod打包] ${bright green}已复制头文件至 ${bright cyan}" .. includes_directory)
     end)
