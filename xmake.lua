@@ -110,13 +110,13 @@ target("iListenAttentively")
 
         -- 复制插件本体
         os.cp(target:targetfile(), path.join(dll_directory, target:name() .. ".dll"))
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制DLL至 ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
+        cprint("${bright yellow}[Mod打包] ${bright green}已复制DLL至           ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
 
         -- 复制PDB
         local pdb_path = path.join(pdb_directory, target:name() .. ".pdb")
         if os.isfile(target:symbolfile()) then
             os.cp(target:symbolfile(), pdb_path)
-            cprint("${bright yellow}[Mod打包] ${bright green}已复制PDB至 ${bright cyan}" .. pdb_path)
+            cprint("${bright yellow}[Mod打包] ${bright green}已复制PDB至           ${bright cyan}" .. pdb_path)
         end
 
         -- 复制library
@@ -129,7 +129,7 @@ target("iListenAttentively")
                 library_directory, target:name() .. ".lib"
             )
         )
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制library至 ${bright cyan}" .. library_directory)
+        cprint("${bright yellow}[Mod打包] ${bright green}已复制library至       ${bright cyan}" .. library_directory)
  
         -- 遍历所有头文件
         for _, headerfile in ipairs(target:headerfiles()) do
@@ -141,7 +141,7 @@ target("iListenAttentively")
                 path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
             )
         end
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制头文件至 ${bright cyan}" .. includes_directory)
+        cprint("${bright yellow}[Mod打包] ${bright green}已复制头文件至        ${bright cyan}" .. includes_directory)
     end)
 
     on_load(function (target)
