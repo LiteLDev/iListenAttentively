@@ -29,12 +29,11 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     if (pItem == nullptr) { return origin(pItem); }
-    auto* actor       = mUnk964019.as<Mob*>();
-    auto  beforeEvent = ActorPickupItemBeforeEvent(*actor, *pItem);
+    auto  beforeEvent = ActorPickupItemBeforeEvent(mMob, *pItem);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pItem);
-    LLEventBus.publish(ActorPickupItemAfterEvent(*actor, *pItem));
+    LLEventBus.publish(ActorPickupItemAfterEvent(mMob, *pItem));
 }
 
 Event_Hook_Factory(ActorPickupItem, <ActorPickupItemEventHook>);

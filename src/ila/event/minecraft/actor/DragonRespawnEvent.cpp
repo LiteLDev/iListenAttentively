@@ -22,7 +22,7 @@ LL_TYPE_INSTANCE_HOOK(
     if (beforeEvent.isCancelled()) { return; }
     origin(pStage);
     if (auto* dragon = static_cast<EnderDragon*>(
-            ll::service::getLevel()->fetchEntity(mUnk63c6c7.as<ActorUniqueID>(), false)
+            ll::service::getLevel()->fetchEntity(mDragonUUID, false)
         ))
     {
         LLEventBus.publish(DragonRespawnAfterEvent(*dragon));
