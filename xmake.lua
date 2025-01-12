@@ -76,8 +76,8 @@ target("iListenAttentively")
         local dll_directory = path.join(output_directory, "DLL", target:name()) -- 插件本体输出路径
         local pdb_directory = path.join(output_directory, "PDB") -- pdb输出路径
         local sdk_directory = path.join(output_directory, "SDK") -- sdk输出路径
-        local library_directory = path.join(sdk_directory, "library") -- sdk库输出路径
-        local includes_directory = path.join(sdk_directory, "includes") -- sdk头文件输出路径
+        local library_directory = path.join(sdk_directory, "lib") -- sdk库输出路径
+        local includes_directory = path.join(sdk_directory, "include") -- sdk头文件输出路径
 
         local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
         if not major then
