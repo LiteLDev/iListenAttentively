@@ -3,34 +3,8 @@
 #include <mc/world/inventory/transaction/ComplexInventoryTransaction.h>
 #include <mc/world/inventory/transaction/InventoryAction.h>
 #include <mc/world/inventory/transaction/InventorySourceType.h>
+#include <mc/world/inventory/transaction/InventorySource.h>
 #include <mc/world/inventory/transaction/InventoryTransaction.h>
-
-class InventorySource
-{
-public:
-    enum class InventorySourceFlags : uint
-    {
-        NoFlag                 = 0,
-        WorldInteractionRandom = 1,
-    };
-
-public:
-    InventorySourceType                   mType;
-    ContainerID                           mContainerId;
-    InventorySource::InventorySourceFlags mFlags;
-
-public:
-    constexpr explicit InventorySource(
-        InventorySourceType  pType,
-        ContainerID          pContainerId,
-        InventorySourceFlags pFlags = InventorySourceFlags::NoFlag
-    )
-        : mType(pType)
-        , mContainerId(pContainerId)
-        , mFlags(pFlags)
-    {
-    }
-};
 
 namespace ila::mc::inline player
 {

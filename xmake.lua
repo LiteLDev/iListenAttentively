@@ -163,3 +163,12 @@ target("iListenAttentively")
         target:set("configvar", "IL_VERSION_MINOR", minor)
         target:set("configvar", "IL_VERSION_PATCH", patch)
     end)
+
+    before_build(function (target)
+        local include_all = "#pragma once\n"
+        for _, filepath in ipairs(os.files("src/ila/event/**.h")) do
+            include_all = include_all .. "\n#include \"" .. path.relative(filepath, "src") .. "\""
+        end
+        io.writefile("src/ila/include_all.h", include_all)
+        io.gsub("src/ila/include_all.h", "\\", "/")
+    end)
