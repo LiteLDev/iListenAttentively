@@ -25,6 +25,7 @@ void RegisterCmdBeforeEvent::deserialize(CompoundTag const& nbt)
     getFlag2().value =
         magic_enum::enum_cast<CommandFlagValue>(nbt["flag2"].get<StringTag>()).value_or(getFlag2().value);
 }
+CommandRegistry&        RegisterCmdBeforeEvent::getRegistry() const { return mRegistry; }
 std::string const&      RegisterCmdBeforeEvent::getCommandName() const { return mName; }
 std::string&            RegisterCmdBeforeEvent::getDescription() const { return mDescription; }
 CommandPermissionLevel& RegisterCmdBeforeEvent::getRequirement() const { return mRequirement; }
@@ -40,6 +41,7 @@ void RegisterCmdAfterEvent::serialize(CompoundTag& nbt) const
     nbt["flag1"]       = magic_enum::enum_name(getFlag1().value);
     nbt["flag2"]       = magic_enum::enum_name(getFlag2().value);
 }
+CommandRegistry&              RegisterCmdAfterEvent::getRegistry() const { return mRegistry; }
 std::string const&            RegisterCmdAfterEvent::getCommandName() const { return mName; }
 std::string const&            RegisterCmdAfterEvent::getDescription() const { return mDescription; }
 CommandPermissionLevel const& RegisterCmdAfterEvent::getRequirement() const { return mRequirement; }

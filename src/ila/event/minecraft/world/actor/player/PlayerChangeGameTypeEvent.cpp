@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/actor/player/PlayerChangGameTypeEvent.h"
+#include "ila/event/minecraft/world/actor/player/PlayerChangeGameTypeEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/network/packet/SetPlayerGameTypePacket.h>
 

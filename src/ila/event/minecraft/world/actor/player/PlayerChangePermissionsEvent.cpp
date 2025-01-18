@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/actor/player/PlayerChangPermissionsEvent.h"
+#include "ila/event/minecraft/world/actor/player/PlayerChangePermissionsEvent.h"
 #include "ila/base/Gloabl.h"
 // #include <mc/network/ServerNetworkHandler.h>
 // #include <mc/network/packet/RequestPermissionsPacket.h>
