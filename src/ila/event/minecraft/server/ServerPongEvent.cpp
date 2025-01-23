@@ -111,7 +111,7 @@ LL_STATIC_HOOK(
         GameType    mGameType       = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
         ushort      mLoaclPort      = static_cast<ushort>(std::stoi(parts[10]));
         ushort      mLoaclPortV6    = static_cast<ushort>(std::stoi(parts[11]));
-        std::vector<std::string> mOther = { "LeviLamina", ll::getLoaderVersion().to_string() };
+        std::vector<std::string> mOther = { "LeviLamina" };
         for (size_t i = 13; i < parts.size(); i++) { mOther.push_back(parts[i]); }
 
         auto beforeEvent = ServerPongBeforeEvent(

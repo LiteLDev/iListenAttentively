@@ -6,7 +6,6 @@
 #include <ll/api/event/ListenerBase.h>
 #include <ll/api/io/Logger.h>
 #include <ll/api/memory/Hook.h>
-#include <mc/nbt/CompoundTag.h>
 
 #ifndef SelfLogger
 #    define SelfLogger ll::mod::NativeMod::current()->getLogger()
