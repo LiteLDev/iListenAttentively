@@ -12,7 +12,7 @@ void SendPacketBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["packetSender"] = serializeRefObj(getPacketSender());
     nbt["packet"]       = serializeRefObj(getPacket());
     nbt["broadcast"]    = getIsBroadcast();
-    if (getPlayer().has_value()) { nbt["player"] = serializeRefObj(*getPlayer()); }
+    nbt["player"]       = serializePtrObj(getPlayer().as_ptr());
 }
 LoopbackPacketSender&      SendPacketBeforeEvent::getPacketSender() const { return mPacketSender; }
 Packet&                    SendPacketBeforeEvent::getPacket() const { return mPacket; }
@@ -25,7 +25,7 @@ void SendPacketAfterEvent::serialize(CompoundTag& nbt) const
     nbt["packetSender"] = serializeRefObj(getPacketSender());
     nbt["packet"]       = serializeRefObj(getPacket());
     nbt["broadcast"]    = getIsBroadcast();
-    if (getPlayer().has_value()) { nbt["player"] = serializeRefObj(*getPlayer()); }
+    nbt["player"]       = serializePtrObj(getPlayer().as_ptr());
 }
 LoopbackPacketSender&      SendPacketAfterEvent::getPacketSender() const { return mPacketSender; }
 Packet const&              SendPacketAfterEvent::getPacket() const { return mPacket; }
