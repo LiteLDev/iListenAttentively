@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ila/event/legacyMoney/MoneyChangeEvent.h"
+#include "ila/event/leviAntiCheat/PlayerBanWaveEvent.h"
+#include "ila/event/leviAntiCheat/PlayerCheatEvent.h"
 #include "ila/event/minecraft/server/ClientLoginEvent.h"
 #include "ila/event/minecraft/server/RegisterCmdEvent.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"

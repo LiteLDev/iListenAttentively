@@ -17,3 +17,15 @@
 #ifndef ILNDAPI
 #    define ILNDAPI [[nodiscard]] ILAPI
 #endif
+
+#ifndef EXAPI
+#    define EXAPI [[maybe_unused]] LL_SHARED_IMPORT
+#endif
+
+#ifndef EXCAPI
+#    define EXCAPI extern "C" EXAPI
+#endif
+
+#ifndef EXNDAPI
+#    define EXNDAPI [[nodiscard]] EXAPI
+#endif

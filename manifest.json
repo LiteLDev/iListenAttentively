@@ -5,5 +5,10 @@
     "passive": ${passive},
     "type": "native",
     "author": "MiracleForest",
-    "description": "iListenAttentively is a rich and modern LeviLamina Minecraft event library!"
+    "description": "iListenAttentively is a rich and modern LeviLamina Minecraft event library!",
+    "optionalDependencies": [
+        {
+            "name": "LeviAntiCheat"
+        }
+    ]
 }
