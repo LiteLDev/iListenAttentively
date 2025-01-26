@@ -11,19 +11,7 @@ void PlayerCheatEvent::serialize(CompoundTag& nbt) const
     nbt["duration"]  = getDuration();
     for (auto& [name, value] : getExtraData())
     {
-        if (std::holds_alternative<std::string>(value))
-        {
-            nbt["extraData"][name] = std::get<std::string>(value);
-        }
-        else if (std::holds_alternative<int>(value)) { nbt["extraData"][name] = std::get<int>(value); }
-        else if (std::holds_alternative<ullong>(value)) { nbt["extraData"][name] = std::get<ullong>(value); }
-        else if (std::holds_alternative<llong>(value)) { nbt["extraData"][name] = std::get<llong>(value); }
-        else if (std::holds_alternative<std::string_view>(value))
-        {
-            nbt["extraData"][name] = std::get<std::string_view>(value);
-        }
-        else if (std::holds_alternative<float>(value)) { nbt["extraData"][name] = std::get<float>(value); }
-        else { throw std::runtime_error("Invalid extra data type"); }
+        std::visit([&](auto& value) -> void { nbt["extraData"][name] = value; }, value);
     }
 }
 
