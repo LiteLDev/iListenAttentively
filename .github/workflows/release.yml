@@ -104,7 +104,7 @@ jobs:
 
       - name: Copy Files
         run: |
-          cp CHANGELOG.md README.md README.zh.md artifact/DLL
+          cp CHANGELOG.md artifact/DLL
 
       - name: Zip DLL
         run: |
