@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add LeviAntiCheat, PLand mod event @zimuya4153
+
 ### Clanged
 
 - Reorganized the location of documents for individual events @Lovelylavender4
+- Eemove LeviLamina version info for ServerPong event @zimuya4153
 
 ### Fixed
 
-- Fixed file name spelling errors and function implementation @zimuya4153
+- Fix file name spelling errors and function implementation @zimuya4153
+- Fix LiquidTryFlow event cancel destroys block [#9] @zimuya4153
 
 ## [0.2.2] - 2025-1-13
 
@@ -50,7 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - added the initial batch of events. @zimuya4153
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively/compare/v0.2.1...HEAD
+[#9]: https://github.com/MiracleForest/iListenAttentively-Release/issues/9
+
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively/compare/v0.2....HEAD
 [0.2.1]: https://github.com/MiracleForest/iListenAttentively/releases/tag/v0.2.1
 [0.2.0]: https://github.com/MiracleForest/iListenAttentively/releases/tag/v0.2.0
 [0.1.0]: https://github.com/MiracleForest/iListenAttentively/releases/tag/v0.1.0

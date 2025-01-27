@@ -27,4 +27,7 @@ inline struct StartTest
 
 EventTest::EventTest()
 {
+    LLEventBus.emplaceListener<ila::mc::LiquidTryFlowBeforeEvent>(
+        [](ila::mc::LiquidTryFlowBeforeEvent& event) -> void { event.cancel(); }
+    );
 }

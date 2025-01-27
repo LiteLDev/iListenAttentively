@@ -57,9 +57,9 @@ LL_TYPE_INSTANCE_HOOK(
         pFlowFromDirection
     );
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) { return true; }
     auto result = origin(pRegion, pPos, pFlowFromPos, pFlowFromDirection);
-    if (result)
+    if (!result)
     {
         LLEventBus.publish(LiquidTryFlowAfterEvent(pRegion, pPos, pFlowFromPos, pFlowFromDirection));
     }
