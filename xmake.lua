@@ -72,12 +72,12 @@ target("iListenAttentively")
     end
 
     after_build(function (target)
-        local output_directory = path.join(os.projectdir(), "bin") -- 总输出路径
-        local dll_directory = path.join(output_directory, "DLL", target:name()) -- 插件本体输出路径
-        local pdb_directory = path.join(output_directory, "PDB") -- pdb输出路径
-        local sdk_directory = path.join(output_directory, "SDK") -- sdk输出路径
-        local library_directory = path.join(sdk_directory, "lib") -- sdk库输出路径
-        local includes_directory = path.join(sdk_directory, "include") -- sdk头文件输出路径
+        local output_directory = path.join(os.projectdir(), "bin") -- total Output Path
+        local dll_directory = path.join(output_directory, "DLL", target:name()) -- Plugin Body Output Path
+        local pdb_directory = path.join(output_directory, "PDB") -- pdb output path
+        local sdk_directory = path.join(output_directory, "SDK") -- sdk output path
+        local library_directory = path.join(sdk_directory, "lib") -- lib output path
+        local includes_directory = path.join(sdk_directory, "include") -- sdk header file output path
 
         local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
         if not major then
@@ -85,15 +85,15 @@ target("iListenAttentively")
             print("Failed to parse version tag, using 0.0.0")
         end
 
-        -- 删除旧编译结果
+        -- delete old compilation results
         if os.exists(output_directory) then
             os.rm(output_directory)
-            cprint("${bright yellow}[Mod打包] ${bright green}已删除旧编译产物")
+            cprint("${bright yellow}[Mod packed] ${bright green}Old compilations have been removed.")
         end
 
-        -- 生成manifest.json文件
+        -- generate the manifest.json file
         if not os.isfile(path.join(os.projectdir(), "manifest.json")) then
-            return cprint("${bright yellow}[Mod打包] ${bright red}manifest.json不存在！")
+            return cprint("${bright yellow}[Mod packed] ${bright red}manifest.json does not exist!")
         end
         local manifest_path = path.join(dll_directory, "manifest.json")
         os.cp(path.join(os.projectdir(), "manifest.json"), manifest_path)
@@ -106,20 +106,20 @@ target("iListenAttentively")
         io.gsub(manifest_path, "%${(.-)}", function(var)
             return tostring(mod_define[var]) or "${" .. var .. "}"
         end)
-        cprint("${bright yellow}[Mod打包] ${bright green}已生成manifest.json至 ${bright cyan}" .. manifest_path)
+        cprint("${bright yellow}[Mod packed] ${bright green} has generated manifest.json to ${bright cyan}" .. manifest_path)
 
-        -- 复制插件本体
+        -- copy the plugin body
         os.cp(target:targetfile(), path.join(dll_directory, target:name() .. ".dll"))
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制DLL至           ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
+        cprint("${bright yellow}[Mod packed] ${bright green} has copied the DLL to ${bright cyan}." .. path.join(dll_directory, target:name() .. ".dll"))
 
-        -- 复制PDB
+        -- copy PDB
         local pdb_path = path.join(pdb_directory, target:name() .. ".pdb")
         if os.isfile(target:symbolfile()) then
             os.cp(target:symbolfile(), pdb_path)
-            cprint("${bright yellow}[Mod打包] ${bright green}已复制PDB至           ${bright cyan}" .. pdb_path)
+            cprint("${bright yellow}[Mod packed] ${bright green} has copied the PDB to ${bright cyan}" .. pdb_path)
         end
 
-        -- 复制library
+        -- copy lib
         os.cp(
             path.join(
                 path.directory(target:targetfile()),
@@ -129,9 +129,9 @@ target("iListenAttentively")
                 library_directory, target:name() .. ".lib"
             )
         )
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制library至       ${bright cyan}" .. library_directory)
+        cprint("${bright yellow}[Mod packed] ${bright green} has copied library to ${bright cyan}" .. library_directory)
  
-        -- 遍历所有头文件
+        -- iterate over all header files
         for _, headerfile in ipairs(target:headerfiles()) do
             os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
         end 
@@ -141,7 +141,7 @@ target("iListenAttentively")
                 path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
             )
         end
-        cprint("${bright yellow}[Mod打包] ${bright green}已复制头文件至        ${bright cyan}" .. includes_directory)
+        cprint("${bright yellow}[Mod packed] ${bright green} has copied the header file to ${bright cyan}" .. includes_directory)
     end)
 
     on_load(function (target)
