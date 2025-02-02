@@ -44,14 +44,14 @@ jobs:
       - name: Upload PDB
         uses: actions/upload-artifact@v4
         with:
-          name: PDB-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-windows-x64-PDB
           path: |
             bin/PDB
 
       - name: Upload SDK
         uses: actions/upload-artifact@v4
         with:
-          name: SDK-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-SDK
           path: |
             bin/SDK
 
@@ -93,13 +93,13 @@ jobs:
       - name: Download PDB
         uses: actions/download-artifact@v4
         with:
-          name: PDB-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-windows-x64-PDB
           path: artifact/PDB
 
       - name: Download SDK
         uses: actions/download-artifact@v4
         with:
-          name: SDK-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-SDK
           path: artifact/SDK
 
       - name: Copy Files
@@ -113,12 +113,12 @@ jobs:
       
       - name: Zip PDB
         run: |
-          zip -r ../../PDB.zip *
+          zip -r ../../${{ github.event.repository.name }}-windows-x64-PDB.zip *
         working-directory: artifact/PDB
       
       - name: Zip SDK
         run: |
-          zip -r ../../SDK.zip *
+          zip -r ../../${{ github.event.repository.name }}-SDK.zip *
         working-directory: artifact/SDK
       
       - name: Upload Files
@@ -126,5 +126,5 @@ jobs:
         with:
           files: |
             ${{ github.event.repository.name }}-windows-x64.zip
-            PDB.zip
-            SDK.zip
+            ${{ github.event.repository.name }}-windows-x64-PDB.zip
+            ${{ github.event.repository.name }}-SDK.zip
