@@ -30,6 +30,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerRequestItemActionEvent.h"
 #include "ila/event/minecraft/world/actor/ProjectileCreateEvent.h"
 #include "ila/event/minecraft/world/ExplosionEvent.h"
+#include "ila/event/minecraft/world/FireTryBurnBlockEvent.h"
 #include "ila/event/minecraft/world/level/block/BlockTickEvent.h"
 #include "ila/event/minecraft/world/level/block/DragonEggBlockTeleportEvent.h"
 #include "ila/event/minecraft/world/level/block/FarmDecayEvent.h"

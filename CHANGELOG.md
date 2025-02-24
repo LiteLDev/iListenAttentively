@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adapted to LeviLamina 1.1.0-rc.1 @zimuya4153
-- Added FireTryBurnBlock event @zimuya4153
+- Added FireTryBurnBlock event [#7] @zimuya4153
 
 ### Clanged
 
@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Addeded the initial batch of events. @zimuya4153
 
+[#7]: https://github.com/MiracleForest/iListenAttentively-Release/issues/7
 [#9]: https://github.com/MiracleForest/iListenAttentively-Release/issues/9
 
 [Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...HEAD
