@@ -16,8 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Clanged
 
 - Removed PlayerChangePermissions event @zimuya4153
+- Refactored of RedstoneUpdate events @zimuya4153
 
 ### Fixed
+
+- Fixed the serialize and deserialize for PlayerRequestItemAction event @zimuya4153
 
 
 ## [0.2.3] - 2025-01-27

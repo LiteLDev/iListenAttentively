@@ -22,7 +22,6 @@
 #include "ila/event/minecraft/world/actor/player/PlayerAttackBlockEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerChangeDimensionEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerChangeGameTypeEvent.h"
-#include "ila/event/minecraft/world/actor/player/PlayerChangePermissionsEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerDropItemEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerEditSignEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerInteractEntityEvent.h"

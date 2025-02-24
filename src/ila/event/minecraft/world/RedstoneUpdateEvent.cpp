@@ -1,25 +1,11 @@
 #include "ila/event/minecraft/world/RedstoneUpdateEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/world/level/block/ActivatorRailBlock.h>
-#include <mc/world/level/block/BaseRailBlock.h>
-#include <mc/world/level/block/BigDripleafBlock.h>
-#include <mc/world/level/block/CommandBlock.h>
-#include <mc/world/level/block/ComparatorBlock.h>
-#include <mc/world/level/block/CopperBulbBlock.h>
-#include <mc/world/level/block/CrafterBlock.h>
-#include <mc/world/level/block/DiodeBlock.h>
-#include <mc/world/level/block/DispenserBlock.h>
-#include <mc/world/level/block/DoorBlock.h>
-#include <mc/world/level/block/FenceGateBlock.h>
-#include <mc/world/level/block/HopperBlock.h>
-#include <mc/world/level/block/NoteBlock.h>
-#include <mc/world/level/block/PoweredRailBlock.h>
-#include <mc/world/level/block/RedStoneWireBlock.h>
-#include <mc/world/level/block/RedstoneLampBlock.h>
-#include <mc/world/level/block/RedstoneTorchBlock.h>
-#include <mc/world/level/block/StructureBlock.h>
-#include <mc/world/level/block/TntBlock.h>
-#include <mc/world/level/block/TrapDoorBlock.h>
+#include <mc/world/level/block/Block.h>
+#include <mc/world/level/block/BlockLegacy.h>
+#include <mc/world/redstone/circuit/ChunkCircuitComponentList.h>
+#include <mc/world/redstone/circuit/CircuitSceneGraph.h>
+#include <mc/world/redstone/circuit/CircuitSystem.h>
+#include <mc/world/redstone/circuit/components/BaseCircuitComponent.h>
 
 namespace ila::mc::inline world
 {
@@ -55,49 +41,64 @@ BlockPos const& RedstoneUpdateAfterEvent::getPos() const { return mPos; }
 int const&      RedstoneUpdateAfterEvent::getStrength() const { return mStrength; }
 bool const&     RedstoneUpdateAfterEvent::getIsFirstTime() const { return mIsFirstTime; }
 
-#define RedstoneUpdateHookMacro(type)                                                                        \
-    LL_TYPE_INSTANCE_HOOK(                                                                                   \
-        type##RedstoneUpdateEventHook,                                                                       \
-        HookPriority::Normal,                                                                                \
-        type,                                                                                                \
-        &type::$onRedstoneUpdate,                                                                            \
-        void,                                                                                                \
-        BlockSource&    pRegion,                                                                             \
-        BlockPos const& pPos,                                                                                \
-        int             pStrength,                                                                           \
-        bool            pIsFirstTime                                                                         \
-    )                                                                                                        \
-    {                                                                                                        \
-        auto beforeEvent =                                                                                   \
-            RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), pStrength, pIsFirstTime);        \
-        LLEventBus.publish(beforeEvent);                                                                     \
-        if (beforeEvent.isCancelled()) { return; }                                                           \
-        origin(pRegion, pPos, pStrength, pIsFirstTime);                                                      \
-        LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pPos, pStrength, pIsFirstTime));                \
+LL_TYPE_INSTANCE_HOOK(
+    RedstoneUpdateEventHook,
+    HookPriority::Low,
+    CircuitSystem,
+    &CircuitSystem::updateBlocks,
+    void,
+    BlockSource&    region,
+    BlockPos const& chunkPos
+)
+{
+    if (!mHasBeenEvaluated) { return; }
+    auto& activeComponents = mSceneGraph->mActiveComponentsPerChunk;
+    if (activeComponents.empty()) { return; }
+
+    const auto& components = activeComponents.find(chunkPos);
+    if (components == activeComponents.end()) { return; }
+
+    std::vector<ChunkCircuitComponentList::Item> secondaryPoweredList;
+    secondaryPoweredList.reserve(components->second.mComponents->size());
+
+    constexpr static auto processComponent =
+        [](BaseCircuitComponent* comp, BlockSource& region, BlockPos const& pos) -> void {
+        if (auto strength = comp->getStrength(); strength != -1)
+        {
+            auto& block = region.getBlock(pos);
+            if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate)
+            {
+                auto beforeEvent = RedstoneUpdateBeforeEvent(
+                    region,
+                    const_cast<BlockPos&>(pos),
+                    strength,
+                    comp->mIsFirstTime
+                );
+                LLEventBus.publish(beforeEvent);
+                if (beforeEvent.isCancelled()) { return; }
+                block.mLegacyBlock->onRedstoneUpdate(region, pos, strength, comp->mIsFirstTime);
+                LLEventBus.publish(RedstoneUpdateAfterEvent(region, pos, strength, comp->mIsFirstTime));
+            }
+            comp->mIsFirstTime = false;
+        }
+    };
+
+    for (auto& item : *components->second.mComponents)
+    {
+        if (BaseCircuitComponent* comp = item.mComponent; comp && !comp->mRemoved && comp->mNeedsUpdate)
+        {
+            comp->mNeedsUpdate = false;
+            if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
+            else { processComponent(comp, region, item.mPos); }
+        }
     }
 
+    for (const auto& item : secondaryPoweredList)
+    {
+        if (BaseCircuitComponent* comp = item.mComponent; comp) { processComponent(comp, region, item.mPos); }
+    }
+}
 
-RedstoneUpdateHookMacro(FenceGateBlock);
-RedstoneUpdateHookMacro(HopperBlock);
-RedstoneUpdateHookMacro(BaseRailBlock);
-RedstoneUpdateHookMacro(BigDripleafBlock);
-RedstoneUpdateHookMacro(CommandBlock);
-RedstoneUpdateHookMacro(ComparatorBlock);
-RedstoneUpdateHookMacro(CopperBulbBlock);
-RedstoneUpdateHookMacro(CrafterBlock);
-RedstoneUpdateHookMacro(DiodeBlock);
-RedstoneUpdateHookMacro(DispenserBlock);
-RedstoneUpdateHookMacro(DoorBlock);
-RedstoneUpdateHookMacro(ActivatorRailBlock);
-RedstoneUpdateHookMacro(TntBlock);
-RedstoneUpdateHookMacro(TrapDoorBlock);
-RedstoneUpdateHookMacro(NoteBlock);
-RedstoneUpdateHookMacro(PoweredRailBlock);
-RedstoneUpdateHookMacro(RedStoneWireBlock);
-RedstoneUpdateHookMacro(RedstoneLampBlock);
-RedstoneUpdateHookMacro(RedstoneTorchBlock);
-RedstoneUpdateHookMacro(StructureBlock);
-
-Event_Hook_Factory(RedstoneUpdate, <FenceGateBlockRedstoneUpdateEventHook, HopperBlockRedstoneUpdateEventHook, BaseRailBlockRedstoneUpdateEventHook, BigDripleafBlockRedstoneUpdateEventHook, CommandBlockRedstoneUpdateEventHook, ComparatorBlockRedstoneUpdateEventHook, CopperBulbBlockRedstoneUpdateEventHook, CrafterBlockRedstoneUpdateEventHook, DiodeBlockRedstoneUpdateEventHook, DispenserBlockRedstoneUpdateEventHook, DoorBlockRedstoneUpdateEventHook, ActivatorRailBlockRedstoneUpdateEventHook, TntBlockRedstoneUpdateEventHook, TrapDoorBlockRedstoneUpdateEventHook, NoteBlockRedstoneUpdateEventHook, PoweredRailBlockRedstoneUpdateEventHook, RedStoneWireBlockRedstoneUpdateEventHook, RedstoneLampBlockRedstoneUpdateEventHook, RedstoneTorchBlockRedstoneUpdateEventHook, StructureBlockRedstoneUpdateEventHook>);
+Event_Hook_Factory(RedstoneUpdate, <RedstoneUpdateEventHook>);
 
 } // namespace ila::mc::inline world

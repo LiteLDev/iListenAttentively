@@ -15,14 +15,24 @@ void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["amount"]             = getRequestAction().mAmount;
     // clang-format off
     nbt["src"] = {
-        {"fullContainerName", getRequestAction().mSrc->mFullContainerName.toString()},
+        {"fullContainerName", {
+            {"name", magic_enum::enum_name(getRequestAction().mSrc->mFullContainerName.mName)}
+        }},
         {"slot", getRequestAction().mSrc->mSlot}
     };
     nbt["dst"] = {
-        {"fullContainerName", getRequestAction().mDst->mFullContainerName.toString()},
+        {"fullContainerName", {
+            {"name", magic_enum::enum_name(getRequestAction().mDst->mFullContainerName.mName)}
+        }},
         {"slot", getRequestAction().mDst->mSlot}
     };
     // clang-format on
+    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value()){
+        nbt["src"]["fullContainerName"]["dynamicId"] = getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+    }
+    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value()){
+        nbt["dst"]["fullContainerName"]["dynamicId"] = getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+    }
 }
 void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -30,9 +40,21 @@ void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
     getRequestAction().mIsDstSerialized    = nbt["isDstSerialized"];
     getRequestAction().mIsAmountSerialized = nbt["isAmountSerialized"];
     getRequestAction().mAmount             = nbt["amount"];
-    // getRequestAction().mSrc->mFullContainerName = ;
+    getRequestAction().mSrc->mFullContainerName.mName =
+        magic_enum::enum_cast<ContainerEnumName>(nbt["src"]["fullContainerName"]["name"].get<StringTag>())
+            .value_or(getRequestAction().mSrc->mFullContainerName.mName);
+    if (nbt["src"]["fullContainerName"].contains("dynamicId"))
+    {
+        getRequestAction().mSrc->mFullContainerName.mDynamicId = nbt["src"]["fullContainerName"]["dynamicId"];
+    }
     getRequestAction().mSrc->mSlot = nbt["src"]["slot"];
-    // getRequestAction().mDst->mFullContainerName = ;
+    getRequestAction().mDst->mFullContainerName.mName =
+        magic_enum::enum_cast<ContainerEnumName>(nbt["dst"]["fullContainerName"]["name"].get<StringTag>())
+            .value_or(getRequestAction().mDst->mFullContainerName.mName);
+    if (nbt["dst"]["fullContainerName"].contains("dynamicId"))
+    {
+        getRequestAction().mDst->mFullContainerName.mDynamicId = nbt["dst"]["fullContainerName"]["dynamicId"];
+    }
     getRequestAction().mDst->mSlot = nbt["dst"]["slot"];
 }
 ItemStackRequestActionTransferBase& PlayerRequestItemActionBeforeEvent::getRequestAction() const
@@ -49,14 +71,24 @@ void PlayerRequestItemActionAfterEvent::serialize(CompoundTag& nbt) const
     nbt["result"]             = magic_enum::enum_name(getResult());
     // clang-format off
     nbt["src"] = {
-        {"fullContainerName", getRequestAction().mSrc->mFullContainerName.toString()},
+        {"fullContainerName", {
+            {"name", magic_enum::enum_name(getRequestAction().mSrc->mFullContainerName.mName)}
+        }},
         {"slot", getRequestAction().mSrc->mSlot}
     };
     nbt["dst"] = {
-        {"fullContainerName", getRequestAction().mDst->mFullContainerName.toString()},
+        {"fullContainerName", {
+            {"name", magic_enum::enum_name(getRequestAction().mDst->mFullContainerName.mName)}
+        }},
         {"slot", getRequestAction().mDst->mSlot}
     };
     // clang-format on
+    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value()){
+        nbt["src"]["fullContainerName"]["dynamicId"] = getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+    }
+    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value()){
+        nbt["dst"]["fullContainerName"]["dynamicId"] = getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+    }
 }
 void PlayerRequestItemActionAfterEvent::deserialize(CompoundTag const& nbt)
 {
