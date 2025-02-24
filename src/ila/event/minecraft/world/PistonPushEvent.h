@@ -9,18 +9,18 @@ namespace ila::mc::inline world
 class PistonPushBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
 protected:
-    BlockPos const& mPistonPos;
-    BlockPos&       mPushPos;
-    uchar&          mBranchFacing;
-    uchar&          mPistonMoveFacing;
+    BlockPos& mPistonPos;
+    BlockPos& mPushPos;
+    uchar&    mBranchFacing;
+    uchar&    mPistonMoveFacing;
 
 public:
     constexpr explicit PistonPushBeforeEvent(
-        BlockSource&    blockSource,
-        BlockPos const& pistonPos,
-        BlockPos&       pushPos,
-        uchar&          branchFacing,
-        uchar&          pistonMoveFacing
+        BlockSource& blockSource,
+        BlockPos&    pistonPos,
+        BlockPos&    pushPos,
+        uchar&       branchFacing,
+        uchar&       pistonMoveFacing
     )
         : Cancellable(blockSource)
         , mPistonPos(pistonPos)
@@ -33,10 +33,10 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos const& getPistonPos() const;
-    ILNDAPI BlockPos&       getPushPos() const;
-    ILNDAPI uchar&          getBranchFacing() const;
-    ILNDAPI uchar&          getPistonMoveFacing() const;
+    ILNDAPI BlockPos& getPistonPos() const;
+    ILNDAPI BlockPos& getPushPos() const;
+    ILNDAPI uchar&    getBranchFacing() const;
+    ILNDAPI uchar&    getPistonMoveFacing() const;
 };
 
 class PistonPushAfterEvent final : public ll::event::WorldEvent

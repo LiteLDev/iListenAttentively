@@ -65,7 +65,7 @@ LL_STATIC_HOOK(
         targetPos.z = (randomGenerator->mObject._genRandInt32() & 0xF) + pPos.z - (randomGenerator->mObject._genRandInt32() & 0xF);
         targetPos.y = (verticalOffset > pRegion.getMaxHeight() ? 0 : verticalOffset) + pPos.y;
 
-        if (pRegion.isEmptyBlock(targetPos)){ break;}
+        if (pRegion.isEmptyBlock(targetPos.x, targetPos.y, targetPos.z)){ break;}
         if (++attemptCount >= 1000){ return;}
     }
     // clang-format on
@@ -80,7 +80,7 @@ LL_STATIC_HOOK(
     auto z = pPos.z - targetPos.z;
     level.broadcastLocalEvent(
         pRegion,
-        LevelEvent::ParticlesDragonEgg,
+        SharedTypes::Legacy::LevelEvent::ParticlesDragonEgg,
         pPos,
         abs(z) | ((abs(y) | (((((x >> 31) | (2 * ((y >> 31) | (2 * (z >> 31))))) << 8) | abs(x)) << 8)) << 8)
     );

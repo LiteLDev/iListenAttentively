@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/actor/MobHurtEffectEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
-#include <mc/common/ActorUniqueID.h>
+#include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/actor/ActorDamageSource.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
@@ -20,11 +20,12 @@ void MobHurtEffectBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
     getValue() = nbt["value"];
-    getCause() = magic_enum::enum_cast<ActorDamageCause>(nbt["cause"].get<StringTag>()).value_or(getCause());
+    getCause() = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
+                     .value_or(getCause());
 }
-optional_ref<Actor> MobHurtEffectBeforeEvent::getSource() const { return mSource; }
-float&              MobHurtEffectBeforeEvent::getValue() const { return mValue; }
-ActorDamageCause&   MobHurtEffectBeforeEvent::getCause() const { return mCause; }
+optional_ref<Actor>                    MobHurtEffectBeforeEvent::getSource() const { return mSource; }
+float&                                 MobHurtEffectBeforeEvent::getValue() const { return mValue; }
+SharedTypes::Legacy::ActorDamageCause& MobHurtEffectBeforeEvent::getCause() const { return mCause; }
 
 void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -33,9 +34,9 @@ void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
     nbt["value"] = getValue();
     nbt["cause"] = magic_enum::enum_name(getCause());
 }
-optional_ref<Actor const> MobHurtEffectAfterEvent::getSource() const { return mSource; }
-float const&              MobHurtEffectAfterEvent::getValue() const { return mValue; }
-ActorDamageCause const&   MobHurtEffectAfterEvent::getCause() const { return mCause; }
+optional_ref<Actor const>                    MobHurtEffectAfterEvent::getSource() const { return mSource; }
+float const&                                 MobHurtEffectAfterEvent::getValue() const { return mValue; }
+SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::getCause() const { return mCause; }
 
 LL_TYPE_INSTANCE_HOOK(
     MobHurtEffectHook,
@@ -47,7 +48,8 @@ LL_TYPE_INSTANCE_HOOK(
     float                    damage
 )
 {
-    if (source.getCause() == ActorDamageCause::Magic || source.getCause() == ActorDamageCause::Wither)
+    if (source.mCause == SharedTypes::Legacy::ActorDamageCause::Magic
+        || source.mCause == SharedTypes::Legacy::ActorDamageCause::Wither)
     {
         optional_ref<Actor> damageSource = std::nullopt;
         if (source.isEntitySource())
@@ -62,7 +64,7 @@ LL_TYPE_INSTANCE_HOOK(
             *this,
             damageSource,
             damage,
-            const_cast<ActorDamageCause&>(source.mCause)
+            const_cast<SharedTypes::Legacy::ActorDamageCause&>(source.mCause)
         );
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) { return 0.0f; }

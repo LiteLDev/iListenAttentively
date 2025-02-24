@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/actor/DragonRespawnEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
-#include <mc/common/ActorUniqueID.h>
+#include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/dimension/end/EndDragonFight.h>
 
@@ -21,10 +21,9 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pStage);
-    if (auto* dragon =
-            static_cast<EnderDragon*>(ll::service::getLevel()->fetchEntity(mDragonUUID.get(), false)))
+    if (auto* dragon = ll::service::getLevel()->fetchEntity(mDragonUUID, false))
     {
-        LLEventBus.publish(DragonRespawnAfterEvent(*dragon));
+        LLEventBus.publish(DragonRespawnAfterEvent(static_cast<EnderDragon&>(*dragon)));
     }
 }
 

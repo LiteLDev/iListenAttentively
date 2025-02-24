@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Adapted to LeviLamina 1.0.1 @Lovelylavender4
+- Adapted to LeviLamina 1.1.0-rc.1 @zimuya4153
 
 ### Clanged
 
+- Removed PlayerChangePermissions event @zimuya4153
 
 ### Fixed
 

@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/server/ClientLoginEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
-#include <mc/certificates/ExtendedCertificate.h>
+#include <mc/certificates/identity/GameServerToken.h>
 #include <mc/network/ConnectionRequest.h>
 #include <mc/network/packet/LoginPacket.h>
 
@@ -44,12 +44,12 @@ std::string const&       ClientLoginAfterEvent::getIpAndPort() const { return mI
 std::string              ClientLoginAfterEvent::getIp() const
 {
     auto ipAndPort = getIpAndPort();
-    return ipAndPort.substr(0, ipAndPort.find(":"));
+    return ipAndPort.substr(0, ipAndPort.find("|"));
 }
 std::string ClientLoginAfterEvent::getPort() const
 {
     auto ipAndPort = getIpAndPort();
-    return ipAndPort.substr(ipAndPort.find(":") + 1);
+    return ipAndPort.substr(ipAndPort.find("|") + 1);
 }
 void ClientLoginAfterEvent::disConnectClient(std::string reason) const
 {
@@ -76,14 +76,14 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pSource, pPacket);
-    auto* cert = pPacket.mConnectionRequest->getCertificate();
+    auto& cert = pPacket.mConnectionRequest->mGameServerToken;
     LLEventBus.publish(ClientLoginAfterEvent(
         *this,
         pSource,
-        ExtendedCertificate::getIdentity(*cert),
-        ExtendedCertificate::getXuid(*cert, false),
-        ExtendedCertificate::getXuid(*cert, true),
-        ExtendedCertificate::getIdentityName(*cert),
+        cert->getIdentity(),
+        cert->getXuid(false),
+        cert->getXuid(true),
+        cert->getIdentityName(),
         pSource.getIPAndPort()
     ));
 }

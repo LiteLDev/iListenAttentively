@@ -18,16 +18,10 @@ void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
         {"fullContainerName", getRequestAction().mSrc->mFullContainerName.toString()},
         {"slot", getRequestAction().mSrc->mSlot}
     };
-    if (getRequestAction().mSrc->mNetIdVariant.hasServerNetId()) {
-        nbt["src"]["serverNetId"] = getRequestAction().mSrc->mNetIdVariant.tryGetServerNetId()->mRawId;
-    }
     nbt["dst"] = {
         {"fullContainerName", getRequestAction().mDst->mFullContainerName.toString()},
         {"slot", getRequestAction().mDst->mSlot}
     };
-    if (getRequestAction().mDst->mNetIdVariant.hasServerNetId()) {
-        nbt["dst"]["serverNetId"] = getRequestAction().mDst->mNetIdVariant.tryGetServerNetId()->mRawId;
-    }
     // clang-format on
 }
 void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -38,16 +32,8 @@ void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
     getRequestAction().mAmount             = nbt["amount"];
     // getRequestAction().mSrc->mFullContainerName = ;
     getRequestAction().mSrc->mSlot = nbt["src"]["slot"];
-    if (nbt["src"].contains("serverNetId"))
-    {
-        getRequestAction().mSrc->mNetIdVariant = ItemStackNetId(nbt["src"]["serverNetId"]);
-    }
     // getRequestAction().mDst->mFullContainerName = ;
     getRequestAction().mDst->mSlot = nbt["dst"]["slot"];
-    if (nbt["dst"].contains("serverNetId"))
-    {
-        getRequestAction().mDst->mNetIdVariant = ItemStackNetId(nbt["dst"]["serverNetId"]);
-    }
 }
 ItemStackRequestActionTransferBase& PlayerRequestItemActionBeforeEvent::getRequestAction() const
 {
@@ -66,16 +52,10 @@ void PlayerRequestItemActionAfterEvent::serialize(CompoundTag& nbt) const
         {"fullContainerName", getRequestAction().mSrc->mFullContainerName.toString()},
         {"slot", getRequestAction().mSrc->mSlot}
     };
-    if (getRequestAction().mSrc->mNetIdVariant.hasServerNetId()) {
-        nbt["src"]["serverNetId"] = getRequestAction().mSrc->mNetIdVariant.tryGetServerNetId()->mRawId;
-    }
     nbt["dst"] = {
         {"fullContainerName", getRequestAction().mDst->mFullContainerName.toString()},
         {"slot", getRequestAction().mDst->mSlot}
     };
-    if (getRequestAction().mDst->mNetIdVariant.hasServerNetId()) {
-        nbt["dst"]["serverNetId"] = getRequestAction().mDst->mNetIdVariant.tryGetServerNetId()->mRawId;
-    }
     // clang-format on
 }
 void PlayerRequestItemActionAfterEvent::deserialize(CompoundTag const& nbt)

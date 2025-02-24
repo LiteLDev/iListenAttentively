@@ -46,7 +46,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto blockActor =
         static_cast<ItemFrameBlockActor*>(pPlayer.getDimensionBlockSource().getBlockEntity(pPos));
     if (!blockActor) { return origin(pPlayer, pPos, pFace); }
-    auto type        = blockActor->getFramedItem().isNull() ? Type::Place : Type::Rotate;
+    auto type        = blockActor->mItem->isNull() ? Type::Place : Type::Rotate;
     auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(pPlayer, const_cast<BlockPos&>(pPos), type);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return false; }
@@ -94,7 +94,7 @@ LL_TYPE_INSTANCE_HOOK(
     }
     auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(
         static_cast<Player&>(*pActor),
-        const_cast<BlockPos&>(getPosition()),
+        mPosition,
         Type::Take
     );
     LLEventBus.publish(beforeEvent);
@@ -102,7 +102,7 @@ LL_TYPE_INSTANCE_HOOK(
     origin(pRegion, pIsSurvival, pActor);
     LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(
         static_cast<Player&>(*pActor),
-        const_cast<BlockPos&>(getPosition()),
+        mPosition,
         Type::Take
     ));
 }

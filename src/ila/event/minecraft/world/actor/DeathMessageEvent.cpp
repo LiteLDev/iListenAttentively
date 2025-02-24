@@ -1,6 +1,6 @@
 #include "ila/event/minecraft/world/actor/DeathMessageEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/common/ActorUniqueID.h>
+#include <mc/legacy/ActorUniqueID.h>
 #include <mc/nbt/CompoundTagVariant.h>
 #include <mc/world/actor/ActorDamageByActorSource.h>
 #include <mc/world/actor/ActorDamageByBlockSource.h>
@@ -15,7 +15,7 @@ void DeathMessageBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["sourceUniqueId"] = getDamageSource().getEntityUniqueID().rawID;
-    nbt["cause"]          = magic_enum::enum_name(getDamageSource().getCause());
+    nbt["cause"]          = magic_enum::enum_name(getDamageSource().mCause);
     nbt["result"]         = { { "key", getResult().first }, { "params", ListTag {} } };
     for (auto& param : getResult().second) { nbt["result"]["params"].push_back(param); }
 }
@@ -23,6 +23,9 @@ void DeathMessageBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
     getResult().first = nbt["result"]["key"];
+    getDamageSource().mCause =
+        magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
+            .value_or(getDamageSource().mCause);
     for (auto& param : nbt["result"]["params"].get<ListTag>()) { getResult().second.push_back(param); }
 }
 ActorDamageSource& DeathMessageBeforeEvent::getDamageSource() const { return mDamageSource; }
@@ -32,7 +35,7 @@ void DeathMessageAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
     nbt["sourceUniqueId"] = getDamageSource().getEntityUniqueID().rawID;
-    nbt["cause"]          = magic_enum::enum_name(getDamageSource().getCause());
+    nbt["cause"]          = magic_enum::enum_name(getDamageSource().mCause);
     nbt["result"]         = { { "key", getResult().first }, { "params", ListTag {} } };
     for (auto& param : getResult().second) { nbt["result"]["params"].push_back(param); }
 }

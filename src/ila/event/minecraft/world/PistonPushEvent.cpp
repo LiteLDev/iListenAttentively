@@ -22,10 +22,10 @@ void PistonPushBeforeEvent::deserialize(CompoundTag const& nbt)
     getBranchFacing()     = nbt["branchFacing"];
     getPistonMoveFacing() = nbt["pistonMoveFacing"];
 }
-BlockPos const& PistonPushBeforeEvent::getPistonPos() const { return mPistonPos; }
-BlockPos&       PistonPushBeforeEvent::getPushPos() const { return mPushPos; }
-uchar&          PistonPushBeforeEvent::getBranchFacing() const { return mBranchFacing; }
-uchar&          PistonPushBeforeEvent::getPistonMoveFacing() const { return mPistonMoveFacing; }
+BlockPos& PistonPushBeforeEvent::getPistonPos() const { return mPistonPos; }
+BlockPos& PistonPushBeforeEvent::getPushPos() const { return mPushPos; }
+uchar&    PistonPushBeforeEvent::getBranchFacing() const { return mBranchFacing; }
+uchar&    PistonPushBeforeEvent::getPistonMoveFacing() const { return mPistonMoveFacing; }
 
 void PistonPushAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -54,7 +54,7 @@ LL_TYPE_INSTANCE_HOOK(
 {
     auto beforeEvent = PistonPushBeforeEvent(
         pRegion,
-        getPosition(),
+        mPosition,
         const_cast<BlockPos&>(pPos),
         pBranchFacing,
         pPistonMoveFacing
@@ -65,7 +65,7 @@ LL_TYPE_INSTANCE_HOOK(
     if (result)
     {
         LLEventBus.publish(
-            PistonPushAfterEvent(pRegion, getPosition(), pPos, pBranchFacing, pPistonMoveFacing)
+            PistonPushAfterEvent(pRegion, mPosition, pPos, pBranchFacing, pPistonMoveFacing)
         );
     }
     return result;

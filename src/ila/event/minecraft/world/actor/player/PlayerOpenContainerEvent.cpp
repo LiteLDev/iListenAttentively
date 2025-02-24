@@ -23,13 +23,17 @@ void PlayerOpenContainerBeforeEvent::deserialize(CompoundTag const& nbt)
     getContainerBlockPos().y = nbt["containerBlockPos"][1];
     getContainerBlockPos().z = nbt["containerBlockPos"][2];
     getContainerId()         = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
-    getContainerType()       = magic_enum::enum_cast<ContainerType>(nbt["containerType"].get<StringTag>())
-                             .value_or(getContainerType());
+    getContainerType() =
+        magic_enum::enum_cast<SharedTypes::Legacy::ContainerType>(nbt["containerType"].get<StringTag>())
+            .value_or(getContainerType());
     getContainerActorId().rawID = nbt["containerActorId"];
 }
-BlockPos&      PlayerOpenContainerBeforeEvent::getContainerBlockPos() const { return mPos; }
-ContainerID&   PlayerOpenContainerBeforeEvent::getContainerId() const { return mContainerId; }
-ContainerType& PlayerOpenContainerBeforeEvent::getContainerType() const { return mContainerType; }
+BlockPos&    PlayerOpenContainerBeforeEvent::getContainerBlockPos() const { return mPos; }
+ContainerID& PlayerOpenContainerBeforeEvent::getContainerId() const { return mContainerId; }
+SharedTypes::Legacy::ContainerType& PlayerOpenContainerBeforeEvent::getContainerType() const
+{
+    return mContainerType;
+}
 ActorUniqueID& PlayerOpenContainerBeforeEvent::getContainerActorId() const { return mContainerActorId; }
 
 void PlayerOpenContainerAfterEvent::serialize(CompoundTag& nbt) const
@@ -41,9 +45,12 @@ void PlayerOpenContainerAfterEvent::serialize(CompoundTag& nbt) const
     nbt["containerType"]    = magic_enum::enum_name(getContainerType());
     nbt["containerActorId"] = getContainerActorId().rawID;
 }
-BlockPos const&      PlayerOpenContainerAfterEvent::getContainerBlockPos() const { return mPos; }
-ContainerID const&   PlayerOpenContainerAfterEvent::getContainerId() const { return mContainerId; }
-ContainerType const& PlayerOpenContainerAfterEvent::getContainerType() const { return mContainerType; }
+BlockPos const&    PlayerOpenContainerAfterEvent::getContainerBlockPos() const { return mPos; }
+ContainerID const& PlayerOpenContainerAfterEvent::getContainerId() const { return mContainerId; }
+SharedTypes::Legacy::ContainerType const& PlayerOpenContainerAfterEvent::getContainerType() const
+{
+    return mContainerType;
+}
 ActorUniqueID const& PlayerOpenContainerAfterEvent::getContainerActorId() const { return mContainerActorId; }
 
 Event_Listener_Factory(PlayerOpenContainerBefore)

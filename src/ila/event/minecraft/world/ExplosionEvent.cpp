@@ -1,6 +1,6 @@
 #include "ila/event/minecraft/world/ExplosionEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/common/ActorUniqueID.h>
+#include <mc/legacy/ActorUniqueID.h>
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/level/BlockPos.h>
 
@@ -57,8 +57,9 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     getExplosion().mCanToggleBlocks                = nbt["canToggleBlocks"];
     getExplosion().mDamageScaling                  = nbt["damageScaling"];
     getExplosion().mIgnoreBlockExplosionResistance = nbt["ignoreBlockExplosionResistance"];
-    getExplosion().mParticleType = magic_enum::enum_cast<LevelEvent>(nbt["particleType"].get<StringTag>())
-                                       .value_or(getExplosion().mParticleType);
+    getExplosion().mParticleType =
+        magic_enum::enum_cast<SharedTypes::Legacy::LevelEvent>(nbt["particleType"].get<StringTag>())
+            .value_or(getExplosion().mParticleType);
     getExplosion().mSoundExplosionType =
         magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(nbt["soundExplosionType"].get<StringTag>()
         )

@@ -20,11 +20,11 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     origin(pProjectile, pDirection, pPower, pOffset, pBaseSpeed, pTarget);
-    if (pProjectile.isRemoved()) { return; }
+    if (pProjectile.mRemoved) { return; }
     auto beforeEvent = ProjectileCreateBeforeEvent(pProjectile);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { pProjectile.remove(); }
-    if (!pProjectile.isRemoved()) { LLEventBus.publish(ProjectileCreateAfterEvent(pProjectile)); }
+    if (!pProjectile.mRemoved) { LLEventBus.publish(ProjectileCreateAfterEvent(pProjectile)); }
 }
 
 Event_Hook_Factory(ProjectileCreate, <ProjectileCreateEventHook>);

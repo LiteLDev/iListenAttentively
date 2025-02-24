@@ -63,7 +63,7 @@ LL_TYPE_INSTANCE_HOOK(
     bool frontEdit = false;
     bool backEdit  = false;
 
-    if (blockActor->getMessage(SignTextSide::Front) != pPacket->mData.get()["FrontText"]["Text"])
+    if (blockActor->mTextFront->getMessage() != pPacket->mData.get()["FrontText"]["Text"])
     {
         frontEdit        = true;
         auto beforeEvent = PlayerEditSignBeforeEvent(
@@ -75,7 +75,7 @@ LL_TYPE_INSTANCE_HOOK(
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) return;
     }
-    if (blockActor->getMessage(SignTextSide::Back) != pPacket->mData.get()["BackText"]["Text"])
+    if (blockActor->mTextBack->getMessage() != pPacket->mData.get()["BackText"]["Text"])
     {
         backEdit         = true;
         auto beforeEvent = PlayerEditSignBeforeEvent(

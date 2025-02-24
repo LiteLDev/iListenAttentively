@@ -1,5 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerDropItemEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/actor/player/Inventory.h>
+#include <mc/world/actor/player/PlayerInventory.h>
 #include <mc/world/inventory/transaction/ComplexInventoryTransaction.h>
 #include <mc/world/inventory/transaction/InventoryAction.h>
 #include <mc/world/inventory/transaction/InventorySource.h>
@@ -58,7 +60,8 @@ LL_TYPE_INSTANCE_HOOK(
     InventorySource source { InventorySourceType::ContainerInventory, ContainerID::Inventory };
     auto&           actions = mTransaction->getActions(source);
     if (actions.size() != 1) { return origin(pPlayer, pIsSenderAuthority); }
-    auto& item        = pPlayer.getInventory().getItem(actions[0].mSlot);
+    // auto& item        = pPlayer.getInventory().getItem(actions[0].mSlot);
+    auto& item = reinterpret_cast<Inventory*>(pPlayer.mInventory.get())->getItem(actions[0].mSlot);
     auto  beforeEvent = PlayerDropItemBeforeEvent(pPlayer, const_cast<ItemStack&>(item));
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return InventoryTransactionError::AuthorityMismatch; }
