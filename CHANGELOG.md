@@ -7,11 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.0] - 2025-xx-xx
+### Added
+
+
+### Changed
+
+
+### Fixed
+
+
+
+## [0.3.0] - 2025-02-24
 
 ### Added
 
 - Adapted to LeviLamina 1.1.0-rc.1 @zimuya4153
+- Added FireTryBurnBlock event @zimuya4153
 
 ### Clanged
 
