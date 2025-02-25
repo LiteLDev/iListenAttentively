@@ -13,6 +13,8 @@ public:
     {
     }
 
+    void serialize(CompoundTag&) const override;
+
     ILNDAPI ItemActor& self() const;
 };
 

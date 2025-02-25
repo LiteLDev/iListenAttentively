@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added BlockActor, ChestPairWith and BlockActorTick event @zimuya4153
 
 ### Changed
 
@@ -24,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adapted to LeviLamina 1.1.0-rc.1 @zimuya4153
 - Added FireTryBurnBlock event [#7] @zimuya4153
 
-### Clanged
+### Changed
 
 - Removed PlayerChangePermissions event @zimuya4153
 - Refactored of RedstoneUpdate events @zimuya4153
@@ -40,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added LeviAntiCheat, PLand mod event @zimuya4153
 
-### Clanged
+### Changed
 
 - Reorganized the location of documents for individual events @Lovelylavender4
 - Removed LeviLamina version info for ServerPong event @zimuya4153
