@@ -22,7 +22,7 @@ public:
 
     bool disable();
 
-#ifdef ILA_TESTS
+#if defined(ILA_TESTS) || defined(ILA_DEBUG)
     bool unload() { return true; }
 #endif
 

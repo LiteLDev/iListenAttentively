@@ -1,8 +1,9 @@
+#pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/Event.h>
 #include <mc/world/level/block/actor/BlockActor.h>
 
-namespace ila::event::inline block::actor
+namespace ila::event::inline blockActor
 {
 
 class BlockActorEvent : public ll::event::Event

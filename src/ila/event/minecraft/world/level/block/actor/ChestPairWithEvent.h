@@ -4,10 +4,10 @@
 #include <ll/api/event/Cancellable.h>
 #include <mc/world/level/block/actor/ChestBlockActor.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline blockActor
 {
 class ChestPairWithBeforeEvent final
-    : public ll::event::Cancellable<ila::event::block::actor::BlockActorEvent>
+    : public ll::event::Cancellable<ila::event::blockActor::BlockActorEvent>
 {
 protected:
     ChestBlockActor& mChest;
@@ -29,7 +29,7 @@ public:
     ILNDAPI bool&            getLead() const;
 };
 
-class ChestPairWithAfterEvent final : public ila::event::block::actor::BlockActorEvent
+class ChestPairWithAfterEvent final : public ila::event::blockActor::BlockActorEvent
 {
 protected:
     ChestBlockActor& mChest;

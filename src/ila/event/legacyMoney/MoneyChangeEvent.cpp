@@ -1,12 +1,11 @@
 #include "ila/event/legacyMoney/MoneyChangeEvent.h"
 #include "ila/base/Gloabl.h"
-#define _AMD64_
-#include <libloaderapi.h>
+#include <windows.h>
 
 namespace ila::legacyMoney
 {
 
-void MoneyChangBeforeEvent::serialize(CompoundTag& nbt) const
+void MoneyChangeBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["type"]  = magic_enum::enum_name(getType());
@@ -14,87 +13,116 @@ void MoneyChangBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["to"]    = getToXuid();
     nbt["value"] = getValue();
 }
-LLMoneyEventType const& MoneyChangBeforeEvent::getType() const { return mType; }
-std::string const&      MoneyChangBeforeEvent::getFromXuid() const { return mFromXuid; }
-std::string const&      MoneyChangBeforeEvent::getToXuid() const { return mToXuid; }
-llong const&            MoneyChangBeforeEvent::getValue() const { return mValue; }
+void MoneyChangeBeforeEvent::deserialize(CompoundTag const& nbt)
+{
+    Cancellable::deserialize(nbt);
+    mFromXuid = nbt["from"];
+    mToXuid   = nbt["to"];
+    mValue    = nbt["value"];
+}
+LLMoneyEventType const& MoneyChangeBeforeEvent::getType() const { return mType; }
+std::string&            MoneyChangeBeforeEvent::getFromXuid() const { return mFromXuid; }
+std::string&            MoneyChangeBeforeEvent::getToXuid() const { return mToXuid; }
+llong&                  MoneyChangeBeforeEvent::getValue() const { return mValue; }
 
-void MoneyChangAfterEvent::serialize(CompoundTag& nbt) const
+void MoneyChangeAfterEvent::serialize(CompoundTag& nbt) const
 {
     nbt["type"]  = magic_enum::enum_name(getType());
     nbt["from"]  = getFromXuid();
     nbt["to"]    = getToXuid();
     nbt["value"] = getValue();
 }
-LLMoneyEventType const& MoneyChangAfterEvent::getType() const { return mType; }
-std::string const&      MoneyChangAfterEvent::getFromXuid() const { return mFromXuid; }
-std::string const&      MoneyChangAfterEvent::getToXuid() const { return mToXuid; }
-llong const&            MoneyChangAfterEvent::getValue() const { return mValue; }
+LLMoneyEventType const& MoneyChangeAfterEvent::getType() const { return mType; }
+std::string const&      MoneyChangeAfterEvent::getFromXuid() const { return mFromXuid; }
+std::string const&      MoneyChangeAfterEvent::getToXuid() const { return mToXuid; }
+llong const&            MoneyChangeAfterEvent::getValue() const { return mValue; }
 
-bool MoneyBeforeEventCallback(LLMoneyEventType type, std::string from, std::string to, llong value)
+static std::string fromXuid    = "";
+static bool isRealTrans = true;
+
+LL_STATIC_HOOK(
+    AddMoneyHook,
+    HookPriority::Normal,
+    GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_Add"),
+    bool,
+    std::string xuid,
+    llong       money
+)
 {
-    auto beforeEvent = MoneyChangBeforeEvent(type, from, to, value);
+    auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Add, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
-    return !beforeEvent.isCancelled();
+    if (beforeEvent.isCancelled()) { return false; }
+    isRealTrans = false;
+    auto result = origin(xuid, money);
+    isRealTrans = true;
+    if (result) { LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Add, fromXuid, xuid, money)); }
+    return result;
 }
 
-void MoneyAfterEventCallback(LLMoneyEventType type, std::string from, std::string to, llong value)
+LL_STATIC_HOOK(
+    ReduceMoneyHook,
+    HookPriority::Normal,
+    GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_Reduce"),
+    bool,
+    std::string xuid,
+    llong       money
+)
 {
-    LLEventBus.publish(MoneyChangAfterEvent(type, from, to, value));
+    auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Reduce, fromXuid, xuid, money);
+    LLEventBus.publish(beforeEvent);
+    if (beforeEvent.isCancelled()) { return false; }
+    isRealTrans = false;
+    auto result = origin(xuid, money);
+    isRealTrans = true;
+    if (result)
+    {
+        LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Reduce, fromXuid, xuid, money));
+    }
+    return result;
 }
 
-static std::unique_ptr<ll::event::EmitterBase> eventBeforeEmitterFactory();
-class MoneyChangBeforeEventEmitter
-    : public ll::event::Emitter<eventBeforeEmitterFactory, MoneyChangBeforeEvent>
+LL_STATIC_HOOK(
+    SetMoneyHook,
+    HookPriority::Normal,
+    GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_Set"),
+    bool,
+    std::string xuid,
+    llong       money
+)
 {
-public:
-    MoneyChangBeforeEventEmitter()
-    {
-        static bool mCreated = false;
-        if (mCreated) { return; }
-        if (auto func = GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_ListenBeforeEvent");
-            func != nullptr)
-        {
-            reinterpret_cast<void (*)(bool (*)(LLMoneyEventType, std::string, std::string, llong))>(func)(
-                MoneyBeforeEventCallback
-            );
-        }
-        mCreated = true;
-    }
-    ~MoneyChangBeforeEventEmitter()
-    {
-        // Unable to uninstall
-    }
-};
-static std::unique_ptr<ll::event::EmitterBase> eventBeforeEmitterFactory()
-{
-    return std::make_unique<MoneyChangBeforeEventEmitter>();
+    auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Set, fromXuid, xuid, money);
+    LLEventBus.publish(beforeEvent);
+    if (beforeEvent.isCancelled()) { return false; }
+    isRealTrans = false;
+    auto result = origin(xuid, money);
+    isRealTrans = true;
+    if (result) { LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Set, fromXuid, xuid, money)); }
+    return result;
 }
 
-static std::unique_ptr<ll::event::EmitterBase> eventAfterEmitterFactory();
-class MoneyChangAfterEventEmitter : public ll::event::Emitter<eventAfterEmitterFactory, MoneyChangAfterEvent>
+LL_STATIC_HOOK(
+    TransMoneyHook,
+    HookPriority::Normal,
+    GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_Trans"),
+    bool,
+    std::string        fromXuid,
+    std::string        toXuid,
+    llong              value,
+    std::string const& note
+)
 {
-public:
-    MoneyChangAfterEventEmitter()
+    if (!isRealTrans) return origin(fromXuid, toXuid, value, note);
+    auto beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Trans, fromXuid, toXuid, value);
+    LLEventBus.publish(beforeEvent);
+    if (beforeEvent.isCancelled()) { return false; }
+    auto result = origin(fromXuid, toXuid, value, note);
+    if (result)
     {
-        static bool mCreated = false;
-        if (mCreated) { return; }
-        if (auto func = GetProcAddress(GetModuleHandleW(L"LegacyMoney.dll"), "LLMoney_ListenAfterEvent");
-            func != nullptr)
-        {
-            reinterpret_cast<void (*)(void (*)(LLMoneyEventType, std::string, std::string, llong))>(func)(
-                MoneyAfterEventCallback
-            );
-        }
-        mCreated = true;
+        LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Trans, fromXuid, toXuid, value));
     }
-    ~MoneyChangAfterEventEmitter()
-    {
-        // Unable to uninstall
-    }
-};
-static std::unique_ptr<ll::event::EmitterBase> eventAfterEmitterFactory()
-{
-    return std::make_unique<MoneyChangAfterEventEmitter>();
-};
+    return result;
+}
+
+Event_Hook_Factory(MoneyChange, <AddMoneyHook, ReduceMoneyHook, SetMoneyHook, TransMoneyHook>)
+
 } // namespace ila::legacyMoney

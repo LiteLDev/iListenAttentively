@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline blockActor
 {
 class BlockActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {

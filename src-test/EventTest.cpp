@@ -5,9 +5,15 @@
 
 struct EventTest
 {
+protected:
+    std::vector<ll::event::ListenerPtr> mListeners;
+
 public:
     EventTest();
-    ~EventTest() = default;
+    ~EventTest()
+    {
+        for (auto& listener : mListeners) { LLEventBus.removeListener(listener); }
+    }
 };
 
 inline struct StartTest

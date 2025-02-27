@@ -67,6 +67,20 @@
 namespace ila
 {
 void nextTick(std::function<void()> func);
-using ll::event::serializeRefObj;
 using ll::event::serializePtrObj;
+using ll::event::serializeRefObj;
+} // namespace ila
+
+namespace ll::memory
+{
+template<class T>
+constexpr FuncPtr resolveIdentifier(std::string const& symbol)
+{
+    return Symbol(symbol).view().resolve();
 }
+template<class T>
+constexpr FuncPtr resolveIdentifier(ll::memory::FuncPtr func)
+{
+    return func;
+}
+} // namespace ll::memory

@@ -12,20 +12,20 @@ enum class LLMoneyEventType
     Trans  = 0x3,
 };
 
-class MoneyChangBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
+class MoneyChangeBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
 {
 protected:
     LLMoneyEventType const& mType;
-    std::string const&      mFromXuid;
-    std::string const&      mToXuid;
-    llong const&            mValue;
+    std::string&            mFromXuid;
+    std::string&            mToXuid;
+    llong&                  mValue;
 
 public:
-    constexpr explicit MoneyChangBeforeEvent(
+    constexpr explicit MoneyChangeBeforeEvent(
         LLMoneyEventType const& type,
-        std::string const&      fromXuid,
-        std::string const&      toXuid,
-        llong const&            value
+        std::string&            fromXuid,
+        std::string&            toXuid,
+        llong&                  value
     )
         : Cancellable()
         , mType(type)
@@ -36,14 +36,15 @@ public:
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
 
     ILNDAPI LLMoneyEventType const& getType() const;
-    ILNDAPI std::string const& getFromXuid() const;
-    ILNDAPI std::string const& getToXuid() const;
-    ILNDAPI llong const&       getValue() const;
+    ILNDAPI std::string& getFromXuid() const;
+    ILNDAPI std::string& getToXuid() const;
+    ILNDAPI llong&       getValue() const;
 }; // class MoneyChangEvent
 
-class MoneyChangAfterEvent final : public ll::event::Event
+class MoneyChangeAfterEvent final : public ll::event::Event
 {
 protected:
     LLMoneyEventType const& mType;
@@ -52,7 +53,7 @@ protected:
     llong const&            mValue;
 
 public:
-    constexpr explicit MoneyChangAfterEvent(
+    constexpr explicit MoneyChangeAfterEvent(
         LLMoneyEventType const& type,
         std::string const&      fromXuid,
         std::string const&      toXuid,

@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/actor/BlockActor.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline blockActor
 {
 
 void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const
