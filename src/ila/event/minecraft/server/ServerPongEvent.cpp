@@ -48,8 +48,8 @@ int&                      ServerPongBeforeEvent::getMaxPlayerCount() const { ret
 std::string&              ServerPongBeforeEvent::getGuid() const { return mGuid; }
 std::string&              ServerPongBeforeEvent::getLevelName() const { return mLevelName; }
 GameType&                 ServerPongBeforeEvent::getGameMode() const { return mGameMode; }
-ushort&                   ServerPongBeforeEvent::getLocalPort() const { return mLoaclPort; }
-ushort&                   ServerPongBeforeEvent::getLocalPortV6() const { return mLoaclPortV6; }
+ushort&                   ServerPongBeforeEvent::getLocalPort() const { return mLocalPort; }
+ushort&                   ServerPongBeforeEvent::getLocalPortV6() const { return mLocalPortV6; }
 std::vector<std::string>& ServerPongBeforeEvent::getOther() const { return mOther; }
 
 void ServerPongAfterEvent::serialize(CompoundTag& nbt) const
@@ -74,8 +74,8 @@ int const&                      ServerPongAfterEvent::getMaxPlayerCount() const 
 std::string const&              ServerPongAfterEvent::getGuid() const { return mGuid; }
 std::string const&              ServerPongAfterEvent::getLevelName() const { return mLevelName; }
 GameType const&                 ServerPongAfterEvent::getGameMode() const { return mGameMode; }
-ushort const&                   ServerPongAfterEvent::getLocalPort() const { return mLoaclPort; }
-ushort const&                   ServerPongAfterEvent::getLocalPortV6() const { return mLoaclPortV6; }
+ushort const&                   ServerPongAfterEvent::getLocalPort() const { return mLocalPort; }
+ushort const&                   ServerPongAfterEvent::getLocalPortV6() const { return mLocalPortV6; }
 std::vector<std::string> const& ServerPongAfterEvent::getOther() const { return mOther; }
 
 LL_STATIC_HOOK(
@@ -109,8 +109,8 @@ LL_STATIC_HOOK(
         std::string guid            = parts[6];
         std::string levelName       = parts[7];
         GameType    mGameType       = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
-        ushort      mLoaclPort      = static_cast<ushort>(std::stoi(parts[10]));
-        ushort      mLoaclPortV6    = static_cast<ushort>(std::stoi(parts[11]));
+        ushort      mLocalPort      = static_cast<ushort>(std::stoi(parts[10]));
+        ushort      mLocalPortV6    = static_cast<ushort>(std::stoi(parts[11]));
         std::vector<std::string> mOther = { "LeviLamina" };
         for (size_t i = 13; i < parts.size(); i++) { mOther.push_back(parts[i]); }
 
@@ -123,8 +123,8 @@ LL_STATIC_HOOK(
             guid,
             levelName,
             mGameType,
-            mLoaclPort,
-            mLoaclPortV6,
+            mLocalPort,
+            mLocalPortV6,
             mOther
         );
         LLEventBus.publish(beforeEvent);
@@ -140,8 +140,8 @@ LL_STATIC_HOOK(
             guid,
             levelName,
             magic_enum::enum_name(mGameType),
-            mLoaclPort,
-            mLoaclPortV6
+            mLocalPort,
+            mLocalPortV6
         );
         for (auto& other : mOther) { text += other + ";"; }
 
@@ -165,8 +165,8 @@ LL_STATIC_HOOK(
             guid,
             levelName,
             mGameType,
-            mLoaclPort,
-            mLoaclPortV6,
+            mLocalPort,
+            mLocalPortV6,
             mOther
         ));
         return result;

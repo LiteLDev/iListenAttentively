@@ -15,8 +15,8 @@ protected:
     std::string&              mGuid;
     std::string&              mLevelName;
     GameType&                 mGameMode;
-    ushort&                   mLoaclPort;
-    ushort&                   mLoaclPortV6;
+    ushort&                   mLocalPort;
+    ushort&                   mLocalPortV6;
     std::vector<std::string>& mOther;
 
 public:
@@ -41,8 +41,8 @@ public:
         , mGuid(guid)
         , mLevelName(levelName)
         , mGameMode(gameMode)
-        , mLoaclPort(localPort)
-        , mLoaclPortV6(localPortV6)
+        , mLocalPort(localPort)
+        , mLocalPortV6(localPortV6)
         , mOther(other)
     {
     }
@@ -74,8 +74,8 @@ protected:
     std::string const&       mGuid;
     std::string const&       mLevelName;
     GameType const&          mGameMode;
-    ushort const&            mLoaclPort;
-    ushort const&            mLoaclPortV6;
+    ushort const&            mLocalPort;
+    ushort const&            mLocalPortV6;
     std::vector<std::string> mOther;
 
 public:
@@ -100,8 +100,8 @@ public:
         , mGuid(guid)
         , mLevelName(levelName)
         , mGameMode(gameMode)
-        , mLoaclPort(localPort)
-        , mLoaclPortV6(localPortV6)
+        , mLocalPort(localPort)
+        , mLocalPortV6(localPortV6)
         , mOther(other)
     {
     }
