@@ -6,7 +6,7 @@
 
 namespace ila::mc::inline world::inline level::inline block::inline actor
 {
-class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ila::event::blockActor::BlockActorEvent>
+class ChestPairWithBeforeEvent final : public ll::event::Cancellable<::ila::mc::block::actor::BlockActorEvent>
 {
 protected:
     ChestBlockActor& mChest;
@@ -28,7 +28,7 @@ public:
     ILNDAPI bool&            getLead() const;
 };
 
-class ChestPairWithAfterEvent final : public ila::event::blockActor::BlockActorEvent
+class ChestPairWithAfterEvent final : public ::ila::mc::block::actor::BlockActorEvent
 {
 protected:
     ChestBlockActor& mChest;
