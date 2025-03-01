@@ -37,7 +37,6 @@ std::string const&      MoneyChangeAfterEvent::getFromXuid() const { return mFro
 std::string const&      MoneyChangeAfterEvent::getToXuid() const { return mToXuid; }
 llong const&            MoneyChangeAfterEvent::getValue() const { return mValue; }
 
-static std::string fromXuid    = "";
 static bool isRealTrans = true;
 
 LL_STATIC_HOOK(
@@ -49,6 +48,7 @@ LL_STATIC_HOOK(
     llong       money
 )
 {
+    static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Add, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return false; }
@@ -68,6 +68,7 @@ LL_STATIC_HOOK(
     llong       money
 )
 {
+    static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Reduce, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return false; }
@@ -90,6 +91,7 @@ LL_STATIC_HOOK(
     llong       money
 )
 {
+    static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Set, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return false; }

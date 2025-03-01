@@ -60,8 +60,7 @@ LL_TYPE_INSTANCE_HOOK(
     InventorySource source { InventorySourceType::ContainerInventory, ContainerID::Inventory };
     auto&           actions = mTransaction->getActions(source);
     if (actions.size() != 1) { return origin(pPlayer, pIsSenderAuthority); }
-    // auto& item        = pPlayer.getInventory().getItem(actions[0].mSlot);
-    auto& item = reinterpret_cast<Inventory*>(pPlayer.mInventory.get())->getItem(actions[0].mSlot);
+    auto& item        = pPlayer.mInventory->mInventory->getItem(actions[0].mSlot);
     auto  beforeEvent = PlayerDropItemBeforeEvent(pPlayer, const_cast<ItemStack&>(item));
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return InventoryTransactionError::AuthorityMismatch; }
