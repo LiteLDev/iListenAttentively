@@ -4,7 +4,7 @@
 #include <mc/world/inventory/network/ItemStackRequestActionHandler.h>
 #include <mc/world/inventory/network/ItemStackRequestSlotInfo.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
@@ -27,11 +27,15 @@ void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
         {"slot", getRequestAction().mDst->mSlot}
     };
     // clang-format on
-    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value()){
-        nbt["src"]["fullContainerName"]["dynamicId"] = getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value())
+    {
+        nbt["src"]["fullContainerName"]["dynamicId"] =
+            getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
     }
-    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value()){
-        nbt["dst"]["fullContainerName"]["dynamicId"] = getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value())
+    {
+        nbt["dst"]["fullContainerName"]["dynamicId"] =
+            getRequestAction().mDst->mFullContainerName.mDynamicId->value();
     }
 }
 void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -83,11 +87,15 @@ void PlayerRequestItemActionAfterEvent::serialize(CompoundTag& nbt) const
         {"slot", getRequestAction().mDst->mSlot}
     };
     // clang-format on
-    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value()){
-        nbt["src"]["fullContainerName"]["dynamicId"] = getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value())
+    {
+        nbt["src"]["fullContainerName"]["dynamicId"] =
+            getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
     }
-    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value()){
-        nbt["dst"]["fullContainerName"]["dynamicId"] = getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value())
+    {
+        nbt["dst"]["fullContainerName"]["dynamicId"] =
+            getRequestAction().mDst->mFullContainerName.mDynamicId->value();
     }
 }
 void PlayerRequestItemActionAfterEvent::deserialize(CompoundTag const& nbt)
@@ -128,4 +136,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerRequestItemAction, <PlayerRequestItemActionEventHook>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

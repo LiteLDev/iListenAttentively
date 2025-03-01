@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/BasePressurePlateBlock.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline actor
 {
 
 void ActorTriggerPressurePlateBeforeEvent::serialize(CompoundTag& nbt) const
@@ -40,4 +40,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorTriggerPressurePlate, <ActorTriggerPressurePlateEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline actor

@@ -4,7 +4,7 @@
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/MultifaceSpreader.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 
 void SculkSpreadBeforeEvent::serialize(CompoundTag& nbt) const
@@ -100,4 +100,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(SculkSpread, <SculkSpreadEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block

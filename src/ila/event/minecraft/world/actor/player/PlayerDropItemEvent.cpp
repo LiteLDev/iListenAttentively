@@ -8,7 +8,7 @@
 #include <mc/world/inventory/transaction/InventorySourceType.h>
 #include <mc/world/inventory/transaction/InventoryTransaction.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -74,4 +74,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerDropItem, <PlayerDropItemEventHook1, PlayerDropItemEventHook2>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

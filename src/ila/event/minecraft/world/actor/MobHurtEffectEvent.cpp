@@ -6,7 +6,7 @@
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 void MobHurtEffectBeforeEvent::serialize(CompoundTag& nbt) const
@@ -75,4 +75,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

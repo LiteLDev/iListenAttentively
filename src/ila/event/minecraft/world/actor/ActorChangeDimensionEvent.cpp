@@ -3,7 +3,7 @@
 #include <mc/world/level/ActorDimensionTransferManager.h>
 #include <mc/world/level/dimension/VanillaDimensions.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
@@ -69,4 +69,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorChangeDimension, <ActorChangeDimensionEventHook1, ActorChangeDimensionEventHook2>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

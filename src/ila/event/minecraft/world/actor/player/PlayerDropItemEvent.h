@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerDropItemBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -38,4 +38,4 @@ public:
 
     ILNDAPI ItemStack const& getItem() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

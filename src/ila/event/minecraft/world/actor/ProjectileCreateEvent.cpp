@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/entity/components_json_legacy/ProjectileComponent.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 LL_TYPE_INSTANCE_HOOK(
@@ -29,4 +29,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ProjectileCreate, <ProjectileCreateEventHook>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

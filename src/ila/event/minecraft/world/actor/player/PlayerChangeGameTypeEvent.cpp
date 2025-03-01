@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/network/packet/SetPlayerGameTypePacket.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerChangGameTypeBeforeEvent::serialize(CompoundTag& nbt) const
@@ -52,4 +52,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerChangGameType, <PlayerChangGameTypeEventHook>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

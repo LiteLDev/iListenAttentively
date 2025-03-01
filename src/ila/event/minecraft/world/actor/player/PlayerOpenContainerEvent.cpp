@@ -4,7 +4,7 @@
 #include <mc/network/NetworkBlockPosition.h>
 #include <mc/network/packet/ContainerOpenPacket.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerOpenContainerBeforeEvent::serialize(CompoundTag& nbt) const
@@ -105,4 +105,4 @@ Event_Listener_Factory(PlayerOpenContainerAfter)
     });
 }
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

@@ -4,7 +4,7 @@
 #include <ll/api/event/world/WorldEvent.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 class FarmDecayBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -62,4 +62,4 @@ public:
     ILNDAPI Actor* const&   getActor() const;
     ILNDAPI float const&    getFallDistance() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block

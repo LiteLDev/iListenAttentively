@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/actor/item/ItemActorEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::event::inline actor::itemActor
+namespace ila::mc::inline world::inline actor::inline item
 {
 
 void ItemActorEvent::serialize(CompoundTag& nbt) const
@@ -12,4 +12,4 @@ void ItemActorEvent::serialize(CompoundTag& nbt) const
 
 ItemActor& ItemActorEvent::self() const { return static_cast<ItemActor&>(ActorEvent::self()); }
 
-} // namespace ila::event::inline actor::itemActor
+} // namespace ila::mc::inline world::inline actor::inline item

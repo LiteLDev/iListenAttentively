@@ -6,7 +6,7 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/actor/SignBlockActor.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerEditSignBeforeEvent::serialize(CompoundTag& nbt) const
@@ -112,4 +112,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerEditSign, <PlayerEditSignEventHook>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

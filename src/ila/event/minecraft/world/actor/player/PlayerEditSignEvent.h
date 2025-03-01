@@ -5,7 +5,7 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/actor/SignTextSide.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerEditSignBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
@@ -63,4 +63,4 @@ public:
     ILNDAPI SignTextSide const& getTextSide() const;
     ILNDAPI BlockPos const&     getPos() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

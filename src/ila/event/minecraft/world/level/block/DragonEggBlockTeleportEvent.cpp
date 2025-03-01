@@ -8,7 +8,7 @@
 #include <mc/world/level/block/VanillaBlockTypeIds.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 
 void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
@@ -97,4 +97,4 @@ LL_STATIC_HOOK(
 
 Event_Hook_Factory(DragonEggBlockTeleport, <DragonEggBlockTeleportEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block

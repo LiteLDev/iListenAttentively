@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/actor/ActorTickEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 LL_TYPE_INSTANCE_HOOK(ActorTickEventHook, HookPriority::Normal, Actor, &Actor::$normalTick, void)
 {
@@ -14,4 +14,4 @@ LL_TYPE_INSTANCE_HOOK(ActorTickEventHook, HookPriority::Normal, Actor, &Actor::$
 
 Event_Hook_Factory(ActorTick, <ActorTickEventHook>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

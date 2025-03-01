@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/actor/ArmorStand.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 void ArmorStandSwapItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -48,4 +48,4 @@ LL_TYPE_INSTANCE_HOOK(
 }
 
 Event_Hook_Factory(ArmorStandSwapItem, <ArmorStandSwapItemEventHook>);
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

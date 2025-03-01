@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/level/WeatherUpdateEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline level
+namespace ila::mc::inline world::inline level
 {
 
 void WeatherUpdateBeforeEvent::serialize(CompoundTag& nbt) const
@@ -61,4 +61,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(WeatherUpdate, <WeatherUpdateEventHook>);
 
-} // namespace ila::mc::inline level
+} // namespace ila::mc::inline world::inline level

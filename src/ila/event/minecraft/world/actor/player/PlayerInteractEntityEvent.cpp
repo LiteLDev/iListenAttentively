@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerInteractEntityEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerInteractEntityBeforeEvent::serialize(CompoundTag& nbt) const
@@ -49,4 +49,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerInteractEntity, <PlayerInteractEntityEventHook>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

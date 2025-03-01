@@ -4,7 +4,7 @@
 #include <ll/api/event/world/LevelEvent.h>
 #include <mc/world/level/block/actor/SculkCatalystBlockActor.h>
 
-namespace ila::mc::inline level
+namespace ila::mc::inline world::inline level
 {
 class WeatherUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent>
 {
@@ -70,4 +70,4 @@ public:
     ILNDAPI float const& getLightningLevel() const;
     ILNDAPI int const&   getLightningTime() const;
 };
-} // namespace ila::mc::inline level
+} // namespace ila::mc::inline world::inline level

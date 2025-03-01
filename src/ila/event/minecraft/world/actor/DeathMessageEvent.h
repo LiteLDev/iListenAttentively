@@ -4,7 +4,7 @@
 #include <ll/api/event/entity/ActorEvent.h>
 #include <mc/world/actor/ActorDamageSource.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 class DeathMessageBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -54,4 +54,4 @@ public:
     ILNDAPI ActorDamageSource const& getDamageSource() const;
     ILNDAPI std::pair<std::string, std::vector<std::string>> const& getResult() const;
 };
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

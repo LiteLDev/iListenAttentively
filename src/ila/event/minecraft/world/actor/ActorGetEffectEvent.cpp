@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/effect/EffectDuration.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 void ActorGetEffectBeforeEvent::serialize(CompoundTag& nbt) const
@@ -42,4 +42,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorGetEffect, <ActorGetEffectEventHook>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

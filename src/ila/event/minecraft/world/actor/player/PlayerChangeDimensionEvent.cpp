@@ -3,7 +3,7 @@
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/level/PlayerDimensionTransferer.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
@@ -67,4 +67,4 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 }
 
 Event_Hook_Factory(PlayerChangeDimension, <PlayerChangeDimensionEventHook>);
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player
