@@ -28,6 +28,7 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     LLEventBus.publish(PlayerAteEvent { *this, const_cast<ItemStack&>(instance) });
+    return origin(instance);
 }
 
 LL_TYPE_INSTANCE_HOOK(
