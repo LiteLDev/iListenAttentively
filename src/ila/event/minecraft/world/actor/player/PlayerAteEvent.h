@@ -1,0 +1,22 @@
+#pragma once
+#include "ila/base/Macro.h"
+#include <ll/api/event/player/PlayerEvent.h>
+namespace ila::mc::inline player
+{
+class PlayerAteEvent final : public ll::event::PlayerEvent
+{
+protected:
+    ItemStack& mItem;
+
+public:
+    constexpr explicit PlayerAteEvent(Player& player, ItemStack& item)
+        : ll::event::PlayerEvent(player)
+        , mItem(item)
+    {
+    }
+    ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
+
+    ILNDAPI ItemStack& getItem() const;
+};
+} // namespace ila::mc::inline player
