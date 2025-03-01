@@ -1,7 +1,8 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/player/PlayerEvent.h>
-namespace ila::mc::inline player
+
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerAteEvent final : public ll::event::PlayerEvent
 {
@@ -10,10 +11,11 @@ protected:
 
 public:
     constexpr explicit PlayerAteEvent(Player& player, ItemStack& item)
-        : ll::event::PlayerEvent(player)
+        : PlayerEvent(player)
         , mItem(item)
     {
     }
+
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 

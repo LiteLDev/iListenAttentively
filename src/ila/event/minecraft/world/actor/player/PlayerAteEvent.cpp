@@ -1,20 +1,19 @@
 #include "ila/event/minecraft/world/actor/player/PlayerAteEvent.h"
 #include "ila/base/Gloabl.h"
-#include "mc/world/item/BucketItem.h"
-#include "mc/world/item/MedicineItem.h"
-#include "mc/world/item/PotionItem.h"
+#include <mc/world/item/BucketItem.h>
+#include <mc/world/item/MedicineItem.h>
+#include <mc/world/item/PotionItem.h>
 
-
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerAteEvent::serialize(CompoundTag& nbt) const
 {
-    ll::event::player::PlayerEvent::serialize(nbt);
-    nbt["item"] = ll::event::serializeRefObj(mItem);
+    PlayerEvent::serialize(nbt);
+    nbt["item"] = serializeRefObj(mItem);
 }
 
-void PlayerAteEvent::deserialize(CompoundTag const& nbt) { ll::event::player::PlayerEvent::deserialize(nbt); }
+void PlayerAteEvent::deserialize(CompoundTag const& nbt) { PlayerEvent::deserialize(nbt); }
 
 ItemStack& PlayerAteEvent::getItem() const { return mItem; }
 
@@ -24,11 +23,11 @@ LL_TYPE_INSTANCE_HOOK(
     Player,
     &Player::eat,
     void,
-    ItemStack const& instance
+    ItemStack const& pInstance
 )
 {
-    LLEventBus.publish(PlayerAteEvent { *this, const_cast<ItemStack&>(instance) });
-    return origin(instance);
+    LLEventBus.publish(PlayerAteEvent(*this, const_cast<ItemStack&>(pInstance)));
+    return origin(pInstance);
 }
 
 LL_TYPE_INSTANCE_HOOK(
@@ -37,28 +36,28 @@ LL_TYPE_INSTANCE_HOOK(
     PotionItem,
     &PotionItem::$useTimeDepleted,
     ItemUseMethod,
-    ItemStack& inoutInstance,
-    Level*     level,
-    Player*    player
+    ItemStack& pInoutInstance,
+    Level*     pLevel,
+    Player*    pPlayer
 )
 {
-    LLEventBus.publish(PlayerAteEvent { *player, inoutInstance });
-    return origin(inoutInstance, level, player);
+    if (pPlayer) { LLEventBus.publish(PlayerAteEvent(*pPlayer, pInoutInstance)); }
+    return origin(pInoutInstance, pLevel, pPlayer);
 }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerAteEventHook3,
     HookPriority::Normal,
     PotionItem,
-    (uintptr_t)BucketItem::$vftable()[79],
+    reinterpret_cast<uintptr_t>(BucketItem::$vftable()[79]),
     ItemUseMethod,
-    ItemStack& inoutInstance,
-    Level*     level,
-    Player*    player
+    ItemStack& pInoutInstance,
+    Level*     pLevel,
+    Player*    pPlayer
 )
 {
-    LLEventBus.publish(PlayerAteEvent { *player, inoutInstance });
-    return origin(inoutInstance, level, player);
+    if (pPlayer) { LLEventBus.publish(PlayerAteEvent { *pPlayer, pInoutInstance }); }
+    return origin(pInoutInstance, pLevel, pPlayer);
 }
 
 LL_TYPE_INSTANCE_HOOK(
@@ -67,20 +66,15 @@ LL_TYPE_INSTANCE_HOOK(
     MedicineItem,
     &MedicineItem::$useTimeDepleted,
     ItemUseMethod,
-    ItemStack& inoutInstance,
-    Level*     level,
-    Player*    player
+    ItemStack& pInoutInstance,
+    Level*     pLevel,
+    Player*    pPlayer
 )
 {
-    LLEventBus.publish(PlayerAteEvent { *player, inoutInstance });
-    return origin(inoutInstance, level, player);
+    if (pPlayer) { LLEventBus.publish(PlayerAteEvent { *pPlayer, pInoutInstance }); }
+    return origin(pInoutInstance, pLevel, pPlayer);
 }
 
-Event_Listener_Factory(PlayerAte)
-{
-    ll::memory::
-        HookRegistrar<PlayerAteEventHook1, PlayerAteEventHook2, PlayerAteEventHook3, PlayerAteEventHook4>
-            hook;
-}
+Event_Hook_Factory_Base(PlayerAte, <PlayerAteEventHook1, PlayerAteEventHook2, PlayerAteEventHook3, PlayerAteEventHook4>)
 
 } // namespace ila::mc::inline player
