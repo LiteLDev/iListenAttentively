@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/network/ServerPlayerBlockUseHandler.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerAttackBlockBeforeEvent::serialize(CompoundTag& nbt) const
@@ -51,4 +51,4 @@ LL_STATIC_HOOK(
 
 Event_Hook_Factory(PlayerAttackBlock, <PlayerAttackBlockEventHook>);
 
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

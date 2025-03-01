@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/level/block/actor/ChestPairWithEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline blockActor
+namespace ila::mc::inline world::inline level::inline block::inline actor
 {
 
 void ChestPairWithBeforeEvent::serialize(CompoundTag& nbt) const
@@ -57,4 +57,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ChestPairWith, <ChestPairWithEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block::inline actor

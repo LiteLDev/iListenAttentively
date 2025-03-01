@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/actor/BlockActor.h>
 
-namespace ila::mc::inline blockActor
+namespace ila::mc::inline world::inline level::inline block::inline actor
 {
 
 void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const
@@ -37,4 +37,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(BlockActorTick, <BlockActorTickEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block::inline actor

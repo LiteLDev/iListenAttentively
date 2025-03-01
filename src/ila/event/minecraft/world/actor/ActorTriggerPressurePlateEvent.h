@@ -4,7 +4,7 @@
 #include <ll/api/event/entity/ActorEvent.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline actor
 {
 class ActorTriggerPressurePlateBeforeEvent final : public ll::event::Cancellable<ll::event::ActorEvent>
 {
@@ -39,4 +39,4 @@ public:
 
     ILNDAPI BlockPos const& getPos() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline actor

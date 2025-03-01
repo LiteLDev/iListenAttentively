@@ -4,7 +4,7 @@
 #include <ll/api/event/player/PlayerEvent.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 namespace PlayerOperatedItemFrameEvent
@@ -64,4 +64,4 @@ public:
     ILNDAPI BlockPos const& getBlockPos() const;
     ILNDAPI PlayerOperatedItemFrameEvent::Type const& getType() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline actor::inline player

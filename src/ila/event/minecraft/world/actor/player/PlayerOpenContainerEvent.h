@@ -3,7 +3,7 @@
 #include <ll/api/event/player/ServerPlayerEvent.h>
 #include <mc/legacy/ActorUniqueID.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerOpenContainerBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
@@ -70,4 +70,4 @@ public:
     ILNDAPI SharedTypes::Legacy::ContainerType const& getContainerType() const;
     ILNDAPI ActorUniqueID const&                      getContainerActorId() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

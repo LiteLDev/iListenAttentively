@@ -6,7 +6,7 @@
 #include <mc/world/level/block/ItemFrameBlock.h>
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline actor::inline player
 {
 
 void PlayerOperatedItemFrameBeforeEvent::serialize(CompoundTag& nbt) const
@@ -92,21 +92,15 @@ LL_TYPE_INSTANCE_HOOK(
     {
         return origin(pRegion, pIsSurvival, pActor);
     }
-    auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(
-        static_cast<Player&>(*pActor),
-        mPosition,
-        Type::Take
-    );
+    auto beforeEvent =
+        PlayerOperatedItemFrameBeforeEvent(static_cast<Player&>(*pActor), mPosition, Type::Take);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pRegion, pIsSurvival, pActor);
-    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(
-        static_cast<Player&>(*pActor),
-        mPosition,
-        Type::Take
-    ));
+    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(static_cast<Player&>(*pActor), mPosition, Type::Take)
+    );
 }
 
 Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline actor::inline player

@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/actor/ai/goal/PickupItemsGoal.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 void ActorPickupItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -38,4 +38,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorPickupItem, <ActorPickupItemEventHook>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

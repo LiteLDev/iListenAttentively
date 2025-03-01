@@ -5,7 +5,7 @@
 #include <mc/common/FacingID.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerAttackBlockBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
@@ -51,4 +51,4 @@ public:
     ILNDAPI BlockPos const& getPos() const;
     ILNDAPI FacingID const& getFace() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

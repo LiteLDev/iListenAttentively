@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/MobEvent.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
@@ -38,4 +38,4 @@ public:
 
     ILNDAPI ItemActor const& getItemActor() const;
 };
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

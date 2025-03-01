@@ -3,7 +3,7 @@
 #include <mc/world/level/WorldBlockTarget.h>
 #include <mc/world/level/levelgen/feature/VegetationPatchFeature.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 
 void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const
@@ -83,4 +83,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(MossGrowth, <MossGrowthEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block

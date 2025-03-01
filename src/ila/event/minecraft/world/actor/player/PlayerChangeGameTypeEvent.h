@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerChangGameTypeBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
@@ -54,4 +54,4 @@ public:
     ILNDAPI GameType const& getOldGameType() const;
     ILNDAPI GameType const& getNewGameType() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

@@ -6,7 +6,7 @@
 #include <mc/world/level/block/Block.h>
 
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -96,4 +96,4 @@ public:
     ILNDAPI uchar const&    getTargetFace() const;
     ILNDAPI uchar const&    getFacing() const;
 };
-} // namespace ila::mc::inline worlds
+} // namespace ila::mc::inline world::inline level::inline block

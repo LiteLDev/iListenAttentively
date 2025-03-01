@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/level/LevelTickEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline level
+namespace ila::mc ::inline world::inline level
 {
 
 LL_TYPE_INSTANCE_HOOK(LevelTickEventHook, HookPriority::Normal, Level, &Level::$tick, void)
@@ -15,4 +15,4 @@ LL_TYPE_INSTANCE_HOOK(LevelTickEventHook, HookPriority::Normal, Level, &Level::$
 
 Event_Hook_Factory(LevelTick, <LevelTickEventHook>);
 
-} // namespace ila::mc::inline level
+} // namespace ila::mc::inline world::inline level

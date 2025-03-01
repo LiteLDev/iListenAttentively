@@ -4,7 +4,7 @@
 #include <ll/api/event/entity/ActorEvent.h>
 #include <mc/deps/core/math/Vec3.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 class ActorChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -58,4 +58,4 @@ public:
     ILNDAPI Vec3 const&          getFromPos() const;
     ILNDAPI DimensionType const& getToDimensionId() const;
 };
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/level/block/SculkCatalystAbsorbExperienceEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline level
+namespace ila::mc::inline world::inline level::inline block
 {
 
 void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
@@ -47,4 +47,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(SculkCatalystAbsorbExperience, <SculkCatalystAbsorbExperienceEventHook>);
 
-} // namespace ila::mc::inline level
+} // namespace ila::mc::inline world::inline level::inline block

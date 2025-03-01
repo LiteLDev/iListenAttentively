@@ -4,7 +4,7 @@
 #include <ll/api/event/entity/ActorEvent.h>
 #include <mc/world/effect/MobEffectInstance.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 class ActorGetEffectBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -40,4 +40,4 @@ public:
 
     ILNDAPI MobEffectInstance const& getEffect() const;
 };
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

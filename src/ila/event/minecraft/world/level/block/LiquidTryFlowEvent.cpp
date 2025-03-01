@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/LiquidBlockDynamic.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 
 void LiquidTryFlowBeforeEvent::serialize(CompoundTag& nbt) const
@@ -68,4 +68,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(LiquidTryFlow, <LiquidTryFlowEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block

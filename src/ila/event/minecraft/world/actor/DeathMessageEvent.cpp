@@ -6,7 +6,7 @@
 #include <mc/world/actor/ActorDamageByBlockSource.h>
 #include <mc/world/actor/ActorDamageByChildActorSource.h>
 
-namespace ila::mc::inline actor
+namespace ila::mc::inline world::inline actor
 {
 
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
@@ -72,4 +72,4 @@ DeathMessageHookMacro(DeathMessageEventHook4, ActorDamageByChildActorSource);
 
 Event_Hook_Factory(DeathMessage, <DeathMessageEventHook1, DeathMessageEventHook2, DeathMessageEventHook3, DeathMessageEventHook4>);
 
-} // namespace ila::mc::inline actor
+} // namespace ila::mc::inline world::inline actor

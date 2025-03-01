@@ -4,7 +4,7 @@
 #include <ll/api/event/player/PlayerEvent.h>
 #include <mc/deps/core/math/Vec3.h>
 
-namespace ila::mc::inline player
+namespace ila::mc::inline world::inline actor::inline player
 {
 class PlayerInteractEntityBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -46,4 +46,4 @@ public:
     ILAPI Actor const& getTarget() const;
     ILAPI Vec3 const&  getPos() const;
 };
-} // namespace ila::mc::inline player
+} // namespace ila::mc::inline world::inline actor::inline player

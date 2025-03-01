@@ -5,7 +5,7 @@
 #include <mc/util/Random.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline world::inline level::inline block
 {
 class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -76,4 +76,4 @@ public:
     ILNDAPI int const&      getZRadius() const;
     ILNDAPI std::vector<BlockPos>& getTargetPoss() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline world::inline level::inline block
