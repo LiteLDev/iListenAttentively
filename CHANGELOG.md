@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed typo in local port for ServerPong event @zimuya4153
+- Fixed PlayerDropItem event crash @zimuya4153
 
 
 ## [0.3.0] - 2025-02-24

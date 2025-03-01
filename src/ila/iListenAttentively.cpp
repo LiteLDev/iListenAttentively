@@ -19,7 +19,7 @@ bool iListenAttentively::enable() { return true; }
 
 bool iListenAttentively::disable() { return true; }
 
-void nextTick(std::function<void()> func)
+void nextTick(std::function<void()> const& func)
 {
     ll::coro::keepThis([func { std::move(func) }]() -> ll::coro::CoroTask<> {
         co_await ll::chrono::ticks(1);

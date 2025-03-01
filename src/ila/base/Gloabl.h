@@ -66,7 +66,7 @@
 
 namespace ila
 {
-void nextTick(std::function<void()> func);
+void nextTick(std::function<void()> const& func);
 using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
 } // namespace ila

@@ -55,7 +55,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto& activeComponents = mSceneGraph->mActiveComponentsPerChunk;
     if (activeComponents.empty()) { return; }
 
-    const auto& components = activeComponents.find(chunkPos);
+    auto const& components = activeComponents.find(chunkPos);
     if (components == activeComponents.end()) { return; }
 
     std::vector<ChunkCircuitComponentList::Item> secondaryPoweredList;
@@ -93,7 +93,7 @@ LL_TYPE_INSTANCE_HOOK(
         }
     }
 
-    for (const auto& item : secondaryPoweredList)
+    for (auto const& item : secondaryPoweredList)
     {
         if (BaseCircuitComponent* comp = item.mComponent; comp) { processComponent(comp, region, item.mPos); }
     }
