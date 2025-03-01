@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.3.1]
+
 ### Added
 
 - Added BlockActor, ChestPairWith and BlockActorTick event @zimuya4153
@@ -18,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed typo in local port for ServerPong event @zimuya4153
-- Fixed PlayerDropItem event crash @zimuya4153
+- Fixed PlayerDropItem event crash [#10] @zimuya4153
 
 
 ## [0.3.0] - 2025-02-24
@@ -91,8 +94,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [#7]: https://github.com/MiracleForest/iListenAttentively-Release/issues/7
 [#9]: https://github.com/MiracleForest/iListenAttentively-Release/issues/9
+[#10]: https://github.com/MiracleForest/iListenAttentively-Release/issues/10
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.1...v0.2.2
