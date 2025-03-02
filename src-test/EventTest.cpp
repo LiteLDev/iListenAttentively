@@ -1,6 +1,7 @@
 #include "ila/base/Gloabl.h"
 
-inline struct EventTest {
+inline struct EventTest
+{
     EventTest();
     ~EventTest() = default;
 } test;
