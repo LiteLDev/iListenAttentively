@@ -8,6 +8,8 @@
 #include "mc/server/ServerInstance.h"
 #include "mc/world/events/ServerInstanceEventCoordinator.h"
 
+#include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
+
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     EventTestHook,
@@ -18,5 +20,10 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     ::ServerInstance& ins
 )
 {
+    ll::event::EventBus::getInstance().emplaceListener<ila::mc::levelgen::VillageFeatureConstructionEvent>(
+        [this](ila::mc::levelgen::VillageFeatureConstructionEvent& ev) {
+
+        }
+    );
     origin(ins);
 }

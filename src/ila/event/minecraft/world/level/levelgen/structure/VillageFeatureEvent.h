@@ -9,17 +9,21 @@ namespace ila::mc::inline world::inline level::inline levelgen::inline structure
 class VillageFeatureConstructionEvent final : public ::ila::mc::StructureEvent
 {
 protected:
+    ::std::vector<uint64>& mAllowedBiomes;
+
     uint& mSeed;
     int&  mTownSpacing;
     int&  mMinTownSeparation;
 
 public:
     constexpr explicit VillageFeatureConstructionEvent(
-        uint& pSeed,
-        int&  pTownSpacing,
-        int&  pMinTownSeparation
+        ::std::vector<uint64>& pAllowedBiomes,
+        uint&                  pSeed,
+        int&                   pTownSpacing,
+        int&                   pMinTownSeparation
     )
         : StructureEvent()
+        , mAllowedBiomes(pAllowedBiomes)
         , mSeed(pSeed)
         , mTownSpacing(pTownSpacing)
         , mMinTownSeparation(pMinTownSeparation)
@@ -29,9 +33,10 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
 
 public:
-    ILNDAPI uint& seed() const;
-    ILNDAPI int&  townSpacing() const;
-    ILNDAPI int&  minTownSeparation() const;
+    ILNDAPI ::std::vector<uint64>& allowedBiomes() const;
+    ILNDAPI uint&                  seed() const;
+    ILNDAPI int&                   townSpacing() const;
+    ILNDAPI int&                   minTownSeparation() const;
 };
 
 } // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
