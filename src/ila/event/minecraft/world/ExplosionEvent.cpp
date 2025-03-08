@@ -36,6 +36,7 @@ void ExplosionBeforeEvent::serialize(CompoundTag& nbt) const
         nbt["totalDamageOverride"] = getExplosion().mTotalDamageOverride->value();
     }
     nbt["knockbackScaling"] = getExplosion().mKnockbackScaling;
+    nbt["dimid"]            = getDimensionName(blockSource());
 }
 void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -104,6 +105,7 @@ void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
         nbt["totalDamageOverride"] = getExplosion().mTotalDamageOverride->value();
     }
     nbt["knockbackScaling"] = getExplosion().mKnockbackScaling;
+    nbt["dimid"]            = getDimensionName(blockSource());
 }
 Explosion const& ExplosionAfterEvent::getExplosion() const { return mExplosion; }
 

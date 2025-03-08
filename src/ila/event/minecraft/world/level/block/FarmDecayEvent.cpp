@@ -1,6 +1,5 @@
 #include "ila/event/minecraft/world/level/block/FarmDecayEvent.h"
 #include "ila/base/Gloabl.h"
-#include <cstdint>
 #include <mc/world/level/block/FarmBlock.h>
 
 namespace ila::mc::inline world::inline level::inline block
@@ -10,6 +9,7 @@ void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]          = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(getActor());
     nbt["fallDistance"] = getFallDistance();
 }
@@ -29,6 +29,7 @@ void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]          = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(getActor());
     nbt["fallDistance"] = getFallDistance();
 }

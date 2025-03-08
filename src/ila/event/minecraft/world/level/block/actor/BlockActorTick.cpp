@@ -9,6 +9,7 @@ void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(getBlockActor());
+    nbt["dimid"]      = getDimensionName(blockSource());
 }
 BlockActor& BlockActorTickBeforeEvent::getBlockActor() const { return mBlockActor; }
 
@@ -16,6 +17,7 @@ void BlockActorTickAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(getBlockActor());
+    nbt["dimid"]      = getDimensionName(blockSource());
 }
 BlockActor& BlockActorTickAfterEvent::getBlockActor() const { return mBlockActor; }
 

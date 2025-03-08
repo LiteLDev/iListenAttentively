@@ -1,7 +1,8 @@
 #include "ila/event/minecraft/world/SculkBlockGrowthEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/world/level/block/SculkBlockBehavior.h>
 #include <mc/world/level/WorldBlockTarget.h>
+#include <mc/world/level/block/SculkBlockBehavior.h>
+
 
 namespace ila::mc::inline world
 {
@@ -9,7 +10,8 @@ namespace ila::mc::inline world
 void SculkBlockGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -23,7 +25,8 @@ BlockPos& SculkBlockGrowthBeforeEvent::getPos() const { return mPos; }
 void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 BlockPos const& SculkBlockGrowthAfterEvent::getPos() const { return mPos; }
 

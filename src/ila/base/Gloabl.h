@@ -59,9 +59,14 @@
         eventName##EventEmitter::eventName##EventEmitter()
 #endif
 
+class BlockSource;
+class Dimension;
+
 namespace ila
 {
-void nextTick(std::function<void()> const& func);
+void        nextTick(std::function<void()> const& func);
+std::string getDimensionName(::BlockSource& region);
+std::string getDimensionName(::Dimension& region);
 using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
 } // namespace ila

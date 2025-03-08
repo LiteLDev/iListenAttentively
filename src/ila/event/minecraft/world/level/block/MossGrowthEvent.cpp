@@ -10,6 +10,7 @@ void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]     = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]   = getDimensionName(blockSource());
     nbt["random"]  = serializeRefObj(getRandom());
     nbt["xRadius"] = getXRadius();
     nbt["zRadius"] = getZRadius();
@@ -32,6 +33,7 @@ void MossGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]        = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]      = getDimensionName(blockSource());
     nbt["random"]     = serializeRefObj(getRandom());
     nbt["xRadius"]    = getXRadius();
     nbt["zRadius"]    = getZRadius();

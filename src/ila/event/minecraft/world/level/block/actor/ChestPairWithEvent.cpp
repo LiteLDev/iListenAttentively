@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/actor/ChestPairWithEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 
 namespace ila::mc::inline world::inline level::inline block::inline actor
 {
@@ -7,52 +8,45 @@ namespace ila::mc::inline world::inline level::inline block::inline actor
 void ChestPairWithBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["self"]  = serializeRefObj(self());
-    nbt["chest"] = serializeRefObj(getChest());
-    nbt["lead"]  = getLead();
+    nbt["chest"]    = serializeRefObj(getChest());
+    nbt["position"] = ListTag { getPosition().x, getPosition().y, getPosition().z };
+    nbt["dimid"]      = getDimensionName(blockSource());
 }
 void ChestPairWithBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getLead() = nbt["lead"];
-}
-ChestBlockActor& ChestPairWithBeforeEvent::self() const
-{
-    return static_cast<ChestBlockActor&>(BlockActorEvent::self());
+    getPosition().x = nbt["position"][0];
+    getPosition().y = nbt["position"][1];
+    getPosition().z = nbt["position"][2];
 }
 ChestBlockActor& ChestPairWithBeforeEvent::getChest() const { return mChest; }
-bool&            ChestPairWithBeforeEvent::getLead() const { return mLead; }
+BlockPos&        ChestPairWithBeforeEvent::getPosition() const { return mPosition; }
 
 void ChestPairWithAfterEvent::serialize(CompoundTag& nbt) const
 {
-    BlockActorEvent::serialize(nbt);
-    nbt["self"]  = serializeRefObj(self());
-    nbt["chest"] = serializeRefObj(getChest());
-    nbt["lead"]  = getLead();
-}
-ChestBlockActor& ChestPairWithAfterEvent::self() const
-{
-    return static_cast<ChestBlockActor&>(BlockActorEvent::self());
+    WorldEvent::serialize(nbt);
+    nbt["chest"]    = serializeRefObj(getChest());
+    nbt["position"] = ListTag { getPosition().x, getPosition().y, getPosition().z };
+    nbt["dimid"]      = getDimensionName(blockSource());
 }
 ChestBlockActor& ChestPairWithAfterEvent::getChest() const { return mChest; }
-bool const&      ChestPairWithAfterEvent::getLead() const { return mLead; }
+BlockPos const&  ChestPairWithAfterEvent::getPosition() const { return mPosition; }
 
 LL_TYPE_INSTANCE_HOOK(
     ChestPairWithEventHook,
     HookPriority::Normal,
     ChestBlockActor,
-    &ChestBlockActor::pairWith,
+    &ChestBlockActor::_tryToPairWith,
     void,
-    ChestBlockActor* pChest,
-    bool             pLead
+    BlockSource&    region,
+    BlockPos const& position
 )
 {
-    if (pChest == nullptr) { return origin(pChest, pLead); }
-    auto beforeEvent = ChestPairWithBeforeEvent(*this, *pChest, pLead);
+    auto beforeEvent = ChestPairWithBeforeEvent(region, *this, const_cast<BlockPos&>(position));
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
-    origin(pChest, pLead);
-    LLEventBus.publish(ChestPairWithAfterEvent(*this, *pChest, pLead));
+    origin(region, position);
+    if (mLargeChestPaired) { LLEventBus.publish(ChestPairWithAfterEvent(region, *this, position)); }
 }
 
 Event_Hook_Factory(ChestPairWith, <ChestPairWithEventHook>);

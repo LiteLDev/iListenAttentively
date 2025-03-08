@@ -3,13 +3,13 @@
 #include <mc/world/level/block/Block.h>
 
 namespace ila::mc::inline world::inline level::inline block
-
 {
 
 void BlockTickBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]    = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]  = getDimensionName(blockSource());
     nbt["random"] = serializeRefObj(getRandom());
 }
 void BlockTickBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -26,6 +26,7 @@ void BlockTickAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]    = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]  = getDimensionName(blockSource());
     nbt["random"] = serializeRefObj(getRandom());
 }
 BlockPos const& BlockTickAfterEvent::getPos() const { return mPos; }

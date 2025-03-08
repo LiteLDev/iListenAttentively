@@ -1,51 +1,57 @@
 #pragma once
 #include "ila/base/Macro.h"
-#include "ila/event/minecraft/world/level/block/actor/BlockActorEvent.h"
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/world/WorldEvent.h>
 #include <mc/world/level/block/actor/ChestBlockActor.h>
 
 namespace ila::mc::inline world::inline level::inline block::inline actor
 {
-class ChestPairWithBeforeEvent final : public ll::event::Cancellable<::ila::mc::block::actor::BlockActorEvent>
+class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
 protected:
     ChestBlockActor& mChest;
-    bool&            mLead;
+    BlockPos&        mPosition;
 
 public:
-    constexpr explicit ChestPairWithBeforeEvent(ChestBlockActor& self, ChestBlockActor& chest, bool& lead)
-        : Cancellable(self)
+    constexpr explicit ChestPairWithBeforeEvent(
+        BlockSource&     blockSource,
+        ChestBlockActor& chest,
+        BlockPos&        position
+    )
+        : Cancellable(blockSource)
         , mChest(chest)
-        , mLead(lead)
+        , mPosition(position)
     {
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ChestBlockActor& self() const;
     ILNDAPI ChestBlockActor& getChest() const;
-    ILNDAPI bool&            getLead() const;
+    ILNDAPI BlockPos&        getPosition() const;
 };
 
-class ChestPairWithAfterEvent final : public ::ila::mc::block::actor::BlockActorEvent
+class ChestPairWithAfterEvent final : public ll::event::WorldEvent
 {
 protected:
     ChestBlockActor& mChest;
-    bool const&      mLead;
+    BlockPos const&  mPosition;
 
 public:
-    constexpr explicit ChestPairWithAfterEvent(ChestBlockActor& self, ChestBlockActor& chest, bool& lead)
-        : BlockActorEvent(self)
+    constexpr explicit ChestPairWithAfterEvent(
+        BlockSource&     blockSource,
+        ChestBlockActor& chest,
+        BlockPos const&  position
+    )
+        : WorldEvent(blockSource)
         , mChest(chest)
-        , mLead(lead)
+        , mPosition(position)
     {
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChestBlockActor& self() const;
     ILNDAPI ChestBlockActor& getChest() const;
-    ILNDAPI bool const&      getLead() const;
+    ILNDAPI BlockPos const&  getPosition() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block::inline actor

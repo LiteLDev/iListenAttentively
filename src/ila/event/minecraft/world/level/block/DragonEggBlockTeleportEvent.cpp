@@ -15,6 +15,7 @@ void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]     = getDimensionName(blockSource());
     nbt["random"]    = serializeRefObj(getRandom());
     nbt["targetPos"] = ListTag { getTargetPos().x, getTargetPos().y, getTargetPos().z };
 }
@@ -33,6 +34,7 @@ void DragonEggBlockTeleportAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]     = getDimensionName(blockSource());
     nbt["random"]    = serializeRefObj(getRandom());
     nbt["targetPos"] = ListTag { getTargetPos().x, getTargetPos().y, getTargetPos().z };
 }

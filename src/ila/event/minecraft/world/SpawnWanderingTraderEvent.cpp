@@ -8,7 +8,8 @@ namespace ila::mc::inline world
 void SpawnWanderingTraderBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 void SpawnWanderingTraderBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -22,7 +23,8 @@ BlockPos& SpawnWanderingTraderBeforeEvent::getPos() const { return mPos; }
 void SpawnWanderingTraderAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 BlockPos const& SpawnWanderingTraderAfterEvent::getPos() const { return mPos; }
 

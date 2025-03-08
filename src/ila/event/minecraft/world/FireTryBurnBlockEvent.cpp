@@ -8,14 +8,16 @@ namespace ila::mc::inline world
 void FireTryBurnBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 BlockPos const& FireTryBurnBlockBeforeEvent::getPos() const { return mPos; }
 
 void FireTryBurnBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"] = getDimensionName(blockSource());
 }
 BlockPos const& FireTryBurnBlockAfterEvent::getPos() const { return mPos; }
 

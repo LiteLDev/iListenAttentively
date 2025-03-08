@@ -3,6 +3,8 @@
 #include <ll/api/coro/CoroTask.h>
 #include <ll/api/mod/RegisterHelper.h>
 #include <ll/api/thread/ServerThreadExecutor.h>
+#include <mc/world/level/BlockSource.h>
+#include <mc/world/level/dimension/Dimension.h>
 
 namespace ila
 {
@@ -27,6 +29,10 @@ void nextTick(std::function<void()> const& func)
         co_return;
     }).launch(ll::thread::ServerThreadExecutor::getDefault());
 }
+
+std::string getDimensionName(Dimension& dimension) { return dimension.mName; }
+std::string getDimensionName(BlockSource& region) { return getDimensionName(region.getDimension()); }
+
 } // namespace ila
 
 LL_REGISTER_MOD(ila::iListenAttentively, ila::iListenAttentively::getInstance());

@@ -9,6 +9,7 @@ void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(getItem());
     nbt["spawner"]   = serializeRefObj(getSpawner());
     nbt["throwTime"] = getThrowTime();
@@ -30,6 +31,7 @@ void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(getItem());
     nbt["spawner"]   = serializeRefObj(getSpawner());
     nbt["throwtime"] = getThrowTime();

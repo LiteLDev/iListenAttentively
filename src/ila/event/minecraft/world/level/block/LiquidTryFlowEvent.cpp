@@ -9,6 +9,7 @@ void LiquidTryFlowBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]               = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]             = getDimensionName(blockSource());
     nbt["flowFromPos"]       = ListTag { getFlowFromPos().x, getFlowFromPos().y, getFlowFromPos().z };
     nbt["flowFromDirection"] = getFlowFromDirection();
 }
@@ -31,6 +32,7 @@ void LiquidTryFlowAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]               = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["dimid"]             = getDimensionName(blockSource());
     nbt["flowFromPos"]       = ListTag { getFlowFromPos().x, getFlowFromPos().y, getFlowFromPos().z };
     nbt["flowFromDirection"] = getFlowFromDirection();
 }
