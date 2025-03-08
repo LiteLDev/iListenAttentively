@@ -8,29 +8,29 @@ namespace ila::mc::inline world::inline level::inline block
 void BlockTickBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]    = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]  = getDimensionName(blockSource());
-    nbt["random"] = serializeRefObj(getRandom());
+    nbt["random"] = serializeRefObj(random());
 }
 void BlockTickBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x = nbt["pos"][0];
-    getPos().y = nbt["pos"][1];
-    getPos().z = nbt["pos"][2];
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
 }
-BlockPos& BlockTickBeforeEvent::getPos() const { return mPos; }
-Random&   BlockTickBeforeEvent::getRandom() const { return mRandom; }
+BlockPos& BlockTickBeforeEvent::pos() const { return mPos; }
+Random&   BlockTickBeforeEvent::random() const { return mRandom; }
 
 void BlockTickAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]    = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]  = getDimensionName(blockSource());
-    nbt["random"] = serializeRefObj(getRandom());
+    nbt["random"] = serializeRefObj(random());
 }
-BlockPos const& BlockTickAfterEvent::getPos() const { return mPos; }
-Random const&   BlockTickAfterEvent::getRandom() const { return mRandom; }
+BlockPos const& BlockTickAfterEvent::pos() const { return mPos; }
+Random const&   BlockTickAfterEvent::random() const { return mRandom; }
 
 LL_TYPE_INSTANCE_HOOK(
     BlockTickEventHook,

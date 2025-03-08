@@ -6,9 +6,9 @@ namespace land
 void PlayerLeaveLandEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["landId"] = getLandId();
+    nbt["landId"] = landId();
 }
 
-uint64_t PlayerLeaveLandEvent::getLandId() const { return mLandId; }
+uint64_t PlayerLeaveLandEvent::landId() const { return mLandId; }
 
 } // namespace land

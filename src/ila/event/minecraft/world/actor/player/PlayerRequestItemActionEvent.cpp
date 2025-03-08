@@ -10,58 +10,58 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["isDstSerialized"]    = getRequestAction().mIsDstSerialized;
-    nbt["isAmountSerialized"] = getRequestAction().mIsAmountSerialized;
-    nbt["amount"]             = getRequestAction().mAmount;
+    nbt["isDstSerialized"]    = requestAction().mIsDstSerialized;
+    nbt["isAmountSerialized"] = requestAction().mIsAmountSerialized;
+    nbt["amount"]             = requestAction().mAmount;
     // clang-format off
     nbt["src"] = {
         {"fullContainerName", {
-            {"name", magic_enum::enum_name(getRequestAction().mSrc->mFullContainerName.mName)}
+            {"name", magic_enum::enum_name(requestAction().mSrc->mFullContainerName.mName)}
         }},
-        {"slot", getRequestAction().mSrc->mSlot}
+        {"slot", requestAction().mSrc->mSlot}
     };
     nbt["dst"] = {
         {"fullContainerName", {
-            {"name", magic_enum::enum_name(getRequestAction().mDst->mFullContainerName.mName)}
+            {"name", magic_enum::enum_name(requestAction().mDst->mFullContainerName.mName)}
         }},
-        {"slot", getRequestAction().mDst->mSlot}
+        {"slot", requestAction().mDst->mSlot}
     };
     // clang-format on
-    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value())
+    if (requestAction().mSrc->mFullContainerName.mDynamicId->has_value())
     {
         nbt["src"]["fullContainerName"]["dynamicId"] =
-            getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+            requestAction().mSrc->mFullContainerName.mDynamicId->value();
     }
-    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value())
+    if (requestAction().mDst->mFullContainerName.mDynamicId->has_value())
     {
         nbt["dst"]["fullContainerName"]["dynamicId"] =
-            getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+            requestAction().mDst->mFullContainerName.mDynamicId->value();
     }
 }
 void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     PlayerEvent::deserialize(nbt);
-    getRequestAction().mIsDstSerialized    = nbt["isDstSerialized"];
-    getRequestAction().mIsAmountSerialized = nbt["isAmountSerialized"];
-    getRequestAction().mAmount             = nbt["amount"];
-    getRequestAction().mSrc->mFullContainerName.mName =
+    requestAction().mIsDstSerialized    = nbt["isDstSerialized"];
+    requestAction().mIsAmountSerialized = nbt["isAmountSerialized"];
+    requestAction().mAmount             = nbt["amount"];
+    requestAction().mSrc->mFullContainerName.mName =
         magic_enum::enum_cast<ContainerEnumName>(nbt["src"]["fullContainerName"]["name"].get<StringTag>())
-            .value_or(getRequestAction().mSrc->mFullContainerName.mName);
+            .value_or(requestAction().mSrc->mFullContainerName.mName);
     if (nbt["src"]["fullContainerName"].contains("dynamicId"))
     {
-        getRequestAction().mSrc->mFullContainerName.mDynamicId = nbt["src"]["fullContainerName"]["dynamicId"];
+        requestAction().mSrc->mFullContainerName.mDynamicId = nbt["src"]["fullContainerName"]["dynamicId"];
     }
-    getRequestAction().mSrc->mSlot = nbt["src"]["slot"];
-    getRequestAction().mDst->mFullContainerName.mName =
+    requestAction().mSrc->mSlot = nbt["src"]["slot"];
+    requestAction().mDst->mFullContainerName.mName =
         magic_enum::enum_cast<ContainerEnumName>(nbt["dst"]["fullContainerName"]["name"].get<StringTag>())
-            .value_or(getRequestAction().mDst->mFullContainerName.mName);
+            .value_or(requestAction().mDst->mFullContainerName.mName);
     if (nbt["dst"]["fullContainerName"].contains("dynamicId"))
     {
-        getRequestAction().mDst->mFullContainerName.mDynamicId = nbt["dst"]["fullContainerName"]["dynamicId"];
+        requestAction().mDst->mFullContainerName.mDynamicId = nbt["dst"]["fullContainerName"]["dynamicId"];
     }
-    getRequestAction().mDst->mSlot = nbt["dst"]["slot"];
+    requestAction().mDst->mSlot = nbt["dst"]["slot"];
 }
-ItemStackRequestActionTransferBase& PlayerRequestItemActionBeforeEvent::getRequestAction() const
+ItemStackRequestActionTransferBase& PlayerRequestItemActionBeforeEvent::requestAction() const
 {
     return mRequestAction;
 }
@@ -69,46 +69,46 @@ ItemStackRequestActionTransferBase& PlayerRequestItemActionBeforeEvent::getReque
 void PlayerRequestItemActionAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["isDstSerialized"]    = getRequestAction().mIsDstSerialized;
-    nbt["isAmountSerialized"] = getRequestAction().mIsAmountSerialized;
-    nbt["amount"]             = getRequestAction().mAmount;
-    nbt["result"]             = magic_enum::enum_name(getResult());
+    nbt["isDstSerialized"]    = requestAction().mIsDstSerialized;
+    nbt["isAmountSerialized"] = requestAction().mIsAmountSerialized;
+    nbt["amount"]             = requestAction().mAmount;
+    nbt["result"]             = magic_enum::enum_name(result());
     // clang-format off
     nbt["src"] = {
         {"fullContainerName", {
-            {"name", magic_enum::enum_name(getRequestAction().mSrc->mFullContainerName.mName)}
+            {"name", magic_enum::enum_name(requestAction().mSrc->mFullContainerName.mName)}
         }},
-        {"slot", getRequestAction().mSrc->mSlot}
+        {"slot", requestAction().mSrc->mSlot}
     };
     nbt["dst"] = {
         {"fullContainerName", {
-            {"name", magic_enum::enum_name(getRequestAction().mDst->mFullContainerName.mName)}
+            {"name", magic_enum::enum_name(requestAction().mDst->mFullContainerName.mName)}
         }},
-        {"slot", getRequestAction().mDst->mSlot}
+        {"slot", requestAction().mDst->mSlot}
     };
     // clang-format on
-    if (getRequestAction().mSrc->mFullContainerName.mDynamicId->has_value())
+    if (requestAction().mSrc->mFullContainerName.mDynamicId->has_value())
     {
         nbt["src"]["fullContainerName"]["dynamicId"] =
-            getRequestAction().mSrc->mFullContainerName.mDynamicId->value();
+            requestAction().mSrc->mFullContainerName.mDynamicId->value();
     }
-    if (getRequestAction().mDst->mFullContainerName.mDynamicId->has_value())
+    if (requestAction().mDst->mFullContainerName.mDynamicId->has_value())
     {
         nbt["dst"]["fullContainerName"]["dynamicId"] =
-            getRequestAction().mDst->mFullContainerName.mDynamicId->value();
+            requestAction().mDst->mFullContainerName.mDynamicId->value();
     }
 }
 void PlayerRequestItemActionAfterEvent::deserialize(CompoundTag const& nbt)
 {
     PlayerEvent::deserialize(nbt);
-    getResult() =
-        magic_enum::enum_cast<ItemStackNetResult>(nbt["result"].get<StringTag>()).value_or(getResult());
+    result() =
+        magic_enum::enum_cast<ItemStackNetResult>(nbt["result"].get<StringTag>()).value_or(result());
 }
-ItemStackRequestActionTransferBase const& PlayerRequestItemActionAfterEvent::getRequestAction() const
+ItemStackRequestActionTransferBase const& PlayerRequestItemActionAfterEvent::requestAction() const
 {
     return mRequestAction;
 }
-ItemStackNetResult& PlayerRequestItemActionAfterEvent::getResult() const { return mResult; }
+ItemStackNetResult& PlayerRequestItemActionAfterEvent::result() const { return mResult; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerRequestItemActionEventHook,

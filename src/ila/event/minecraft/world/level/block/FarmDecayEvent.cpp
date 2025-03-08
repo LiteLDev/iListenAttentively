@@ -8,34 +8,34 @@ namespace ila::mc::inline world::inline level::inline block
 void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]          = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]        = getDimensionName(blockSource());
-    nbt["actor"]        = serializeRefObj(getActor());
-    nbt["fallDistance"] = getFallDistance();
+    nbt["actor"]        = serializeRefObj(actor());
+    nbt["fallDistance"] = fallDistance();
 }
 void FarmDecayBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x        = nbt["pos"][0];
-    getPos().y        = nbt["pos"][1];
-    getPos().z        = nbt["pos"][2];
-    getFallDistance() = nbt["fallDistance"];
+    pos().x        = nbt["pos"][0];
+    pos().y        = nbt["pos"][1];
+    pos().z        = nbt["pos"][2];
+    fallDistance() = nbt["fallDistance"];
 }
-BlockPos& FarmDecayBeforeEvent::getPos() const { return mPos; }
-Actor*&   FarmDecayBeforeEvent::getActor() const { return mActor; }
-float&    FarmDecayBeforeEvent::getFallDistance() const { return mFallDistance; }
+BlockPos& FarmDecayBeforeEvent::pos() const { return mPos; }
+Actor*&   FarmDecayBeforeEvent::actor() const { return mActor; }
+float&    FarmDecayBeforeEvent::fallDistance() const { return mFallDistance; }
 
 void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]          = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]        = getDimensionName(blockSource());
-    nbt["actor"]        = serializeRefObj(getActor());
-    nbt["fallDistance"] = getFallDistance();
+    nbt["actor"]        = serializeRefObj(actor());
+    nbt["fallDistance"] = fallDistance();
 }
-BlockPos const& FarmDecayAfterEvent::getPos() const { return mPos; }
-Actor* const&   FarmDecayAfterEvent::getActor() const { return mActor; }
-float const&    FarmDecayAfterEvent::getFallDistance() const { return mFallDistance; }
+BlockPos const& FarmDecayAfterEvent::pos() const { return mPos; }
+Actor* const&   FarmDecayAfterEvent::actor() const { return mActor; }
+float const&    FarmDecayAfterEvent::fallDistance() const { return mFallDistance; }
 
 LL_TYPE_INSTANCE_HOOK(
     FarmDecayEventHook,

@@ -25,7 +25,7 @@ EventTest::EventTest()
                 mEventList.erase(it);
             }
         });
-    for (auto const& eventName : LLEventBus.events(ll::mod::NativeMod::current()->getName()))
+    for (auto const& eventName : LLEventBus.events(ll::mod::NativeMod::current()->name()))
     {
         mEventList.emplace_back(eventName);
         if (!LLEventBus.addListener(callback, eventName))

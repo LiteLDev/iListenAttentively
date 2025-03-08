@@ -8,40 +8,40 @@ namespace ila::mc::inline world
 void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]     = getDimensionName(blockSource());
-    nbt["item"]      = serializeRefObj(getItem());
-    nbt["spawner"]   = serializeRefObj(getSpawner());
-    nbt["throwTime"] = getThrowTime();
+    nbt["item"]      = serializeRefObj(item());
+    nbt["spawner"]   = serializeRefObj(spawner());
+    nbt["throwTime"] = throwTime();
 }
 void SpawnItemActorBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x     = nbt["pos"][0];
-    getPos().y     = nbt["pos"][1];
-    getPos().z     = nbt["pos"][2];
-    getThrowTime() = nbt["throw_time"];
+    pos().x     = nbt["pos"][0];
+    pos().y     = nbt["pos"][1];
+    pos().z     = nbt["pos"][2];
+    throwTime() = nbt["throw_time"];
 }
-Vec3&      SpawnItemActorBeforeEvent::getPos() const { return mPos; }
-ItemStack& SpawnItemActorBeforeEvent::getItem() const { return mItem; }
-Actor*&    SpawnItemActorBeforeEvent::getSpawner() const { return mSpawner; }
-int&       SpawnItemActorBeforeEvent::getThrowTime() const { return mThrowTime; }
+Vec3&      SpawnItemActorBeforeEvent::pos() const { return mPos; }
+ItemStack& SpawnItemActorBeforeEvent::item() const { return mItem; }
+Actor*&    SpawnItemActorBeforeEvent::spawner() const { return mSpawner; }
+int&       SpawnItemActorBeforeEvent::throwTime() const { return mThrowTime; }
 
 void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]     = getDimensionName(blockSource());
-    nbt["item"]      = serializeRefObj(getItem());
-    nbt["spawner"]   = serializeRefObj(getSpawner());
-    nbt["throwtime"] = getThrowTime();
-    nbt["itemActor"] = serializeRefObj(getItemActor());
+    nbt["item"]      = serializeRefObj(item());
+    nbt["spawner"]   = serializeRefObj(spawner());
+    nbt["throwtime"] = throwTime();
+    nbt["itemActor"] = serializeRefObj(itemActor());
 }
-Vec3 const&      SpawnItemActorAfterEvent::getPos() const { return mPos; }
-ItemStack const& SpawnItemActorAfterEvent::getItem() const { return mItem; }
-Actor* const&    SpawnItemActorAfterEvent::getSpawner() const { return mSpawner; }
-int const&       SpawnItemActorAfterEvent::getThrowTime() const { return mThrowTime; }
-ItemActor*&      SpawnItemActorAfterEvent::getItemActor() const { return mItemActor; }
+Vec3 const&      SpawnItemActorAfterEvent::pos() const { return mPos; }
+ItemStack const& SpawnItemActorAfterEvent::item() const { return mItem; }
+Actor* const&    SpawnItemActorAfterEvent::spawner() const { return mSpawner; }
+int const&       SpawnItemActorAfterEvent::throwTime() const { return mThrowTime; }
+ItemActor*&      SpawnItemActorAfterEvent::itemActor() const { return mItemActor; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnItemActorEventHook,

@@ -20,7 +20,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getPos() const;
+    ILNDAPI BlockPos const& pos() const;
 };
 
 class ActorTriggerPressurePlateAfterEvent final : public ll::event::ActorEvent
@@ -37,6 +37,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getPos() const;
+    ILNDAPI BlockPos const& pos() const;
 };
 } // namespace ila::mc::inline world::inline actor

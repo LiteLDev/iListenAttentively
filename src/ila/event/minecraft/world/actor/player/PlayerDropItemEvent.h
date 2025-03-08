@@ -19,7 +19,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemStack const& getItem() const;
+    ILNDAPI ItemStack const& item() const;
 };
 
 class PlayerDropItemAfterEvent final : public ll::event::player::PlayerEvent
@@ -36,6 +36,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemStack const& getItem() const;
+    ILNDAPI ItemStack const& item() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

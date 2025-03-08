@@ -11,50 +11,50 @@ namespace ila::mc::inline server
 void ClientLoginBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["serverNetworkHandler"] = serializeRefObj(getServerNetworkHandler());
-    nbt["networkIdentifier"]    = serializeRefObj(getNetworkIdentifier());
+    nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
+    nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
 }
-ServerNetworkHandler const& ClientLoginBeforeEvent::getServerNetworkHandler() const
+ServerNetworkHandler const& ClientLoginBeforeEvent::serverNetworkHandler() const
 {
     return mServerNetworkHandler;
 }
-NetworkIdentifier const& ClientLoginBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
+NetworkIdentifier const& ClientLoginBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
 
 void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["serverNetworkHandler"] = serializeRefObj(getServerNetworkHandler());
-    nbt["networkIdentifier"]    = serializeRefObj(getNetworkIdentifier());
-    nbt["uuid"]                 = getUuid().asString();
-    nbt["serverAuthXuid"]       = getServerAuthXuid();
-    nbt["clientAuthXuid"]       = getClientAuthXuid();
-    nbt["realName"]             = getRealName();
-    nbt["ipAndPort"]            = getIpAndPort();
+    nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
+    nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
+    nbt["uuid"]                 = uuid().asString();
+    nbt["serverAuthXuid"]       = serverAuthXuid();
+    nbt["clientAuthXuid"]       = clientAuthXuid();
+    nbt["realName"]             = realName();
+    nbt["ipAndPort"]            = ipAndPort();
 }
-ServerNetworkHandler const& ClientLoginAfterEvent::getServerNetworkHandler() const
+ServerNetworkHandler const& ClientLoginAfterEvent::serverNetworkHandler() const
 {
     return mServerNetworkHandler;
 }
-NetworkIdentifier const& ClientLoginAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-mce::UUID const&         ClientLoginAfterEvent::getUuid() const { return mUuid; }
-std::string const&       ClientLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
-std::string const&       ClientLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
-std::string const&       ClientLoginAfterEvent::getRealName() const { return mRealName; }
-std::string const&       ClientLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
-std::string              ClientLoginAfterEvent::getIp() const
+NetworkIdentifier const& ClientLoginAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
+mce::UUID const&         ClientLoginAfterEvent::uuid() const { return mUuid; }
+std::string const&       ClientLoginAfterEvent::serverAuthXuid() const { return mServerAuthXuid; }
+std::string const&       ClientLoginAfterEvent::clientAuthXuid() const { return mClientAuthXuid; }
+std::string const&       ClientLoginAfterEvent::realName() const { return mRealName; }
+std::string const&       ClientLoginAfterEvent::ipAndPort() const { return mIpAndPort; }
+std::string              ClientLoginAfterEvent::ip() const
 {
-    auto ipAndPort = getIpAndPort();
-    return ipAndPort.substr(0, ipAndPort.find("|"));
+    auto address = ipAndPort();
+    return address.substr(0, address.find("|"));
 }
-std::string ClientLoginAfterEvent::getPort() const
+std::string ClientLoginAfterEvent::port() const
 {
-    auto ipAndPort = getIpAndPort();
-    return ipAndPort.substr(ipAndPort.find("|") + 1);
+    auto address = ipAndPort();
+    return address.substr(address.find("|") + 1);
 }
 void ClientLoginAfterEvent::disConnectClient(std::string reason) const
 {
     ll::service::getServerNetworkHandler()->disconnectClient(
-        getNetworkIdentifier(),
+        networkIdentifier(),
         Connection::DisconnectFailReason::Kicked,
         reason,
         std::nullopt,

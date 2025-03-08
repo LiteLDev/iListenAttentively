@@ -13,35 +13,35 @@ namespace ila::mc::inline world
 void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]         = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["strength"]    = getStrength();
-    nbt["isFirstTime"] = getIsFirstTime();
+    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["strength"]    = strength();
+    nbt["isFirstTime"] = isFirstTime();
     nbt["dimid"]       = getDimensionName(blockSource());
 }
 void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x       = nbt["pos"]["x"];
-    getPos().y       = nbt["pos"]["y"];
-    getPos().z       = nbt["pos"]["z"];
-    getStrength()    = nbt["strength"];
-    getIsFirstTime() = nbt["isFirstTime"];
+    pos().x       = nbt["pos"]["x"];
+    pos().y       = nbt["pos"]["y"];
+    pos().z       = nbt["pos"]["z"];
+    strength()    = nbt["strength"];
+    isFirstTime() = nbt["isFirstTime"];
 }
-BlockPos& RedstoneUpdateBeforeEvent::getPos() const { return mPos; }
-int&      RedstoneUpdateBeforeEvent::getStrength() const { return mStrength; }
-bool&     RedstoneUpdateBeforeEvent::getIsFirstTime() const { return mIsFirstTime; }
+BlockPos& RedstoneUpdateBeforeEvent::pos() const { return mPos; }
+int&      RedstoneUpdateBeforeEvent::strength() const { return mStrength; }
+bool&     RedstoneUpdateBeforeEvent::isFirstTime() const { return mIsFirstTime; }
 
 void RedstoneUpdateAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]         = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["strength"]    = getStrength();
-    nbt["isFirstTime"] = getIsFirstTime();
+    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["strength"]    = strength();
+    nbt["isFirstTime"] = isFirstTime();
     nbt["dimid"]       = getDimensionName(blockSource());
 }
-BlockPos const& RedstoneUpdateAfterEvent::getPos() const { return mPos; }
-int const&      RedstoneUpdateAfterEvent::getStrength() const { return mStrength; }
-bool const&     RedstoneUpdateAfterEvent::getIsFirstTime() const { return mIsFirstTime; }
+BlockPos const& RedstoneUpdateAfterEvent::pos() const { return mPos; }
+int const&      RedstoneUpdateAfterEvent::strength() const { return mStrength; }
+bool const&     RedstoneUpdateAfterEvent::isFirstTime() const { return mIsFirstTime; }
 
 LL_TYPE_INSTANCE_HOOK(
     RedstoneUpdateEventHook,

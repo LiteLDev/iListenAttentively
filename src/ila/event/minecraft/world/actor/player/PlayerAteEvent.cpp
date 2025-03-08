@@ -15,7 +15,7 @@ void PlayerAteEvent::serialize(CompoundTag& nbt) const
 
 void PlayerAteEvent::deserialize(CompoundTag const& nbt) { PlayerEvent::deserialize(nbt); }
 
-ItemStack& PlayerAteEvent::getItem() const { return mItem; }
+ItemStack& PlayerAteEvent::item() const { return mItem; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerAteEventHook1,

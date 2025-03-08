@@ -14,33 +14,33 @@ namespace ila::mc::inline world::inline level::inline block
 void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]     = getDimensionName(blockSource());
-    nbt["random"]    = serializeRefObj(getRandom());
-    nbt["targetPos"] = ListTag { getTargetPos().x, getTargetPos().y, getTargetPos().z };
+    nbt["random"]    = serializeRefObj(random());
+    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
 }
 void DragonEggBlockTeleportBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getTargetPos().x = nbt["targetPos"][0];
-    getTargetPos().y = nbt["targetPos"][1];
-    getTargetPos().z = nbt["targetPos"][2];
+    targetPos().x = nbt["targetPos"][0];
+    targetPos().y = nbt["targetPos"][1];
+    targetPos().z = nbt["targetPos"][2];
 }
-BlockPos const& DragonEggBlockTeleportBeforeEvent::getPos() const { return mPos; }
-Random&         DragonEggBlockTeleportBeforeEvent::getRandom() const { return mRandom; }
-BlockPos&       DragonEggBlockTeleportBeforeEvent::getTargetPos() const { return mTargetPos; }
+BlockPos const& DragonEggBlockTeleportBeforeEvent::pos() const { return mPos; }
+Random&         DragonEggBlockTeleportBeforeEvent::random() const { return mRandom; }
+BlockPos&       DragonEggBlockTeleportBeforeEvent::targetPos() const { return mTargetPos; }
 
 void DragonEggBlockTeleportAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]     = getDimensionName(blockSource());
-    nbt["random"]    = serializeRefObj(getRandom());
-    nbt["targetPos"] = ListTag { getTargetPos().x, getTargetPos().y, getTargetPos().z };
+    nbt["random"]    = serializeRefObj(random());
+    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
 }
-BlockPos const& DragonEggBlockTeleportAfterEvent::getPos() const { return mPos; }
-Random const&   DragonEggBlockTeleportAfterEvent::getRandom() const { return mRandom; }
-BlockPos const& DragonEggBlockTeleportAfterEvent::getTargetPos() const { return mTargetPos; }
+BlockPos const& DragonEggBlockTeleportAfterEvent::pos() const { return mPos; }
+Random const&   DragonEggBlockTeleportAfterEvent::random() const { return mRandom; }
+BlockPos const& DragonEggBlockTeleportAfterEvent::targetPos() const { return mTargetPos; }
 
 LL_STATIC_HOOK(
     DragonEggBlockTeleportEventHook,

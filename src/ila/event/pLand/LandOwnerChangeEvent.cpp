@@ -6,18 +6,18 @@ namespace land
 void LandOwnerChangeBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["newOwner"] = ila::serializeRefObj(getNewOwner());
-    nbt["landId"]   = getLandId();
+    nbt["newOwner"] = ila::serializeRefObj(newOwner());
+    nbt["landId"]   = landId();
 }
-Player&  LandOwnerChangeBeforeEvent::getNewOwner() const { return mNewOwner; }
-uint64_t LandOwnerChangeBeforeEvent::getLandId() const { return mLandId; }
+Player&  LandOwnerChangeBeforeEvent::newOwner() const { return mNewOwner; }
+uint64_t LandOwnerChangeBeforeEvent::landId() const { return mLandId; }
 
 void LandOwnerChangeAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["newOwner"] = ila::serializeRefObj(getNewOwner());
-    nbt["landId"]   = getLandId();
+    nbt["newOwner"] = ila::serializeRefObj(newOwner());
+    nbt["landId"]   = landId();
 }
-Player&  LandOwnerChangeAfterEvent::getNewOwner() const { return mNewOwner; }
-uint64_t LandOwnerChangeAfterEvent::getLandId() const { return mLandId; }
+Player&  LandOwnerChangeAfterEvent::newOwner() const { return mNewOwner; }
+uint64_t LandOwnerChangeAfterEvent::landId() const { return mLandId; }
 } // namespace land

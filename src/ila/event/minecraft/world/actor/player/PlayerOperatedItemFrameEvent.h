@@ -37,8 +37,8 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getBlockPos() const;
-    ILNDAPI PlayerOperatedItemFrameEvent::Type const& getType() const;
+    ILNDAPI BlockPos const& blockPos() const;
+    ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
 
 class PlayerOperatedItemFrameAfterEvent final : public ll::event::PlayerEvent
@@ -61,7 +61,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getBlockPos() const;
-    ILNDAPI PlayerOperatedItemFrameEvent::Type const& getType() const;
+    ILNDAPI BlockPos const& blockPos() const;
+    ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

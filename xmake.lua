@@ -88,7 +88,7 @@ target("iListenAttentively")
         -- delete old compilation results
         if os.exists(output_directory) then
             os.rm(output_directory)
-            cprint("${bright yellow}[Mod packed] ${bright green} old compilations have been removed.")
+            cprint("${bright yellow}[Mod packed] ${bright green}old compilations have been removed.")
         end
 
         -- generate the manifest.json file
@@ -106,17 +106,17 @@ target("iListenAttentively")
         io.gsub(manifest_path, "%${(.-)}", function(var)
             return tostring(mod_define[var]) or "${" .. var .. "}"
         end)
-        cprint("${bright yellow}[Mod packed] ${bright green} has generated manifest.json to ${bright cyan}" .. manifest_path)
+        cprint("${bright yellow}[Mod packed] ${bright green}has generated manifest.json to ${bright cyan}" .. manifest_path)
 
         -- copy the plugin body
         os.cp(target:targetfile(), path.join(dll_directory, target:name() .. ".dll"))
-        cprint("${bright yellow}[Mod packed] ${bright green} dll has copied to ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
+        cprint("${bright yellow}[Mod packed] ${bright green}dll has copied to ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
 
         -- copy PDB
         local pdb_path = path.join(pdb_directory, target:name() .. ".pdb")
         if os.isfile(target:symbolfile()) then
             os.cp(target:symbolfile(), pdb_path)
-            cprint("${bright yellow}[Mod packed] ${bright green} pdb has copied to ${bright cyan}" .. pdb_path)
+            cprint("${bright yellow}[Mod packed] ${bright green}pdb has copied to ${bright cyan}" .. pdb_path)
         end
 
         -- copy lib
@@ -129,7 +129,7 @@ target("iListenAttentively")
                 library_directory, target:name() .. ".lib"
             )
         )
-        cprint("${bright yellow}[Mod packed] ${bright green} library has copied to ${bright cyan}" .. library_directory)
+        cprint("${bright yellow}[Mod packed] ${bright green}library has copied to ${bright cyan}" .. library_directory)
  
         -- iterate over all header files
         for _, headerfile in ipairs(target:headerfiles()) do
@@ -141,7 +141,7 @@ target("iListenAttentively")
                 path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
             )
         end
-        cprint("${bright yellow}[Mod packed] ${bright green} header files has copied to ${bright cyan}" .. includes_directory)
+        cprint("${bright yellow}[Mod packed] ${bright green}header files has copied to ${bright cyan}" .. includes_directory)
     end)
 
     on_load(function (target)

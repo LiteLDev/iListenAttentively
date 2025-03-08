@@ -19,7 +19,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockActor& getBlockActor() const;
+    ILNDAPI BlockActor& blockActor() const;
 };
 
 class BlockActorTickAfterEvent final : public ll::event::WorldEvent
@@ -36,6 +36,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockActor& getBlockActor() const;
+    ILNDAPI BlockActor& blockActor() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block::inline actor

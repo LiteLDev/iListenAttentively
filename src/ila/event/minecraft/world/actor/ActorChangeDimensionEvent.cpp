@@ -9,27 +9,27 @@ namespace ila::mc::inline world::inline actor
 void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["fromDimensionId"] = getFromDimensionId().id;
-    nbt["toDimensionId"]   = getToDimensionId().id;
+    nbt["fromDimensionId"] = fromDimensionId().id;
+    nbt["toDimensionId"]   = toDimensionId().id;
 }
 void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getToDimensionId() = VanillaDimensions::fromSerializedInt(static_cast<int>(nbt["toDimensionId"]));
+    toDimensionId() = VanillaDimensions::fromSerializedInt(static_cast<int>(nbt["toDimensionId"]));
 }
-DimensionType const& ActorChangeDimensionBeforeEvent::getFromDimensionId() const { return mFromDimensionId; };
-DimensionType&       ActorChangeDimensionBeforeEvent::getToDimensionId() const { return mToDimensionId; };
+DimensionType const& ActorChangeDimensionBeforeEvent::fromDimensionId() const { return mFromDimensionId; };
+DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { return mToDimensionId; };
 
 void ActorChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["fromDimensionId"] = getFromDimensionId().id;
+    nbt["fromDimensionId"] = fromDimensionId().id;
     nbt["fromPos"]         = ListTag { getFromPos().x, getFromPos().y, getFromPos().z };
-    nbt["toDimensionId"]   = getToDimensionId().id;
+    nbt["toDimensionId"]   = toDimensionId().id;
 }
-DimensionType const& ActorChangeDimensionAfterEvent::getFromDimensionId() const { return mFromDimensionId; };
+DimensionType const& ActorChangeDimensionAfterEvent::fromDimensionId() const { return mFromDimensionId; };
 Vec3 const&          ActorChangeDimensionAfterEvent::getFromPos() const { return mFromPos; };
-DimensionType const& ActorChangeDimensionAfterEvent::getToDimensionId() const { return mToDimensionId; };
+DimensionType const& ActorChangeDimensionAfterEvent::toDimensionId() const { return mToDimensionId; };
 
 LL_TYPE_INSTANCE_HOOK(
     ActorChangeDimensionEventHook1,

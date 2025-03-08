@@ -6,21 +6,21 @@ namespace land
 void PlayerBuyLandBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["landSelectorData"] = ila::serializePtrObj(getLandSelectorData());
-    nbt["price"]            = getPrice();
+    nbt["is3DLand"] = ila::serializePtrObj(landSelectorData());
+    nbt["price"]            = price();
 }
 void PlayerBuyLandBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     PlayerEvent::deserialize(nbt);
-    getPrice() = nbt["price"];
+    price() = nbt["price"];
 }
-LandSelectorData* PlayerBuyLandBeforeEvent::getLandSelectorData() const { return mLandSelectorData; }
-int&              PlayerBuyLandBeforeEvent::getPrice() const { return mPrice; }
+LandSelectorData* PlayerBuyLandBeforeEvent::landSelectorData() const { return mLandSelectorData; }
+int&              PlayerBuyLandBeforeEvent::price() const { return mPrice; }
 
 void PlayerBuyLandAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["landData"] = ila::serializePtrObj(getLandData().get());
+    nbt["landData"] = ila::serializePtrObj(landData().get());
 }
-std::shared_ptr<class LandData> PlayerBuyLandAfterEvent::getLandData() const { return mLandData; }
+std::shared_ptr<class LandData> PlayerBuyLandAfterEvent::landData() const { return mLandData; }
 } // namespace land

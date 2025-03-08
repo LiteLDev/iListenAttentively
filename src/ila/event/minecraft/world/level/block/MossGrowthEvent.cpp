@@ -9,34 +9,34 @@ namespace ila::mc::inline world::inline level::inline block
 void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]     = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]     = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]   = getDimensionName(blockSource());
-    nbt["random"]  = serializeRefObj(getRandom());
-    nbt["xRadius"] = getXRadius();
-    nbt["zRadius"] = getZRadius();
+    nbt["random"]  = serializeRefObj(random());
+    nbt["xRadius"] = xRadius();
+    nbt["zRadius"] = zRadius();
 }
 void MossGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x   = nbt["pos"][0];
-    getPos().y   = nbt["pos"][1];
-    getPos().z   = nbt["pos"][2];
-    getXRadius() = nbt["xRadius"];
-    getZRadius() = nbt["zRadius"];
+    pos().x   = nbt["pos"][0];
+    pos().y   = nbt["pos"][1];
+    pos().z   = nbt["pos"][2];
+    xRadius() = nbt["xRadius"];
+    zRadius() = nbt["zRadius"];
 }
-BlockPos& MossGrowthBeforeEvent::getPos() const { return mPos; };
-Random&   MossGrowthBeforeEvent::getRandom() const { return mRandom; };
-int&      MossGrowthBeforeEvent::getXRadius() const { return mXRadius; };
-int&      MossGrowthBeforeEvent::getZRadius() const { return mZRadius; };
+BlockPos& MossGrowthBeforeEvent::pos() const { return mPos; };
+Random&   MossGrowthBeforeEvent::random() const { return mRandom; };
+int&      MossGrowthBeforeEvent::xRadius() const { return mXRadius; };
+int&      MossGrowthBeforeEvent::zRadius() const { return mZRadius; };
 
 void MossGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]        = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]        = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]      = getDimensionName(blockSource());
-    nbt["random"]     = serializeRefObj(getRandom());
-    nbt["xRadius"]    = getXRadius();
-    nbt["zRadius"]    = getZRadius();
+    nbt["random"]     = serializeRefObj(random());
+    nbt["xRadius"]    = xRadius();
+    nbt["zRadius"]    = zRadius();
     nbt["targetPoss"] = ListTag {};
     for (auto const& pos : getTargetPoss()) { nbt["targetPoss"].push_back(ListTag { pos.x, pos.y, pos.z }); }
 }
@@ -51,10 +51,10 @@ void MossGrowthAfterEvent::deserialize(CompoundTag const& nbt)
         );
     }
 }
-BlockPos const&        MossGrowthAfterEvent::getPos() const { return mPos; };
-Random const&          MossGrowthAfterEvent::getRandom() const { return mRandom; };
-int const&             MossGrowthAfterEvent::getXRadius() const { return mXRadius; };
-int const&             MossGrowthAfterEvent::getZRadius() const { return mZRadius; };
+BlockPos const&        MossGrowthAfterEvent::pos() const { return mPos; };
+Random const&          MossGrowthAfterEvent::random() const { return mRandom; };
+int const&             MossGrowthAfterEvent::xRadius() const { return mXRadius; };
+int const&             MossGrowthAfterEvent::zRadius() const { return mZRadius; };
 std::vector<BlockPos>& MossGrowthAfterEvent::getTargetPoss() const { return mTargetPoss; };
 
 LL_TYPE_INSTANCE_HOOK(

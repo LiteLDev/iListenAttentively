@@ -12,11 +12,11 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerOperatedItemFrameBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { getBlockPos().x, getBlockPos().y, getBlockPos().z };
-    nbt["type"] = magic_enum::enum_name(getType());
+    nbt["pos"]  = ListTag { blockPos().x, blockPos().y, blockPos().z };
+    nbt["type"] = magic_enum::enum_name(type());
 }
-BlockPos const& PlayerOperatedItemFrameBeforeEvent::getBlockPos() const { return mBlockPos; }
-PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::getType() const
+BlockPos const& PlayerOperatedItemFrameBeforeEvent::blockPos() const { return mBlockPos; }
+PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::type() const
 {
     return mType;
 }
@@ -24,11 +24,11 @@ PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::ge
 void PlayerOperatedItemFrameAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { getBlockPos().x, getBlockPos().y, getBlockPos().z };
-    nbt["type"] = magic_enum::enum_name(getType());
+    nbt["pos"]  = ListTag { blockPos().x, blockPos().y, blockPos().z };
+    nbt["type"] = magic_enum::enum_name(type());
 }
-BlockPos const& PlayerOperatedItemFrameAfterEvent::getBlockPos() const { return mBlockPos; }
-PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameAfterEvent::getType() const { return mType; }
+BlockPos const& PlayerOperatedItemFrameAfterEvent::blockPos() const { return mBlockPos; }
+PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameAfterEvent::type() const { return mType; }
 
 using Type = PlayerOperatedItemFrameEvent::Type;
 

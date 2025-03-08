@@ -8,16 +8,16 @@ namespace ila::mc::inline world::inline actor
 void ActorTriggerPressurePlateBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
 }
-BlockPos const& ActorTriggerPressurePlateBeforeEvent::getPos() const { return mPos; }
+BlockPos const& ActorTriggerPressurePlateBeforeEvent::pos() const { return mPos; }
 
 void ActorTriggerPressurePlateAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"] = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
 }
-BlockPos const& ActorTriggerPressurePlateAfterEvent::getPos() const { return mPos; }
+BlockPos const& ActorTriggerPressurePlateAfterEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     ActorTriggerPressurePlateEventHook,

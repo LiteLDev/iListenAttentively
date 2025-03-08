@@ -11,61 +11,61 @@ void PlayerOpenContainerBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["containerBlockPos"] =
-        ListTag { getContainerBlockPos().x, getContainerBlockPos().y, getContainerBlockPos().z };
-    nbt["containerId"]      = static_cast<schar>(getContainerId());
-    nbt["containerType"]    = magic_enum::enum_name(getContainerType());
-    nbt["containerActorId"] = getContainerActorId().rawID;
+        ListTag { containerBlockPos().x, containerBlockPos().y, containerBlockPos().z };
+    nbt["containerId"]      = static_cast<schar>(containerId());
+    nbt["containerType"]    = magic_enum::enum_name(containerType());
+    nbt["containerActorId"] = containerActorId().rawID;
 }
 void PlayerOpenContainerBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getContainerBlockPos().x = nbt["containerBlockPos"][0];
-    getContainerBlockPos().y = nbt["containerBlockPos"][1];
-    getContainerBlockPos().z = nbt["containerBlockPos"][2];
-    getContainerId()         = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
-    getContainerType() =
+    containerBlockPos().x = nbt["containerBlockPos"][0];
+    containerBlockPos().y = nbt["containerBlockPos"][1];
+    containerBlockPos().z = nbt["containerBlockPos"][2];
+    containerId()         = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
+    containerType() =
         magic_enum::enum_cast<SharedTypes::Legacy::ContainerType>(nbt["containerType"].get<StringTag>())
-            .value_or(getContainerType());
-    getContainerActorId().rawID = nbt["containerActorId"];
+            .value_or(containerType());
+    containerActorId().rawID = nbt["containerActorId"];
 }
-BlockPos&    PlayerOpenContainerBeforeEvent::getContainerBlockPos() const { return mPos; }
-ContainerID& PlayerOpenContainerBeforeEvent::getContainerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType& PlayerOpenContainerBeforeEvent::getContainerType() const
+BlockPos&    PlayerOpenContainerBeforeEvent::containerBlockPos() const { return mPos; }
+ContainerID& PlayerOpenContainerBeforeEvent::containerId() const { return mContainerId; }
+SharedTypes::Legacy::ContainerType& PlayerOpenContainerBeforeEvent::containerType() const
 {
     return mContainerType;
 }
-ActorUniqueID& PlayerOpenContainerBeforeEvent::getContainerActorId() const { return mContainerActorId; }
+ActorUniqueID& PlayerOpenContainerBeforeEvent::containerActorId() const { return mContainerActorId; }
 
 void PlayerOpenContainerAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
     nbt["containerBlockPos"] =
-        ListTag { getContainerBlockPos().x, getContainerBlockPos().y, getContainerBlockPos().z };
-    nbt["containerId"]      = static_cast<schar>(getContainerId());
-    nbt["containerType"]    = magic_enum::enum_name(getContainerType());
-    nbt["containerActorId"] = getContainerActorId().rawID;
+        ListTag { containerBlockPos().x, containerBlockPos().y, containerBlockPos().z };
+    nbt["containerId"]      = static_cast<schar>(containerId());
+    nbt["containerType"]    = magic_enum::enum_name(containerType());
+    nbt["containerActorId"] = containerActorId().rawID;
 }
-BlockPos const&    PlayerOpenContainerAfterEvent::getContainerBlockPos() const { return mPos; }
-ContainerID const& PlayerOpenContainerAfterEvent::getContainerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType const& PlayerOpenContainerAfterEvent::getContainerType() const
+BlockPos const&    PlayerOpenContainerAfterEvent::containerBlockPos() const { return mPos; }
+ContainerID const& PlayerOpenContainerAfterEvent::containerId() const { return mContainerId; }
+SharedTypes::Legacy::ContainerType const& PlayerOpenContainerAfterEvent::containerType() const
 {
     return mContainerType;
 }
-ActorUniqueID const& PlayerOpenContainerAfterEvent::getContainerActorId() const { return mContainerActorId; }
+ActorUniqueID const& PlayerOpenContainerAfterEvent::containerActorId() const { return mContainerActorId; }
 
 Event_Listener_Factory(PlayerOpenContainerBefore)
 {
     nextTick([this]() -> void { // Prevent deadlock
         mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::server::SendPacketBeforeEvent>(
             [](ila::mc::server::SendPacketBeforeEvent& event) -> void {
-                if (event.getPacket().getId() != MinecraftPacketIds::ContainerOpen || event.getIsBroadcast()
-                    || !event.getPlayer().has_value())
+                if (event.packet().getId() != MinecraftPacketIds::ContainerOpen || event.isBroadcast()
+                    || !event.player().has_value())
                 {
                     return;
                 }
-                auto& packet      = static_cast<ContainerOpenPacket&>(event.getPacket());
+                auto& packet      = static_cast<ContainerOpenPacket&>(event.packet());
                 auto  beforeEvent = PlayerOpenContainerBeforeEvent(
-                    *event.getPlayer(),
+                    *event.player(),
                     *packet.mPos,
                     packet.mContainerId,
                     packet.mType,
@@ -75,7 +75,7 @@ Event_Listener_Factory(PlayerOpenContainerBefore)
                 if (beforeEvent.isCancelled())
                 {
                     event.cancel();
-                    event.getPlayer()->doDeleteContainerManager(false);
+                    event.player()->doDeleteContainerManager(false);
                 }
             }
         ));
@@ -87,14 +87,14 @@ Event_Listener_Factory(PlayerOpenContainerAfter)
     nextTick([this]() -> void { // Prevent deadlock
         mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::server::SendPacketAfterEvent>(
             [](ila::mc::server::SendPacketAfterEvent& event) -> void {
-                if (event.getPacket().getId() != MinecraftPacketIds::ContainerOpen || event.getIsBroadcast()
-                    || !event.getPlayer().has_value())
+                if (event.packet().getId() != MinecraftPacketIds::ContainerOpen || event.isBroadcast()
+                    || !event.player().has_value())
                 {
                     return;
                 }
-                auto& packet = static_cast<ContainerOpenPacket const&>(event.getPacket());
+                auto& packet = static_cast<ContainerOpenPacket const&>(event.packet());
                 LLEventBus.publish(PlayerOpenContainerAfterEvent(
-                    *event.getPlayer(),
+                    *event.player(),
                     *packet.mPos,
                     packet.mContainerId,
                     packet.mType,

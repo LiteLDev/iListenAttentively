@@ -27,8 +27,8 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ChestBlockActor& getChest() const;
-    ILNDAPI BlockPos&        getPosition() const;
+    ILNDAPI ChestBlockActor& chest() const;
+    ILNDAPI BlockPos&        pos() const;
 };
 
 class ChestPairWithAfterEvent final : public ll::event::WorldEvent
@@ -51,7 +51,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChestBlockActor& getChest() const;
-    ILNDAPI BlockPos const&  getPosition() const;
+    ILNDAPI ChestBlockActor& chest() const;
+    ILNDAPI BlockPos const&  pos() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block::inline actor

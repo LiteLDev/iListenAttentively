@@ -25,7 +25,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ItemStackRequestActionTransferBase& getRequestAction() const;
+    ILNDAPI ItemStackRequestActionTransferBase& requestAction() const;
 };
 
 class PlayerRequestItemActionAfterEvent final : public ll::event::player::PlayerEvent
@@ -49,7 +49,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ItemStackRequestActionTransferBase const& getRequestAction() const;
-    ILNDAPI ItemStackNetResult&                       getResult() const;
+    ILNDAPI ItemStackRequestActionTransferBase const& requestAction() const;
+    ILNDAPI ItemStackNetResult&                       result() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

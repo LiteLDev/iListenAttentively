@@ -25,8 +25,8 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChangeDimensionRequest const& getChangeDimensionRequest() const;
-    ILNDAPI Dimension const&              getDimension() const;
+    ILNDAPI ChangeDimensionRequest const& changeDimensionRequest() const;
+    ILNDAPI Dimension const&              dimension() const;
 };
 
 class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent
@@ -49,7 +49,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChangeDimensionRequest const& getChangeDimensionRequest() const;
-    ILNDAPI Dimension const&              getDimension() const;
+    ILNDAPI ChangeDimensionRequest const& changeDimensionRequest() const;
+    ILNDAPI Dimension const&              dimension() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

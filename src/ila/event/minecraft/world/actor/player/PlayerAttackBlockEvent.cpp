@@ -8,28 +8,28 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerAttackBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["face"] = magic_enum::enum_name(getFace());
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["face"] = magic_enum::enum_name(face());
 }
 void PlayerAttackBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x = nbt["pos"][0];
-    getPos().y = nbt["pos"][1];
-    getPos().z = nbt["pos"][2];
-    getFace()  = magic_enum::enum_cast<FacingID>(nbt["face"].get<StringTag>()).value_or(getFace());
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
+    face()  = magic_enum::enum_cast<FacingID>(nbt["face"].get<StringTag>()).value_or(face());
 }
-BlockPos& PlayerAttackBlockBeforeEvent::getPos() const { return mPos; }
-FacingID& PlayerAttackBlockBeforeEvent::getFace() const { return mFace; }
+BlockPos& PlayerAttackBlockBeforeEvent::pos() const { return mPos; }
+FacingID& PlayerAttackBlockBeforeEvent::face() const { return mFace; }
 
 void PlayerAttackBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["face"] = magic_enum::enum_name(getFace());
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["face"] = magic_enum::enum_name(face());
 }
-BlockPos const& PlayerAttackBlockAfterEvent::getPos() const { return mPos; }
-FacingID const& PlayerAttackBlockAfterEvent::getFace() const { return mFace; }
+BlockPos const& PlayerAttackBlockAfterEvent::pos() const { return mPos; }
+FacingID const& PlayerAttackBlockAfterEvent::face() const { return mFace; }
 
 LL_STATIC_HOOK(
     PlayerAttackBlockEventHook,

@@ -19,6 +19,6 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ItemStack& getItem() const;
+    ILNDAPI ItemStack& item() const;
 };
 } // namespace ila::mc::inline player

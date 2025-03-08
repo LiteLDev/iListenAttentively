@@ -19,7 +19,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Actor& getTarget() const;
+    ILNDAPI Actor& target() const;
 };
 
 class ActorRideAfterEvent final : public ll::event::entity::ActorEvent
@@ -36,6 +36,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILAPI Actor const& getTarget() const;
+    ILAPI Actor const& target() const;
 };
 } // namespace ila::mc::inline world::inline actor

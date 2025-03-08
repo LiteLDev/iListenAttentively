@@ -8,18 +8,18 @@ namespace ila::mc::inline world::inline level::inline block::inline actor
 void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(getBlockActor());
+    nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["dimid"]      = getDimensionName(blockSource());
 }
-BlockActor& BlockActorTickBeforeEvent::getBlockActor() const { return mBlockActor; }
+BlockActor& BlockActorTickBeforeEvent::blockActor() const { return mBlockActor; }
 
 void BlockActorTickAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(getBlockActor());
+    nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["dimid"]      = getDimensionName(blockSource());
 }
-BlockActor& BlockActorTickAfterEvent::getBlockActor() const { return mBlockActor; }
+BlockActor& BlockActorTickAfterEvent::blockActor() const { return mBlockActor; }
 
 LL_TYPE_INSTANCE_HOOK(
     BlockActorTickEventHook,

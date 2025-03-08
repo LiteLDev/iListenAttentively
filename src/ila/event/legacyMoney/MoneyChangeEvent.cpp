@@ -8,10 +8,10 @@ namespace ila::legacyMoney
 void MoneyChangeBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["type"]  = magic_enum::enum_name(getType());
-    nbt["from"]  = getFromXuid();
-    nbt["to"]    = getToXuid();
-    nbt["value"] = getValue();
+    nbt["type"]  = magic_enum::enum_name(type());
+    nbt["from"]  = fromXuid();
+    nbt["to"]    = toXuid();
+    nbt["value"] = value();
 }
 void MoneyChangeBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -20,22 +20,22 @@ void MoneyChangeBeforeEvent::deserialize(CompoundTag const& nbt)
     mToXuid   = nbt["to"];
     mValue    = nbt["value"];
 }
-LLMoneyEventType const& MoneyChangeBeforeEvent::getType() const { return mType; }
-std::string&            MoneyChangeBeforeEvent::getFromXuid() const { return mFromXuid; }
-std::string&            MoneyChangeBeforeEvent::getToXuid() const { return mToXuid; }
-llong&                  MoneyChangeBeforeEvent::getValue() const { return mValue; }
+LLMoneyEventType const& MoneyChangeBeforeEvent::type() const { return mType; }
+std::string&            MoneyChangeBeforeEvent::fromXuid() const { return mFromXuid; }
+std::string&            MoneyChangeBeforeEvent::toXuid() const { return mToXuid; }
+llong&                  MoneyChangeBeforeEvent::value() const { return mValue; }
 
 void MoneyChangeAfterEvent::serialize(CompoundTag& nbt) const
 {
-    nbt["type"]  = magic_enum::enum_name(getType());
-    nbt["from"]  = getFromXuid();
-    nbt["to"]    = getToXuid();
-    nbt["value"] = getValue();
+    nbt["type"]  = magic_enum::enum_name(type());
+    nbt["from"]  = fromXuid();
+    nbt["to"]    = toXuid();
+    nbt["value"] = value();
 }
-LLMoneyEventType const& MoneyChangeAfterEvent::getType() const { return mType; }
-std::string const&      MoneyChangeAfterEvent::getFromXuid() const { return mFromXuid; }
-std::string const&      MoneyChangeAfterEvent::getToXuid() const { return mToXuid; }
-llong const&            MoneyChangeAfterEvent::getValue() const { return mValue; }
+LLMoneyEventType const& MoneyChangeAfterEvent::type() const { return mType; }
+std::string const&      MoneyChangeAfterEvent::fromXuid() const { return mFromXuid; }
+std::string const&      MoneyChangeAfterEvent::toXuid() const { return mToXuid; }
+llong const&            MoneyChangeAfterEvent::value() const { return mValue; }
 
 static bool isRealTrans = true;
 

@@ -31,9 +31,9 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos&           getPos() const;
-    ILNDAPI StringTag&          getText() const;
-    ILNDAPI SignTextSide const& getTextSide() const;
+    ILNDAPI BlockPos&           pos() const;
+    ILNDAPI StringTag&          text() const;
+    ILNDAPI SignTextSide const& textSide() const;
 };
 
 class PlayerEditSignAfterEvent final : public ll::event::player::ServerPlayerEvent
@@ -59,8 +59,8 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI StringTag const&    getText() const;
-    ILNDAPI SignTextSide const& getTextSide() const;
-    ILNDAPI BlockPos const&     getPos() const;
+    ILNDAPI StringTag const&    text() const;
+    ILNDAPI SignTextSide const& textSide() const;
+    ILNDAPI BlockPos const&     pos() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

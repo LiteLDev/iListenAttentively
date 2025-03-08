@@ -24,8 +24,8 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& getPos() const;
-    ILNDAPI Random&   getRandom() const;
+    ILNDAPI BlockPos& pos() const;
+    ILNDAPI Random&   random() const;
 };
 
 class BlockTickAfterEvent final : public ll::event::WorldEvent
@@ -48,7 +48,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getPos() const;
-    ILNDAPI Random const&   getRandom() const;
+    ILNDAPI BlockPos const& pos() const;
+    ILNDAPI Random const&   random() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block

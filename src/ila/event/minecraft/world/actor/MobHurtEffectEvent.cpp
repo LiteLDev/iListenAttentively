@@ -12,31 +12,31 @@ namespace ila::mc::inline world::inline actor
 void MobHurtEffectBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    if (getSource().has_value()) { nbt["source"] = serializeRefObj(*getSource()); }
-    nbt["value"] = getValue();
-    nbt["cause"] = magic_enum::enum_name(getCause());
+    if (source().has_value()) { nbt["source"] = serializeRefObj(*source()); }
+    nbt["value"] = value();
+    nbt["cause"] = magic_enum::enum_name(cause());
 }
 void MobHurtEffectBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getValue() = nbt["value"];
-    getCause() = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
-                     .value_or(getCause());
+    value() = nbt["value"];
+    cause() = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
+                     .value_or(cause());
 }
-optional_ref<Actor>                    MobHurtEffectBeforeEvent::getSource() const { return mSource; }
-float&                                 MobHurtEffectBeforeEvent::getValue() const { return mValue; }
-SharedTypes::Legacy::ActorDamageCause& MobHurtEffectBeforeEvent::getCause() const { return mCause; }
+optional_ref<Actor>                    MobHurtEffectBeforeEvent::source() const { return mSource; }
+float&                                 MobHurtEffectBeforeEvent::value() const { return mValue; }
+SharedTypes::Legacy::ActorDamageCause& MobHurtEffectBeforeEvent::cause() const { return mCause; }
 
 void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    if (getSource().has_value()) { nbt["source"] = serializeRefObj(*getSource()); }
-    nbt["value"] = getValue();
-    nbt["cause"] = magic_enum::enum_name(getCause());
+    if (source().has_value()) { nbt["source"] = serializeRefObj(*source()); }
+    nbt["value"] = value();
+    nbt["cause"] = magic_enum::enum_name(cause());
 }
-optional_ref<Actor const>                    MobHurtEffectAfterEvent::getSource() const { return mSource; }
-float const&                                 MobHurtEffectAfterEvent::getValue() const { return mValue; }
-SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::getCause() const { return mCause; }
+optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() const { return mSource; }
+float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
+SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
 
 LL_TYPE_INSTANCE_HOOK(
     MobHurtEffectHook,

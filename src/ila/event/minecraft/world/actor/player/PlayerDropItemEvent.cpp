@@ -14,16 +14,16 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["item"] = serializeRefObj(getItem());
+    nbt["item"] = serializeRefObj(item());
 }
-ItemStack const& PlayerDropItemBeforeEvent::getItem() const { return mItem; }
+ItemStack const& PlayerDropItemBeforeEvent::item() const { return mItem; }
 
 void PlayerDropItemAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["item"] = serializeRefObj(getItem());
+    nbt["item"] = serializeRefObj(item());
 }
-ItemStack const& PlayerDropItemAfterEvent::getItem() const { return mItem; }
+ItemStack const& PlayerDropItemAfterEvent::item() const { return mItem; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerDropItemEventHook1,

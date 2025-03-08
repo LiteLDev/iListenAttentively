@@ -8,26 +8,26 @@ namespace ila::mc::inline world::inline actor
 void ArmorStandSwapItemBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["player"] = serializeRefObj(getPlayer());
-    nbt["slot"]   = magic_enum::enum_name(getSlot());
+    nbt["player"] = serializeRefObj(player());
+    nbt["slot"]   = magic_enum::enum_name(slot());
 }
 void ArmorStandSwapItemBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getSlot() = magic_enum::enum_cast<SharedTypes::Legacy::EquipmentSlot>(nbt["slot"].get<StringTag>())
-                    .value_or(getSlot());
+    slot() = magic_enum::enum_cast<SharedTypes::Legacy::EquipmentSlot>(nbt["slot"].get<StringTag>())
+                    .value_or(slot());
 }
-Player&                             ArmorStandSwapItemBeforeEvent::getPlayer() const { return mPlayer; }
-SharedTypes::Legacy::EquipmentSlot& ArmorStandSwapItemBeforeEvent::getSlot() const { return mSlot; }
+Player&                             ArmorStandSwapItemBeforeEvent::player() const { return mPlayer; }
+SharedTypes::Legacy::EquipmentSlot& ArmorStandSwapItemBeforeEvent::slot() const { return mSlot; }
 
 void ArmorStandSwapItemAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["player"] = serializeRefObj(getPlayer());
-    nbt["slot"]   = magic_enum::enum_name(getSlot());
+    nbt["player"] = serializeRefObj(player());
+    nbt["slot"]   = magic_enum::enum_name(slot());
 }
-Player const&                             ArmorStandSwapItemAfterEvent::getPlayer() const { return mPlayer; }
-SharedTypes::Legacy::EquipmentSlot const& ArmorStandSwapItemAfterEvent::getSlot() const { return mSlot; }
+Player const&                             ArmorStandSwapItemAfterEvent::player() const { return mPlayer; }
+SharedTypes::Legacy::EquipmentSlot const& ArmorStandSwapItemAfterEvent::slot() const { return mSlot; }
 
 LL_TYPE_INSTANCE_HOOK(
     ArmorStandSwapItemEventHook,

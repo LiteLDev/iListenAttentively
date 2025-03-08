@@ -8,25 +8,25 @@ namespace ila::mc::inline world
 void SpawnWanderingTraderBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"] = getDimensionName(blockSource());
 }
 void SpawnWanderingTraderBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x = nbt["pos"][0];
-    getPos().y = nbt["pos"][1];
-    getPos().z = nbt["pos"][2];
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
 }
-BlockPos& SpawnWanderingTraderBeforeEvent::getPos() const { return mPos; }
+BlockPos& SpawnWanderingTraderBeforeEvent::pos() const { return mPos; }
 
 void SpawnWanderingTraderAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"] = getDimensionName(blockSource());
 }
-BlockPos const& SpawnWanderingTraderAfterEvent::getPos() const { return mPos; }
+BlockPos const& SpawnWanderingTraderAfterEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnWanderingTraderEventHook,

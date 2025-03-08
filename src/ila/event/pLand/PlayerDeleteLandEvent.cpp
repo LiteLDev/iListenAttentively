@@ -6,17 +6,17 @@ namespace land
 void PlayerDeleteLandBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["landId"]      = getLandId();
-    nbt["refundPrice"] = getRefundPrice();
+    nbt["landId"]      = landId();
+    nbt["refundPrice"] = refundPrice();
 }
-uint64_t   PlayerDeleteLandBeforeEvent::getLandId() const { return mLandId; }
-int const& PlayerDeleteLandBeforeEvent::getRefundPrice() const { return mRefundPrice; }
+uint64_t   PlayerDeleteLandBeforeEvent::landId() const { return mLandId; }
+int const& PlayerDeleteLandBeforeEvent::refundPrice() const { return mRefundPrice; }
 
 void PlayerDeleteLandAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["landId"] = getLandId();
+    nbt["landId"] = landId();
 }
-uint64_t PlayerDeleteLandAfterEvent::getLandId() const { return mLandId; }
+uint64_t PlayerDeleteLandAfterEvent::landId() const { return mLandId; }
 
 } // namespace land

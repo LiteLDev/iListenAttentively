@@ -9,38 +9,38 @@ void WitherDestroyBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["level"]  = serializeRefObj(level());
-    nbt["box"]    = { { "min", ListTag { getBox().min.x, getBox().min.y, getBox().min.z } },
-                      { "max", ListTag { getBox().max.x, getBox().max.y, getBox().max.z } } };
-    nbt["radius"] = getRadius();
+    nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
+                      { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
+    nbt["radius"] = radius();
     nbt["dimid"]  = getDimensionName(blockSource());
 }
 void WitherDestroyBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getBox().min.x = nbt["box"]["min"][0];
-    getBox().min.y = nbt["box"]["min"][1];
-    getBox().min.z = nbt["box"]["min"][2];
-    getBox().max.x = nbt["box"]["max"][0];
-    getBox().max.y = nbt["box"]["max"][1];
-    getBox().max.z = nbt["box"]["max"][2];
-    getRadius()    = nbt["radius"];
+    box().min.x = nbt["box"]["min"][0];
+    box().min.y = nbt["box"]["min"][1];
+    box().min.z = nbt["box"]["min"][2];
+    box().max.x = nbt["box"]["max"][0];
+    box().max.y = nbt["box"]["max"][1];
+    box().max.z = nbt["box"]["max"][2];
+    radius()    = nbt["radius"];
 }
 Level& WitherDestroyBeforeEvent::level() const { return mLevel; }
-AABB&  WitherDestroyBeforeEvent::getBox() const { return mBox; };
-int&   WitherDestroyBeforeEvent::getRadius() const { return mRadius; };
+AABB&  WitherDestroyBeforeEvent::box() const { return mBox; };
+int&   WitherDestroyBeforeEvent::radius() const { return mRadius; };
 
 void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["level"]  = serializeRefObj(level());
-    nbt["box"]    = { { "min", ListTag { getBox().min.x, getBox().min.y, getBox().min.z } },
-                      { "max", ListTag { getBox().max.x, getBox().max.y, getBox().max.z } } };
-    nbt["radius"] = getRadius();
+    nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
+                      { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
+    nbt["radius"] = radius();
     nbt["dimid"]  = getDimensionName(blockSource());
 }
 Level&      WitherDestroyAfterEvent::level() const { return mLevel; }
-AABB const& WitherDestroyAfterEvent::getBox() const { return mBox; };
-int const&  WitherDestroyAfterEvent::getRadius() const { return mRadius; };
+AABB const& WitherDestroyAfterEvent::box() const { return mBox; };
+int const&  WitherDestroyAfterEvent::radius() const { return mRadius; };
 
 LL_TYPE_INSTANCE_HOOK(
     WitherDestroyEventHook,

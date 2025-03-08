@@ -7,16 +7,16 @@ namespace ila::mc::inline world::inline actor
 void ActorRideBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["target"] = serializeRefObj(getTarget());
+    nbt["target"] = serializeRefObj(target());
 }
-Actor& ActorRideBeforeEvent::getTarget() const { return mTarget; }
+Actor& ActorRideBeforeEvent::target() const { return mTarget; }
 
 void ActorRideAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["target"] = serializeRefObj(getTarget());
+    nbt["target"] = serializeRefObj(target());
 }
-Actor const& ActorRideAfterEvent::getTarget() const { return mTarget; }
+Actor const& ActorRideAfterEvent::target() const { return mTarget; }
 
 LL_TYPE_INSTANCE_HOOK(
     ActorRideEventHook,

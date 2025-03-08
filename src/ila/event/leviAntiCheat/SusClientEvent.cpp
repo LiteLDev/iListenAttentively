@@ -6,12 +6,12 @@ namespace lac::punish
 void SusClientEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["uuid"] = getUuid().asString();
-    nbt["name"] = getName();
-    nbt["ip"]   = getIp();
+    nbt["uuid"] = uuid().asString();
+    nbt["name"] = name();
+    nbt["ip"]   = ip();
 }
 
-mce::UUID const&        SusClientEvent::getUuid() const { return mUuid; }
-std::string_view const& SusClientEvent::getName() const { return mName; }
-std::string_view const& SusClientEvent::getIp() const { return mIp; }
+mce::UUID const&        SusClientEvent::uuid() const { return mUuid; }
+std::string_view const& SusClientEvent::name() const { return mName; }
+std::string_view const& SusClientEvent::ip() const { return mIp; }
 } // namespace lac::punish

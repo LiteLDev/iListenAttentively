@@ -8,37 +8,37 @@ namespace ila::mc::inline world::inline level::inline block
 void LiquidTryFlowBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]               = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]               = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]             = getDimensionName(blockSource());
-    nbt["flowFromPos"]       = ListTag { getFlowFromPos().x, getFlowFromPos().y, getFlowFromPos().z };
-    nbt["flowFromDirection"] = getFlowFromDirection();
+    nbt["flowFromPos"]       = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
+    nbt["flowFromDirection"] = flowFromDirection();
 }
 void LiquidTryFlowBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x             = nbt["pos"]["x"];
-    getPos().y             = nbt["pos"]["y"];
-    getPos().z             = nbt["pos"]["z"];
-    getFlowFromPos().x     = nbt["flowFromPos"]["x"];
-    getFlowFromPos().y     = nbt["flowFromPos"]["y"];
-    getFlowFromPos().z     = nbt["flowFromPos"]["z"];
-    getFlowFromDirection() = nbt["flowFromDirection"];
+    pos().x             = nbt["pos"]["x"];
+    pos().y             = nbt["pos"]["y"];
+    pos().z             = nbt["pos"]["z"];
+    flowFromPos().x     = nbt["flowFromPos"]["x"];
+    flowFromPos().y     = nbt["flowFromPos"]["y"];
+    flowFromPos().z     = nbt["flowFromPos"]["z"];
+    flowFromDirection() = nbt["flowFromDirection"];
 }
-BlockPos& LiquidTryFlowBeforeEvent::getPos() const { return mPos; }
-BlockPos& LiquidTryFlowBeforeEvent::getFlowFromPos() const { return mFlowFromPos; }
-uchar&    LiquidTryFlowBeforeEvent::getFlowFromDirection() const { return mFlowFromDirection; }
+BlockPos& LiquidTryFlowBeforeEvent::pos() const { return mPos; }
+BlockPos& LiquidTryFlowBeforeEvent::flowFromPos() const { return mFlowFromPos; }
+uchar&    LiquidTryFlowBeforeEvent::flowFromDirection() const { return mFlowFromDirection; }
 
 void LiquidTryFlowAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]               = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]               = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]             = getDimensionName(blockSource());
-    nbt["flowFromPos"]       = ListTag { getFlowFromPos().x, getFlowFromPos().y, getFlowFromPos().z };
-    nbt["flowFromDirection"] = getFlowFromDirection();
+    nbt["flowFromPos"]       = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
+    nbt["flowFromDirection"] = flowFromDirection();
 }
-BlockPos const& LiquidTryFlowAfterEvent::getPos() const { return mPos; }
-BlockPos const& LiquidTryFlowAfterEvent::getFlowFromPos() const { return mFlowFromPos; }
-uchar const&    LiquidTryFlowAfterEvent::getFlowFromDirection() const { return mFlowFromDirection; }
+BlockPos const& LiquidTryFlowAfterEvent::pos() const { return mPos; }
+BlockPos const& LiquidTryFlowAfterEvent::flowFromPos() const { return mFlowFromPos; }
+uchar const&    LiquidTryFlowAfterEvent::flowFromDirection() const { return mFlowFromDirection; }
 
 LL_TYPE_INSTANCE_HOOK(
     LiquidTryFlowEventHook,

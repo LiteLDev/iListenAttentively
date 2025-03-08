@@ -12,32 +12,32 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerEditSignBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["side"] = magic_enum::enum_name(getTextSide());
-    nbt["text"] = getText();
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["side"] = magic_enum::enum_name(textSide());
+    nbt["text"] = text();
 }
 void PlayerEditSignBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x = nbt["pos"][0];
-    getPos().y = nbt["pos"][1];
-    getPos().z = nbt["pos"][2];
-    getText()  = nbt["text"].get<StringTag>();
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
+    text()  = nbt["text"].get<StringTag>();
 }
-BlockPos&           PlayerEditSignBeforeEvent::getPos() const { return mPos; }
-SignTextSide const& PlayerEditSignBeforeEvent::getTextSide() const { return mTextSide; }
-StringTag&          PlayerEditSignBeforeEvent::getText() const { return mText; }
+BlockPos&           PlayerEditSignBeforeEvent::pos() const { return mPos; }
+SignTextSide const& PlayerEditSignBeforeEvent::textSide() const { return mTextSide; }
+StringTag&          PlayerEditSignBeforeEvent::text() const { return mText; }
 
 void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { getPos().x, getPos().y, getPos().z };
-    nbt["side"] = magic_enum::enum_name(getTextSide());
-    nbt["text"] = getText();
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["side"] = magic_enum::enum_name(textSide());
+    nbt["text"] = text();
 }
-BlockPos const&     PlayerEditSignAfterEvent::getPos() const { return mPos; }
-SignTextSide const& PlayerEditSignAfterEvent::getTextSide() const { return mTextSide; }
-StringTag const&    PlayerEditSignAfterEvent::getText() const { return mText; }
+BlockPos const&     PlayerEditSignAfterEvent::pos() const { return mPos; }
+SignTextSide const& PlayerEditSignAfterEvent::textSide() const { return mTextSide; }
+StringTag const&    PlayerEditSignAfterEvent::text() const { return mText; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerEditSignEventHook,

@@ -9,46 +9,46 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["state"]           = magic_enum::enum_name(getChangeDimensionRequest().mState);
-    nbt["fromDimensionId"] = getChangeDimensionRequest().mFromDimensionId->id;
-    nbt["toDimensionId"]   = getChangeDimensionRequest().mToDimensionId->id;
-    nbt["fromLocation"]    = ListTag { getChangeDimensionRequest().mFromLocation->x,
-                                    getChangeDimensionRequest().mFromLocation->y,
-                                    getChangeDimensionRequest().mFromLocation->z };
-    nbt["toLocation"]      = ListTag { getChangeDimensionRequest().mToLocation->x,
-                                  getChangeDimensionRequest().mToLocation->y,
-                                  getChangeDimensionRequest().mToLocation->z };
-    nbt["usePortal"]       = getChangeDimensionRequest().mUsePortal;
-    nbt["respawn"]         = getChangeDimensionRequest().mRespawn;
-    if (getChangeDimensionRequest().mAgentTag) { nbt["agentTag"] = *getChangeDimensionRequest().mAgentTag; }
+    nbt["state"]           = magic_enum::enum_name(changeDimensionRequest().mState);
+    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->id;
+    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->id;
+    nbt["fromLocation"]    = ListTag { changeDimensionRequest().mFromLocation->x,
+                                    changeDimensionRequest().mFromLocation->y,
+                                    changeDimensionRequest().mFromLocation->z };
+    nbt["toLocation"]      = ListTag { changeDimensionRequest().mToLocation->x,
+                                  changeDimensionRequest().mToLocation->y,
+                                  changeDimensionRequest().mToLocation->z };
+    nbt["usePortal"]       = changeDimensionRequest().mUsePortal;
+    nbt["respawn"]         = changeDimensionRequest().mRespawn;
+    if (changeDimensionRequest().mAgentTag) { nbt["agentTag"] = *changeDimensionRequest().mAgentTag; }
 }
-ChangeDimensionRequest const& PlayerChangeDimensionBeforeEvent::getChangeDimensionRequest() const
+ChangeDimensionRequest const& PlayerChangeDimensionBeforeEvent::changeDimensionRequest() const
 {
     return mChangeDimensionRequest;
 }
-Dimension const& PlayerChangeDimensionBeforeEvent::getDimension() const { return mDimension; }
+Dimension const& PlayerChangeDimensionBeforeEvent::dimension() const { return mDimension; }
 
 void PlayerChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["state"]           = magic_enum::enum_name(getChangeDimensionRequest().mState);
-    nbt["fromDimensionId"] = getChangeDimensionRequest().mFromDimensionId->id;
-    nbt["toDimensionId"]   = getChangeDimensionRequest().mToDimensionId->id;
-    nbt["fromLocation"]    = ListTag { getChangeDimensionRequest().mFromLocation->x,
-                                    getChangeDimensionRequest().mFromLocation->y,
-                                    getChangeDimensionRequest().mFromLocation->z };
-    nbt["toLocation"]      = ListTag { getChangeDimensionRequest().mToLocation->x,
-                                  getChangeDimensionRequest().mToLocation->y,
-                                  getChangeDimensionRequest().mToLocation->z };
-    nbt["usePortal"]       = getChangeDimensionRequest().mUsePortal;
-    nbt["respawn"]         = getChangeDimensionRequest().mRespawn;
-    if (getChangeDimensionRequest().mAgentTag) { nbt["agentTag"] = *getChangeDimensionRequest().mAgentTag; }
+    nbt["state"]           = magic_enum::enum_name(changeDimensionRequest().mState);
+    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->id;
+    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->id;
+    nbt["fromLocation"]    = ListTag { changeDimensionRequest().mFromLocation->x,
+                                    changeDimensionRequest().mFromLocation->y,
+                                    changeDimensionRequest().mFromLocation->z };
+    nbt["toLocation"]      = ListTag { changeDimensionRequest().mToLocation->x,
+                                  changeDimensionRequest().mToLocation->y,
+                                  changeDimensionRequest().mToLocation->z };
+    nbt["usePortal"]       = changeDimensionRequest().mUsePortal;
+    nbt["respawn"]         = changeDimensionRequest().mRespawn;
+    if (changeDimensionRequest().mAgentTag) { nbt["agentTag"] = *changeDimensionRequest().mAgentTag; }
 }
-ChangeDimensionRequest const& PlayerChangeDimensionAfterEvent::getChangeDimensionRequest() const
+ChangeDimensionRequest const& PlayerChangeDimensionAfterEvent::changeDimensionRequest() const
 {
     return mChangeDimensionRequest;
 }
-Dimension const& PlayerChangeDimensionAfterEvent::getDimension() const { return mDimension; }
+Dimension const& PlayerChangeDimensionAfterEvent::dimension() const { return mDimension; }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerChangeDimensionEventHook,

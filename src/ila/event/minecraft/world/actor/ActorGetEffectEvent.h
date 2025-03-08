@@ -21,7 +21,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI MobEffectInstance& getEffect() const;
+    ILNDAPI MobEffectInstance& effect() const;
 };
 
 class ActorGetEffectAfterEvent final : public ll::event::entity::ActorEvent
@@ -38,6 +38,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI MobEffectInstance const& getEffect() const;
+    ILNDAPI MobEffectInstance const& effect() const;
 };
 } // namespace ila::mc::inline world::inline actor

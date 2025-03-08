@@ -9,28 +9,28 @@ namespace ila::mc::inline server
 void SendPacketBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["packetSender"] = serializeRefObj(getPacketSender());
-    nbt["packet"]       = serializeRefObj(getPacket());
-    nbt["broadcast"]    = getIsBroadcast();
-    nbt["player"]       = serializePtrObj(getPlayer().as_ptr());
+    nbt["packetSender"] = serializeRefObj(packetSender());
+    nbt["packet"]       = serializeRefObj(packet());
+    nbt["broadcast"]    = isBroadcast();
+    nbt["player"]       = serializePtrObj(player().as_ptr());
 }
-LoopbackPacketSender&      SendPacketBeforeEvent::getPacketSender() const { return mPacketSender; }
-Packet&                    SendPacketBeforeEvent::getPacket() const { return mPacket; }
-bool const&                SendPacketBeforeEvent::getIsBroadcast() const { return mIsBroadcast; }
-optional_ref<ServerPlayer> SendPacketBeforeEvent::getPlayer() const { return mPlayer; }
+LoopbackPacketSender&      SendPacketBeforeEvent::packetSender() const { return mPacketSender; }
+Packet&                    SendPacketBeforeEvent::packet() const { return mPacket; }
+bool const&                SendPacketBeforeEvent::isBroadcast() const { return mIsBroadcast; }
+optional_ref<ServerPlayer> SendPacketBeforeEvent::player() const { return mPlayer; }
 
 void SendPacketAfterEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["packetSender"] = serializeRefObj(getPacketSender());
-    nbt["packet"]       = serializeRefObj(getPacket());
-    nbt["broadcast"]    = getIsBroadcast();
-    nbt["player"]       = serializePtrObj(getPlayer().as_ptr());
+    nbt["packetSender"] = serializeRefObj(packetSender());
+    nbt["packet"]       = serializeRefObj(packet());
+    nbt["broadcast"]    = isBroadcast();
+    nbt["player"]       = serializePtrObj(player().as_ptr());
 }
-LoopbackPacketSender&      SendPacketAfterEvent::getPacketSender() const { return mPacketSender; }
-Packet const&              SendPacketAfterEvent::getPacket() const { return mPacket; }
-bool const&                SendPacketAfterEvent::getIsBroadcast() const { return mIsBroadcast; }
-optional_ref<ServerPlayer> SendPacketAfterEvent::getPlayer() const { return mPlayer; }
+LoopbackPacketSender&      SendPacketAfterEvent::packetSender() const { return mPacketSender; }
+Packet const&              SendPacketAfterEvent::packet() const { return mPacket; }
+bool const&                SendPacketAfterEvent::isBroadcast() const { return mIsBroadcast; }
+optional_ref<ServerPlayer> SendPacketAfterEvent::player() const { return mPlayer; }
 
 LL_TYPE_INSTANCE_HOOK(
     SendPacketEventHook1,

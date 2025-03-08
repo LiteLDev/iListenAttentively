@@ -30,9 +30,9 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& getPos() const;
-    ILNDAPI BlockPos& getFlowFromPos() const;
-    ILNDAPI uchar&    getFlowFromDirection() const;
+    ILNDAPI BlockPos& pos() const;
+    ILNDAPI BlockPos& flowFromPos() const;
+    ILNDAPI uchar&    flowFromDirection() const;
 };
 
 class LiquidTryFlowAfterEvent final : public ll::event::WorldEvent
@@ -58,8 +58,8 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& getPos() const;
-    ILNDAPI BlockPos const& getFlowFromPos() const;
-    ILNDAPI uchar const&    getFlowFromDirection() const;
+    ILNDAPI BlockPos const& pos() const;
+    ILNDAPI BlockPos const& flowFromPos() const;
+    ILNDAPI uchar const&    flowFromDirection() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block

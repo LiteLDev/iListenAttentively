@@ -7,36 +7,36 @@ namespace ila::mc::inline world::inline level
 void WeatherUpdateBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["rainLevel"]      = getRainLevel();
-    nbt["rainTime"]       = getRainTime();
-    nbt["lightningLevel"] = getLightningLevel();
-    nbt["lightningTime"]  = getLightningTime();
+    nbt["rainLevel"]      = rainLevel();
+    nbt["rainTime"]       = rainTime();
+    nbt["lightningLevel"] = lightningLevel();
+    nbt["lightningTime"]  = lightningTime();
 }
 void WeatherUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getRainLevel()      = nbt["rainLevel"];
-    getRainTime()       = nbt["rainTime"];
-    getLightningLevel() = nbt["lightningLevel"];
-    getLightningTime()  = nbt["lightningTime"];
+    rainLevel()      = nbt["rainLevel"];
+    rainTime()       = nbt["rainTime"];
+    lightningLevel() = nbt["lightningLevel"];
+    lightningTime()  = nbt["lightningTime"];
 }
-float& WeatherUpdateBeforeEvent::getRainLevel() const { return mRainLevel; };
-int&   WeatherUpdateBeforeEvent::getRainTime() const { return mRainTime; }
-float& WeatherUpdateBeforeEvent::getLightningLevel() const { return mLightningLevel; };
-int&   WeatherUpdateBeforeEvent::getLightningTime() const { return mLightningTime; };
+float& WeatherUpdateBeforeEvent::rainLevel() const { return mRainLevel; };
+int&   WeatherUpdateBeforeEvent::rainTime() const { return mRainTime; }
+float& WeatherUpdateBeforeEvent::lightningLevel() const { return mLightningLevel; };
+int&   WeatherUpdateBeforeEvent::lightningTime() const { return mLightningTime; };
 
 void WeatherUpdateAfterEvent::serialize(CompoundTag& nbt) const
 {
     LevelEvent::serialize(nbt);
-    nbt["rainLevel"]      = getRainLevel();
-    nbt["rainTime"]       = getRainTime();
-    nbt["lightningLevel"] = getLightningLevel();
-    nbt["lightningTime"]  = getLightningTime();
+    nbt["rainLevel"]      = rainLevel();
+    nbt["rainTime"]       = rainTime();
+    nbt["lightningLevel"] = lightningLevel();
+    nbt["lightningTime"]  = lightningTime();
 }
-float const& WeatherUpdateAfterEvent::getRainLevel() const { return mRainLevel; };
-int const&   WeatherUpdateAfterEvent::getRainTime() const { return mRainTime; }
-float const& WeatherUpdateAfterEvent::getLightningLevel() const { return mLightningLevel; };
-int const&   WeatherUpdateAfterEvent::getLightningTime() const { return mLightningTime; };
+float const& WeatherUpdateAfterEvent::rainLevel() const { return mRainLevel; };
+int const&   WeatherUpdateAfterEvent::rainTime() const { return mRainTime; }
+float const& WeatherUpdateAfterEvent::lightningLevel() const { return mLightningLevel; };
+int const&   WeatherUpdateAfterEvent::lightningTime() const { return mLightningTime; };
 
 LL_TYPE_INSTANCE_HOOK(
     WeatherUpdateEventHook,

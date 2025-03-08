@@ -7,26 +7,26 @@ namespace ila::mc::inline world::inline level::inline block
 void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(getBlockActor());
-    nbt["actor"]      = serializeRefObj(getActor());
+    nbt["blockActor"] = serializeRefObj(blockActor());
+    nbt["actor"]      = serializeRefObj(actor());
 }
-SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::getBlockActor() const
+SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::blockActor() const
 {
     return mBlockActor;
 };
-Actor& SculkCatalystAbsorbExperienceBeforeEvent::getActor() const { return mActor; };
+Actor& SculkCatalystAbsorbExperienceBeforeEvent::actor() const { return mActor; };
 
 void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const
 {
     LevelEvent::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(getBlockActor());
-    nbt["actor"]      = serializeRefObj(getActor());
+    nbt["blockActor"] = serializeRefObj(blockActor());
+    nbt["actor"]      = serializeRefObj(actor());
 }
-SculkCatalystBlockActor const& SculkCatalystAbsorbExperienceAfterEvent::getBlockActor() const
+SculkCatalystBlockActor const& SculkCatalystAbsorbExperienceAfterEvent::blockActor() const
 {
     return mBlockActor;
 };
-Actor const& SculkCatalystAbsorbExperienceAfterEvent::getActor() const { return mActor; };
+Actor const& SculkCatalystAbsorbExperienceAfterEvent::actor() const { return mActor; };
 
 LL_TYPE_INSTANCE_HOOK(
     SculkCatalystAbsorbExperienceEventHook,

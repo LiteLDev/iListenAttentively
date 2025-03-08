@@ -10,25 +10,25 @@ namespace ila::mc::inline world
 void SculkBlockGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"] = getDimensionName(blockSource());
 }
 void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPos().x = nbt["pos"][0];
-    getPos().y = nbt["pos"][1];
-    getPos().z = nbt["pos"][2];
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
 }
-BlockPos& SculkBlockGrowthBeforeEvent::getPos() const { return mPos; }
+BlockPos& SculkBlockGrowthBeforeEvent::pos() const { return mPos; }
 
 void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { getPos().x, getPos().y, getPos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"] = getDimensionName(blockSource());
 }
-BlockPos const& SculkBlockGrowthAfterEvent::getPos() const { return mPos; }
+BlockPos const& SculkBlockGrowthAfterEvent::pos() const { return mPos; }
 
 LL_STATIC_HOOK(
     SculkBlockGrowthEventHook,

@@ -8,29 +8,29 @@ namespace ila::mc::inline world::inline level::inline block::inline actor
 void ChestPairWithBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["chest"]    = serializeRefObj(getChest());
-    nbt["position"] = ListTag { getPosition().x, getPosition().y, getPosition().z };
+    nbt["chest"]    = serializeRefObj(chest());
+    nbt["position"] = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]      = getDimensionName(blockSource());
 }
 void ChestPairWithBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    getPosition().x = nbt["position"][0];
-    getPosition().y = nbt["position"][1];
-    getPosition().z = nbt["position"][2];
+    pos().x = nbt["position"][0];
+    pos().y = nbt["position"][1];
+    pos().z = nbt["position"][2];
 }
-ChestBlockActor& ChestPairWithBeforeEvent::getChest() const { return mChest; }
-BlockPos&        ChestPairWithBeforeEvent::getPosition() const { return mPosition; }
+ChestBlockActor& ChestPairWithBeforeEvent::chest() const { return mChest; }
+BlockPos&        ChestPairWithBeforeEvent::pos() const { return mPosition; }
 
 void ChestPairWithAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["chest"]    = serializeRefObj(getChest());
-    nbt["position"] = ListTag { getPosition().x, getPosition().y, getPosition().z };
+    nbt["chest"]    = serializeRefObj(chest());
+    nbt["position"] = ListTag { pos().x, pos().y, pos().z };
     nbt["dimid"]      = getDimensionName(blockSource());
 }
-ChestBlockActor& ChestPairWithAfterEvent::getChest() const { return mChest; }
-BlockPos const&  ChestPairWithAfterEvent::getPosition() const { return mPosition; }
+ChestBlockActor& ChestPairWithAfterEvent::chest() const { return mChest; }
+BlockPos const&  ChestPairWithAfterEvent::pos() const { return mPosition; }
 
 LL_TYPE_INSTANCE_HOOK(
     ChestPairWithEventHook,
