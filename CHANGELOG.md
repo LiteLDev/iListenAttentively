@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored the namespaces of various events @Lovelylavender4
 - Refactored event member functions @zimuya4153
 
+### Fixed
+
+- Fixed explosion event affected blocks deserialization @zimuya4153
+
 ## [0.3.1]
 
 ### Added

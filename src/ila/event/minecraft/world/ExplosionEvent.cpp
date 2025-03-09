@@ -48,9 +48,11 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     explosion().mAffectedBlocks->clear();
     for (auto& blockPos : nbt["affectedBlocks"].get<ListTag>())
     {
-        explosion().mAffectedBlocks->insert(BlockPos { static_cast<int>(blockPos["x"]),
-                                                          static_cast<int>(blockPos["y"]),
-                                                          static_cast<int>(blockPos["z"]) });
+        explosion().mAffectedBlocks->insert(BlockPos(
+            blockPos[0].get<IntTag>().data,
+            blockPos[1].get<IntTag>().data,
+            blockPos[2].get<IntTag>().data
+        ));
     }
     explosion().mFire                           = nbt["fire"];
     explosion().mBreaking                       = nbt["breaking"];
