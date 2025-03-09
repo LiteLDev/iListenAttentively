@@ -1,6 +1,6 @@
 #pragma once
 #include "ila/base/Macro.h"
-#include <ila/event/minecraft/world/level/levelgen/structure/StructureEvent.h>
+#include "ila/event/minecraft/world/level/levelgen/structure/StructureEvent.h"
 #include <ll/api/event/Event.h>
 
 namespace ila::mc::inline world::inline level::inline levelgen::inline structure
@@ -27,6 +27,7 @@ public:
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
 
 public:
     ILNDAPI uint& seed() const;

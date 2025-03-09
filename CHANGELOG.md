@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added VillageFeatureConstructionEvent @Lovelylavender4
+- Added VillageFeatureConstructionEvent @Lovelylavender4 @zimuya4153
 - Added dimension name to block event [#12] @zimuya4153
 
 ### Changed
