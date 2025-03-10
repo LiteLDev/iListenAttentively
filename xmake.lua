@@ -31,7 +31,10 @@ target("iListenAttentively")
         "/w45263",
         "/w44738",
         "/w45204",
-        "/O2"
+        "/O2",
+        "/Ob3",
+        "/GR-",
+        "/Zo-"
     )
     add_defines(
         "NOMINMAX", 
