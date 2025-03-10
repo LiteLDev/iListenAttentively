@@ -21,9 +21,9 @@ void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const
 void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x       = nbt["pos"]["x"];
-    pos().y       = nbt["pos"]["y"];
-    pos().z       = nbt["pos"]["z"];
+    pos().x       = nbt["pos"][0];
+    pos().y       = nbt["pos"][1];
+    pos().z       = nbt["pos"][2];
     strength()    = nbt["strength"];
     isFirstTime() = nbt["isFirstTime"];
 }

@@ -41,9 +41,9 @@ void ExplosionBeforeEvent::serialize(CompoundTag& nbt) const
 void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    explosion().mPos->x = nbt["pos"]["x"];
-    explosion().mPos->y = nbt["pos"]["y"];
-    explosion().mPos->z = nbt["pos"]["z"];
+    explosion().mPos->x = nbt["pos"][0];
+    explosion().mPos->y = nbt["pos"][1];
+    explosion().mPos->z = nbt["pos"][2];
     explosion().mRadius = nbt["radius"];
     explosion().mAffectedBlocks->clear();
     for (auto& blockPos : nbt["affectedBlocks"].get<ListTag>())

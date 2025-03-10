@@ -16,12 +16,12 @@ void LiquidTryFlowBeforeEvent::serialize(CompoundTag& nbt) const
 void LiquidTryFlowBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x             = nbt["pos"]["x"];
-    pos().y             = nbt["pos"]["y"];
-    pos().z             = nbt["pos"]["z"];
-    flowFromPos().x     = nbt["flowFromPos"]["x"];
-    flowFromPos().y     = nbt["flowFromPos"]["y"];
-    flowFromPos().z     = nbt["flowFromPos"]["z"];
+    pos().x             = nbt["pos"][0];
+    pos().y             = nbt["pos"][1];
+    pos().z             = nbt["pos"][2];
+    flowFromPos().x     = nbt["flowFromPos"][0];
+    flowFromPos().y     = nbt["flowFromPos"][1];
+    flowFromPos().z     = nbt["flowFromPos"][2];
     flowFromDirection() = nbt["flowFromDirection"];
 }
 BlockPos& LiquidTryFlowBeforeEvent::pos() const { return mPos; }
