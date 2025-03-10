@@ -1,3 +1,4 @@
+#include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include "ll/api/base/FixedString.h"
 #include "ll/api/event/Cancellable.h"
 #include "ll/api/event/DynamicListener.h"
@@ -18,5 +19,8 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     ::ServerInstance& ins
 )
 {
+    ll::event::EventBus::getInstance().emplaceListener<ila::mc::levelgen::VillageFeatureConstructionEvent>(
+        [this]([[maybe_unused]] ila::mc::levelgen::VillageFeatureConstructionEvent& ev) {}
+    );
     origin(ins);
 }
