@@ -44,7 +44,7 @@ BlockPos const& EndermanTakeBlockAfterEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     EndermanTakeBlockHook,
-    HookPriority::Normal,
+    HookPriority::Low,
     EndermanTakeBlockGoal,
     &EndermanTakeBlockGoal::$tick,
     void
@@ -52,13 +52,15 @@ LL_TYPE_INSTANCE_HOOK(
 {
     auto& region    = mEnderman.getDimensionBlockSource();
     auto  randomPos = getRandomNearbyBlockPos(mEnderman.getPosition());
-    auto& block     = region.getBlock(randomPos);
+    auto& beforeBlock     = region.getBlock(randomPos);
 
-    if (!EnderMan::mMayTake().contains(&block)) { return; }
+    if (!EnderMan::mMayTake().contains(&beforeBlock)) { return; }
 
     auto beforeEvent = EndermanTakeBlockBeforeEvent(mEnderman, randomPos);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
+
+    auto& afterBlock = region.getBlock(randomPos);
 
     // clang-format off
     constexpr static auto makeBlockSourceHandle = [](BlockSource& region) -> std::shared_ptr<BlockSourceHandle> {
@@ -69,7 +71,7 @@ LL_TYPE_INSTANCE_HOOK(
     
     auto const& actorGriefingBlockEvent = ActorGriefingBlockEvent {
         mEnderman.getWeakEntity(),
-        &block,
+        &afterBlock,
         randomPos,
         makeBlockSourceHandle(region)
     };
@@ -80,7 +82,7 @@ LL_TYPE_INSTANCE_HOOK(
     );
     if (event == CoordinatorResult::Cancel) { return; }
 
-    mEnderman.setCarryingBlock(block);
+    mEnderman.setCarryingBlock(afterBlock);
 
     region.setBlock(
         randomPos,
@@ -90,7 +92,7 @@ LL_TYPE_INSTANCE_HOOK(
         nullptr
     );
 
-    region.postGameEvent(&mEnderman, GameEventRegistry::blockDestroy(), randomPos, &block);
+    region.postGameEvent(&mEnderman, GameEventRegistry::blockDestroy(), randomPos, &afterBlock);
 
     LLEventBus.publish(EndermanTakeBlockAfterEvent(mEnderman, randomPos));
 }

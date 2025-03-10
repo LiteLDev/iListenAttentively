@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added VillageFeatureConstructionEvent @Lovelylavender4
 - Added dimension name to block event [#12] @zimuya4153
-- Added EndermanTakeBlock event [#11] @zimuya4153
+- Added EndermanTakeBlock and EndermanLeaveBlock event [#11] @zimuya4153
 
 ### Changed
 
