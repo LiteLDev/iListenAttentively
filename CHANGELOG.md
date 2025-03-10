@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [0.3.2] - 2025-03-10
+## [0.4.0] - 2025-03-10
 
 ### Added
 
@@ -126,8 +126,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#11]: https://github.com/MiracleForest/iListenAttentively-Release/issues/11
 [#12]: https://github.com/MiracleForest/iListenAttentively-Release/issues/12
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.2...HEAD
-[0.3.2]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...v0.3.2
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.2...v0.2.3
