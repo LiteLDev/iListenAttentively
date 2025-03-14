@@ -10,11 +10,8 @@ void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["actor"]      = serializeRefObj(actor());
 }
-SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::blockActor() const
-{
-    return mBlockActor;
-};
-Actor& SculkCatalystAbsorbExperienceBeforeEvent::actor() const { return mActor; };
+SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::blockActor() const { return mBlockActor; };
+Actor&                   SculkCatalystAbsorbExperienceBeforeEvent::actor() const { return mActor; };
 
 void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -22,11 +19,8 @@ void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["actor"]      = serializeRefObj(actor());
 }
-SculkCatalystBlockActor const& SculkCatalystAbsorbExperienceAfterEvent::blockActor() const
-{
-    return mBlockActor;
-};
-Actor const& SculkCatalystAbsorbExperienceAfterEvent::actor() const { return mActor; };
+SculkCatalystBlockActor& SculkCatalystAbsorbExperienceAfterEvent::blockActor() const { return mBlockActor; };
+Actor&                   SculkCatalystAbsorbExperienceAfterEvent::actor() const { return mActor; };
 
 LL_TYPE_INSTANCE_HOOK(
     SculkCatalystAbsorbExperienceEventHook,

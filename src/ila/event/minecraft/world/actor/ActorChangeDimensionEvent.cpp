@@ -1,7 +1,6 @@
 #include "ila/event/minecraft/world/actor/ActorChangeDimensionEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/ActorDimensionTransferManager.h>
-#include <mc/world/level/dimension/VanillaDimensions.h>
 
 namespace ila::mc::inline world::inline actor
 {
@@ -15,7 +14,7 @@ void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    toDimensionId() = getDimensionNameId(nbt["toDimensionId"]);
+    toDimensionId() = getDimensionId(nbt["toDimensionId"]);
 }
 DimensionType const& ActorChangeDimensionBeforeEvent::fromDimensionId() const { return mFromDimensionId; };
 DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { return mToDimensionId; };

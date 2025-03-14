@@ -68,8 +68,8 @@ namespace ila
 ILAPI void nextTick(std::function<void()> const& func);
 ILNDAPI std::string getDimensionName(::DimensionType const& dimid);
 ILNDAPI std::string getDimensionName(::BlockSource& region);
-ILNDAPI std::string   getDimensionName(::Dimension& region);
-ILNDAPI DimensionType getDimensionNameId(std::string const& dimName);
+ILNDAPI std::string     getDimensionName(::Dimension& region);
+ILNDAPI ::DimensionType getDimensionId(std::string const& dimName);
 using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
 } // namespace ila

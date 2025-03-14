@@ -1,13 +1,14 @@
-#include "iListenAttentively.h"
-#include <ll/api/service/Bedrock.h>
+#include "ila/iListenAttentively.h"
+#include "ila/base/Gloabl.h"
 #include <ll/api/chrono/GameChrono.h>
-#include <mc/world/level/dimension/VanillaDimensions.h>
 #include <ll/api/coro/CoroTask.h>
 #include <ll/api/mod/RegisterHelper.h>
+#include <ll/api/service/Bedrock.h>
 #include <ll/api/thread/ServerThreadExecutor.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/dimension/Dimension.h>
+#include <mc/world/level/dimension/VanillaDimensions.h>
 
 namespace ila
 {
@@ -35,14 +36,11 @@ void nextTick(std::function<void()> const& func)
 
 std::string getDimensionName(Dimension& dimension) { return dimension.mName; }
 std::string getDimensionName(BlockSource& region) { return getDimensionName(region.getDimension()); }
-std::string getDimensionName(DimensionType& dimid)
+std::string getDimensionName(DimensionType const& dimid)
 {
     return getDimensionName(*ll::service::getLevel()->getOrCreateDimension(dimid).lock());
 }
-DimensionType getDimensionNameId(std::string const& dimName)
-{
-    return VanillaDimensions::fromString(dimName);
-}
+DimensionType getDimensionId(std::string const& dimName) { return VanillaDimensions::fromString(dimName); }
 
 } // namespace ila
 
