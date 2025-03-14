@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed the serialized dimension id in the ActorChangeDimension event to the dimension name @zimuya4153
 
 ### Fixed
 

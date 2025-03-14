@@ -9,13 +9,13 @@ namespace ila::mc::inline world::inline actor
 void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["fromDimensionId"] = fromDimensionId().id;
-    nbt["toDimensionId"]   = toDimensionId().id;
+    nbt["fromDimensionId"] = getDimensionName(fromDimensionId());
+    nbt["toDimensionId"]   = getDimensionName(toDimensionId());
 }
 void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    toDimensionId() = VanillaDimensions::fromSerializedInt(static_cast<int>(nbt["toDimensionId"]));
+    toDimensionId() = getDimensionNameId(nbt["toDimensionId"]);
 }
 DimensionType const& ActorChangeDimensionBeforeEvent::fromDimensionId() const { return mFromDimensionId; };
 DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { return mToDimensionId; };
