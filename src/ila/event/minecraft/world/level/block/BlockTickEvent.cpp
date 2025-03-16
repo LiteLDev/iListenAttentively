@@ -9,7 +9,7 @@ void BlockTickBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]  = getDimensionName(blockSource());
+    nbt["dimId"]  = getDimensionName(blockSource());
     nbt["random"] = serializeRefObj(random());
 }
 void BlockTickBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -26,7 +26,7 @@ void BlockTickAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]  = getDimensionName(blockSource());
+    nbt["dimId"]  = getDimensionName(blockSource());
     nbt["random"] = serializeRefObj(random());
 }
 BlockPos const& BlockTickAfterEvent::pos() const { return mPos; }

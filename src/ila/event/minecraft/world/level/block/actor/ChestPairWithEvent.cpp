@@ -10,7 +10,7 @@ void ChestPairWithBeforeEvent::serialize(CompoundTag& nbt) const
     Cancellable::serialize(nbt);
     nbt["chest"]    = serializeRefObj(chest());
     nbt["position"] = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]      = getDimensionName(blockSource());
+    nbt["dimId"]      = getDimensionName(blockSource());
 }
 void ChestPairWithBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -27,7 +27,7 @@ void ChestPairWithAfterEvent::serialize(CompoundTag& nbt) const
     WorldEvent::serialize(nbt);
     nbt["chest"]    = serializeRefObj(chest());
     nbt["position"] = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]      = getDimensionName(blockSource());
+    nbt["dimId"]      = getDimensionName(blockSource());
 }
 ChestBlockActor& ChestPairWithAfterEvent::chest() const { return mChest; }
 BlockPos const&  ChestPairWithAfterEvent::pos() const { return mPosition; }

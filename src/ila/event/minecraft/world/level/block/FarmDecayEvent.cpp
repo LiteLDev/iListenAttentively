@@ -9,7 +9,7 @@ void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]        = getDimensionName(blockSource());
+    nbt["dimId"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(actor());
     nbt["fallDistance"] = fallDistance();
 }
@@ -29,7 +29,7 @@ void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]        = getDimensionName(blockSource());
+    nbt["dimId"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(actor());
     nbt["fallDistance"] = fallDistance();
 }

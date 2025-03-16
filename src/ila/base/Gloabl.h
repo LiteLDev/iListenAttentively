@@ -66,7 +66,7 @@ class Dimension;
 namespace ila
 {
 ILAPI void nextTick(std::function<void()> const& func);
-ILNDAPI std::string getDimensionName(::DimensionType const& dimid);
+ILNDAPI std::string getDimensionName(::DimensionType const& dimId);
 ILNDAPI std::string getDimensionName(::BlockSource& region);
 ILNDAPI std::string     getDimensionName(::Dimension& region);
 ILNDAPI ::DimensionType getDimensionId(std::string const& dimName);

@@ -9,7 +9,7 @@ void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]     = getDimensionName(blockSource());
+    nbt["dimId"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(item());
     nbt["spawner"]   = serializeRefObj(spawner());
     nbt["throwTime"] = throwTime();
@@ -20,7 +20,7 @@ void SpawnItemActorBeforeEvent::deserialize(CompoundTag const& nbt)
     pos().x     = nbt["pos"][0];
     pos().y     = nbt["pos"][1];
     pos().z     = nbt["pos"][2];
-    throwTime() = nbt["throw_time"];
+    throwTime() = nbt["throwTime"];
 }
 Vec3&      SpawnItemActorBeforeEvent::pos() const { return mPos; }
 ItemStack& SpawnItemActorBeforeEvent::item() const { return mItem; }
@@ -31,7 +31,7 @@ void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"]     = getDimensionName(blockSource());
+    nbt["dimId"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(item());
     nbt["spawner"]   = serializeRefObj(spawner());
     nbt["throwtime"] = throwTime();

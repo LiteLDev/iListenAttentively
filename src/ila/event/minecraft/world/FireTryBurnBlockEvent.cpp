@@ -9,7 +9,7 @@ void FireTryBurnBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"] = getDimensionName(blockSource());
+    nbt["dimId"] = getDimensionName(blockSource());
 }
 BlockPos const& FireTryBurnBlockBeforeEvent::pos() const { return mPos; }
 
@@ -17,7 +17,7 @@ void FireTryBurnBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"] = getDimensionName(blockSource());
+    nbt["dimId"] = getDimensionName(blockSource());
 }
 BlockPos const& FireTryBurnBlockAfterEvent::pos() const { return mPos; }
 

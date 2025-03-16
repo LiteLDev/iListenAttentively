@@ -12,7 +12,7 @@ void WitherDestroyBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
                       { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
     nbt["radius"] = radius();
-    nbt["dimid"]  = getDimensionName(blockSource());
+    nbt["dimId"]  = getDimensionName(blockSource());
 }
 void WitherDestroyBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -36,7 +36,7 @@ void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const
     nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
                       { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
     nbt["radius"] = radius();
-    nbt["dimid"]  = getDimensionName(blockSource());
+    nbt["dimId"]  = getDimensionName(blockSource());
 }
 Level&      WitherDestroyAfterEvent::level() const { return mLevel; }
 AABB const& WitherDestroyAfterEvent::box() const { return mBox; };

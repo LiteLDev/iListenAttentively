@@ -9,7 +9,7 @@ void SpawnWanderingTraderBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
     nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"] = getDimensionName(blockSource());
+    nbt["dimId"] = getDimensionName(blockSource());
 }
 void SpawnWanderingTraderBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -24,7 +24,7 @@ void SpawnWanderingTraderAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
     nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimid"] = getDimensionName(blockSource());
+    nbt["dimId"] = getDimensionName(blockSource());
 }
 BlockPos const& SpawnWanderingTraderAfterEvent::pos() const { return mPos; }
 

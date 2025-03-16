@@ -16,7 +16,7 @@ void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
     nbt["strength"]    = strength();
     nbt["isFirstTime"] = isFirstTime();
-    nbt["dimid"]       = getDimensionName(blockSource());
+    nbt["dimId"]       = getDimensionName(blockSource());
 }
 void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -37,7 +37,7 @@ void RedstoneUpdateAfterEvent::serialize(CompoundTag& nbt) const
     nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
     nbt["strength"]    = strength();
     nbt["isFirstTime"] = isFirstTime();
-    nbt["dimid"]       = getDimensionName(blockSource());
+    nbt["dimId"]       = getDimensionName(blockSource());
 }
 BlockPos const& RedstoneUpdateAfterEvent::pos() const { return mPos; }
 int const&      RedstoneUpdateAfterEvent::strength() const { return mStrength; }

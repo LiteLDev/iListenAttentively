@@ -12,7 +12,7 @@ void PistonPushBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["pushPos"]          = ListTag { pushPos().x, pushPos().y, pushPos().z };
     nbt["branchFacing"]     = branchFacing();
     nbt["pistonMoveFacing"] = pistonMoveFacing();
-    nbt["dimid"]            = getDimensionName(blockSource());
+    nbt["dimId"]            = getDimensionName(blockSource());
 }
 void PistonPushBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -33,7 +33,7 @@ void PistonPushAfterEvent::serialize(CompoundTag& nbt) const
     WorldEvent::serialize(nbt);
     nbt["pistonPos"]        = ListTag { pistonPos().x, pistonPos().y, pistonPos().z };
     nbt["pushPos"]          = ListTag { pushPos().x, pushPos().y, pushPos().z };
-    nbt["dimid"]            = getDimensionName(blockSource());
+    nbt["dimId"]            = getDimensionName(blockSource());
     nbt["branchFacing"]     = branchFacing();
     nbt["pistonMoveFacing"] = pistonMoveFacing();
 }

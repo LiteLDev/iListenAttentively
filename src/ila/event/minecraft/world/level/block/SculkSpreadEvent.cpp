@@ -17,7 +17,7 @@ void SculkSpreadBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["targetBlock"] = serializeRefObj(targetBlock());
     nbt["targetFace"]  = targetFace();
     nbt["facing"]      = facing();
-    nbt["dimid"]       = getDimensionName(blockSource());
+    nbt["dimId"]       = getDimensionName(blockSource());
 }
 void SculkSpreadBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -51,7 +51,7 @@ void SculkSpreadAfterEvent::serialize(CompoundTag& nbt) const
     nbt["targetBlock"] = serializeRefObj(targetBlock());
     nbt["targetFace"]  = targetFace();
     nbt["facing"]      = facing();
-    nbt["dimid"]       = getDimensionName(blockSource());
+    nbt["dimId"]       = getDimensionName(blockSource());
 }
 BlockPos const& SculkSpreadAfterEvent::selfPos() const { return mSelfPos; }
 Block const&    SculkSpreadAfterEvent::selfBlock() const { return mSelfBlock; }

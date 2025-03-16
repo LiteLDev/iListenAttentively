@@ -36,9 +36,9 @@ void nextTick(std::function<void()> const& func)
 
 std::string getDimensionName(Dimension& dimension) { return dimension.mName; }
 std::string getDimensionName(BlockSource& region) { return getDimensionName(region.getDimension()); }
-std::string getDimensionName(DimensionType const& dimid)
+std::string getDimensionName(DimensionType const& dimId)
 {
-    return getDimensionName(*ll::service::getLevel()->getOrCreateDimension(dimid).lock());
+    return getDimensionName(*ll::service::getLevel()->getOrCreateDimension(dimId).lock());
 }
 DimensionType getDimensionId(std::string const& dimName) { return VanillaDimensions::fromString(dimName); }
 
