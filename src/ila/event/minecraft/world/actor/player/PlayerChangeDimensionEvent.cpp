@@ -50,7 +50,7 @@ ChangeDimensionRequest const& PlayerChangeDimensionAfterEvent::changeDimensionRe
 }
 Dimension const& PlayerChangeDimensionAfterEvent::dimension() const { return mDimension; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     PlayerChangeDimensionEventHook,
     HookPriority::Normal,
     PlayerDimensionTransferer,
