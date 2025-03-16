@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added PlayerChangeSlotEvent @Lovelylavender4
 
 ### Changed
 
@@ -16,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed PlayerChangeGameType typo
+- Fixed PlayerChangeGameType typo @zimuya4153
 
 ## [0.4.0] - 2025-03-10
 
