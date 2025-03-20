@@ -33,7 +33,6 @@ target("iListenAttentively")
         "/w45204",
         "/O2",
         "/Ob3",
-        "/GR-",
         "/Zo-"
     )
     add_defines(

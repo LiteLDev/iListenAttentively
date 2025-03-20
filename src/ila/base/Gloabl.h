@@ -72,6 +72,7 @@ ILNDAPI std::string     getDimensionName(::Dimension& region);
 ILNDAPI ::DimensionType getDimensionId(std::string const& dimName);
 using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
+using ll::memory::dAccess;
 } // namespace ila
 
 namespace ll::memory
