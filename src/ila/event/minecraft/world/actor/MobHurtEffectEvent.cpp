@@ -51,15 +51,15 @@ LL_TYPE_INSTANCE_HOOK(
     MobEffectInstance const&             effectInst,
     std::vector<Actor*> const&           actors,
     Actor&                               projectile,
-    std::shared_ptr<Potion const> const& splashRange,
-    float                                effect,
-    MobEffect*                           res,
-    HitResult&                           aux,
-    int                                  unk
+    std::shared_ptr<Potion const> const& potion,
+    float                                splashRange,
+    MobEffect*                           effect,
+    HitResult&                           res,
+    int                                  aux
 )
 {
     for (auto actor : actors) { mSplashPotionSources[actor] = &projectile; }
-    origin(effectInst, actors, projectile, splashRange, effect, res, aux, unk);
+    origin(effectInst, actors, projectile, potion, splashRange, effect, res, aux);
 }
 
 LL_TYPE_INSTANCE_HOOK(
