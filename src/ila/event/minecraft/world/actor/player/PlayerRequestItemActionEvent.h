@@ -12,22 +12,25 @@ namespace ila::mc::inline world::inline actor::inline player
 class PlayerRequestItemActionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
 protected:
-    bool&                     mIsDstSerialized;
-    bool&                     mIsAmountSerialized;
-    uchar&                    mAmount;
-    ItemStackRequestSlotInfo& mSrc;
-    ItemStackRequestSlotInfo& mDst;
+    ItemStackRequestActionType& mActionType;
+    bool&                       mIsDstSerialized;
+    bool&                       mIsAmountSerialized;
+    uchar&                      mAmount;
+    ItemStackRequestSlotInfo&   mSrc;
+    ItemStackRequestSlotInfo&   mDst;
 
 public:
     constexpr explicit PlayerRequestItemActionBeforeEvent(
-        Player&                   player,
-        bool&                     isDstSerialized,
-        bool&                     isAmountSerialized,
-        uchar&                    amount,
-        ItemStackRequestSlotInfo& src,
-        ItemStackRequestSlotInfo& dst
+        Player&                     player,
+        ItemStackRequestActionType& actionType,
+        bool&                       isDstSerialized,
+        bool&                       isAmountSerialized,
+        uchar&                      amount,
+        ItemStackRequestSlotInfo&   src,
+        ItemStackRequestSlotInfo&   dst
     )
         : Cancellable(player)
+        , mActionType(actionType)
         , mIsDstSerialized(isDstSerialized)
         , mIsAmountSerialized(isAmountSerialized)
         , mAmount(amount)
@@ -39,34 +42,38 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI bool&                     isDstSerialized() const;
-    ILNDAPI bool&                     isAmountSerialized() const;
-    ILNDAPI uchar&                    amount() const;
-    ILNDAPI ItemStackRequestSlotInfo& src() const;
-    ILNDAPI ItemStackRequestSlotInfo& dst() const;
+    ILNDAPI ItemStackRequestActionType& actionType() const;
+    ILNDAPI bool&                       isDstSerialized() const;
+    ILNDAPI bool&                       isAmountSerialized() const;
+    ILNDAPI uchar&                      amount() const;
+    ILNDAPI ItemStackRequestSlotInfo&   src() const;
+    ILNDAPI ItemStackRequestSlotInfo&   dst() const;
 };
 
 class PlayerRequestItemActionAfterEvent final : public ll::event::player::PlayerEvent
 {
 protected:
-    bool const&                     mIsDstSerialized;
-    bool const&                     mIsAmountSerialized;
-    uchar const&                    mAmount;
-    ItemStackRequestSlotInfo const& mSrc;
-    ItemStackRequestSlotInfo const& mDst;
-    ItemStackNetResult&             mResult;
+    ItemStackRequestActionType const& mActionType;
+    bool const&                       mIsDstSerialized;
+    bool const&                       mIsAmountSerialized;
+    uchar const&                      mAmount;
+    ItemStackRequestSlotInfo const&   mSrc;
+    ItemStackRequestSlotInfo const&   mDst;
+    ItemStackNetResult&               mResult;
 
 public:
     constexpr explicit PlayerRequestItemActionAfterEvent(
-        Player&                         player,
-        bool const&                     isDstSerialized,
-        bool const&                     isAmountSerialized,
-        uchar const&                    amount,
-        ItemStackRequestSlotInfo const& src,
-        ItemStackRequestSlotInfo const& dst,
-        ItemStackNetResult&             result
+        Player&                           player,
+        ItemStackRequestActionType const& actionType,
+        bool const&                       isDstSerialized,
+        bool const&                       isAmountSerialized,
+        uchar const&                      amount,
+        ItemStackRequestSlotInfo const&   src,
+        ItemStackRequestSlotInfo const&   dst,
+        ItemStackNetResult&               result
     )
         : PlayerEvent(player)
+        , mActionType(actionType)
         , mIsDstSerialized(isDstSerialized)
         , mIsAmountSerialized(isAmountSerialized)
         , mAmount(amount)
@@ -79,11 +86,12 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI bool const&                     isDstSerialized() const;
-    ILNDAPI bool const&                     isAmountSerialized() const;
-    ILNDAPI uchar const&                    amount() const;
-    ILNDAPI ItemStackRequestSlotInfo const& src() const;
-    ILNDAPI ItemStackRequestSlotInfo const& dst() const;
-    ILNDAPI ItemStackNetResult&             result() const;
+    ILNDAPI ItemStackRequestActionType const& actionType() const;
+    ILNDAPI bool const&                       isDstSerialized() const;
+    ILNDAPI bool const&                       isAmountSerialized() const;
+    ILNDAPI uchar const&                      amount() const;
+    ILNDAPI ItemStackRequestSlotInfo const&   src() const;
+    ILNDAPI ItemStackRequestSlotInfo const&   dst() const;
+    ILNDAPI ItemStackNetResult&               result() const;
 };
 } // namespace ila::mc::inline world::inline actor::inline player

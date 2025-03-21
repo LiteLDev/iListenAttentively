@@ -10,6 +10,7 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
+    nbt["actionType"]         = magic_enum::enum_name(actionType());
     nbt["isDstSerialized"]    = isDstSerialized();
     nbt["isAmountSerialized"] = isAmountSerialized();
     nbt["amount"]             = amount();
@@ -39,6 +40,8 @@ void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
 void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     PlayerEvent::deserialize(nbt);
+    actionType() = magic_enum::enum_cast<ItemStackRequestActionType>(nbt["actionType"].get<StringTag>())
+                       .value_or(actionType());
     isDstSerialized()    = nbt["isDstSerialized"];
     isAmountSerialized() = nbt["isAmountSerialized"];
     amount()             = nbt["amount"];
@@ -59,6 +62,7 @@ void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
     }
     dst().mSlot = nbt["dst"]["slot"];
 }
+ItemStackRequestActionType& PlayerRequestItemActionBeforeEvent::actionType() const { return mActionType; }
 bool&  PlayerRequestItemActionBeforeEvent::isDstSerialized() const { return mIsDstSerialized; }
 bool&  PlayerRequestItemActionBeforeEvent::isAmountSerialized() const { return mIsAmountSerialized; }
 uchar& PlayerRequestItemActionBeforeEvent::amount() const { return mAmount; }
@@ -68,6 +72,7 @@ ItemStackRequestSlotInfo& PlayerRequestItemActionBeforeEvent::dst() const { retu
 void PlayerRequestItemActionAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
+    nbt["actionType"]         = magic_enum::enum_name(actionType());
     nbt["isDstSerialized"]    = isDstSerialized();
     nbt["isAmountSerialized"] = isAmountSerialized();
     nbt["amount"]             = amount();
@@ -100,6 +105,10 @@ void PlayerRequestItemActionAfterEvent::deserialize(CompoundTag const& nbt)
     PlayerEvent::deserialize(nbt);
     result() = magic_enum::enum_cast<ItemStackNetResult>(nbt["result"].get<StringTag>()).value_or(result());
 }
+ItemStackRequestActionType const& PlayerRequestItemActionAfterEvent::actionType() const
+{
+    return mActionType;
+}
 bool const&  PlayerRequestItemActionAfterEvent::isDstSerialized() const { return mIsDstSerialized; }
 bool const&  PlayerRequestItemActionAfterEvent::isAmountSerialized() const { return mIsAmountSerialized; }
 uchar const& PlayerRequestItemActionAfterEvent::amount() const { return mAmount; }
@@ -120,6 +129,7 @@ LL_TYPE_INSTANCE_HOOK(
         static_cast<ItemStackRequestActionTransferBase&>(const_cast<ItemStackRequestAction&>(pRequestAction));
     auto beforeEvent = PlayerRequestItemActionBeforeEvent(
         mPlayer,
+        action.mActionType,
         action.mIsAmountSerialized,
         action.mIsAmountSerialized,
         action.mAmount,
@@ -131,6 +141,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto result = origin(pRequestAction);
     LLEventBus.publish(PlayerRequestItemActionAfterEvent(
         mPlayer,
+        action.mActionType,
         action.mIsAmountSerialized,
         action.mIsAmountSerialized,
         action.mAmount,
