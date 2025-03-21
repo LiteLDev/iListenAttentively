@@ -7,18 +7,18 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerChangeSlotEvent::serialize(CompoundTag& pNbt) const
 {
     Cancellable::serialize(pNbt);
-    pNbt["container"]     = ll::event::serializeRefObj(this->container());
-    pNbt["slot"]          = this->slot();
-    pNbt["oldItem"]       = ll::event::serializeRefObj(this->oldItem());
-    pNbt["newItem"]       = ll::event::serializeRefObj(this->newItem());
-    pNbt["forceBalanced"] = this->forceBalanced();
+    pNbt["container"]     = serializeRefObj(container());
+    pNbt["slot"]          = slot();
+    pNbt["oldItem"]       = serializeRefObj(oldItem());
+    pNbt["newItem"]       = serializeRefObj(newItem());
+    pNbt["forceBalanced"] = forceBalanced();
 }
 
-Container&       PlayerChangeSlotEvent::container() const { return this->mContainer; }
-int&             PlayerChangeSlotEvent::slot() const { return this->mSlot; }
-ItemStack const& PlayerChangeSlotEvent::oldItem() const { return this->mOldItem; }
-ItemStack const& PlayerChangeSlotEvent::newItem() const { return this->mNewItem; }
-bool&            PlayerChangeSlotEvent::forceBalanced() const { return this->mForceBalanced; }
+Container&       PlayerChangeSlotEvent::container() const { return mContainer; }
+int&             PlayerChangeSlotEvent::slot() const { return mSlot; }
+ItemStack const& PlayerChangeSlotEvent::oldItem() const { return mOldItem; }
+ItemStack const& PlayerChangeSlotEvent::newItem() const { return mNewItem; }
+bool&            PlayerChangeSlotEvent::forceBalanced() const { return mForceBalanced; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerChangeSlotHook,

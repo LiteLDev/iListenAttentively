@@ -40,24 +40,25 @@ optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() c
 float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
 SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
 
-ll::DenseMap<Actor*, Actor*> splashPotionSources;
+static ll::DenseMap<Actor*, Actor*> mSplashPotionSources;
+
 LL_TYPE_INSTANCE_HOOK(
     SplashPotionEffectSubcomponentApplyMobEffectsHook,
     HookPriority::Normal,
     SplashPotionEffectSubcomponent,
     &SplashPotionEffectSubcomponent::applyMobEffects,
     void,
-    ::MobEffectInstance const&               effectInst,
-    ::std::vector<::Actor*> const&           actors,
-    ::Actor&                                 projectile,
-    ::std::shared_ptr<::Potion const> const& splashRange,
-    float                                    effect,
-    ::MobEffect*                             res,
-    ::HitResult&                             aux,
-    int                                      unk
+    MobEffectInstance const&             effectInst,
+    std::vector<Actor*> const&           actors,
+    Actor&                               projectile,
+    std::shared_ptr<Potion const> const& splashRange,
+    float                                effect,
+    MobEffect*                           res,
+    HitResult&                           aux,
+    int                                  unk
 )
 {
-    for (auto actor : actors) { splashPotionSources[actor] = &projectile; }
+    for (auto actor : actors) { mSplashPotionSources[actor] = &projectile; }
     origin(effectInst, actors, projectile, splashRange, effect, res, aux, unk);
 }
 
@@ -83,10 +84,10 @@ LL_TYPE_INSTANCE_HOOK(
                 false
             );
         }
-        else if (splashPotionSources.contains(this))
+        else if (mSplashPotionSources.contains(this))
         {
-            damageSource = splashPotionSources[this];
-            splashPotionSources.erase(this);
+            damageSource = mSplashPotionSources[this];
+            mSplashPotionSources.erase(this);
         }
         auto beforeEvent = MobHurtEffectBeforeEvent(
             *this,
