@@ -1,10 +1,12 @@
 #include "ila/event/minecraft/world/actor/MobHurtEffectEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
+#include <mc/entity/components_json_legacy/SplashPotionEffectSubcomponent.h>
 #include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/actor/ActorDamageSource.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
+
 
 namespace ila::mc::inline world::inline actor
 {
@@ -21,7 +23,7 @@ void MobHurtEffectBeforeEvent::deserialize(CompoundTag const& nbt)
     Cancellable::deserialize(nbt);
     value() = nbt["value"];
     cause() = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
-                     .value_or(cause());
+                  .value_or(cause());
 }
 optional_ref<Actor>                    MobHurtEffectBeforeEvent::source() const { return mSource; }
 float&                                 MobHurtEffectBeforeEvent::value() const { return mValue; }
@@ -37,6 +39,27 @@ void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
 optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() const { return mSource; }
 float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
 SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
+
+ll::DenseMap<Actor*, Actor*> splashPotionSources;
+LL_TYPE_INSTANCE_HOOK(
+    SplashPotionEffectSubcomponentApplyMobEffectsHook,
+    HookPriority::Normal,
+    SplashPotionEffectSubcomponent,
+    &SplashPotionEffectSubcomponent::applyMobEffects,
+    void,
+    ::MobEffectInstance const&               effectInst,
+    ::std::vector<::Actor*> const&           actors,
+    ::Actor&                                 projectile,
+    ::std::shared_ptr<::Potion const> const& splashRange,
+    float                                    effect,
+    ::MobEffect*                             res,
+    ::HitResult&                             aux,
+    int                                      unk
+)
+{
+    for (auto actor : actors) { splashPotionSources[actor] = &projectile; }
+    origin(effectInst, actors, projectile, splashRange, effect, res, aux, unk);
+}
 
 LL_TYPE_INSTANCE_HOOK(
     MobHurtEffectHook,
@@ -60,6 +83,11 @@ LL_TYPE_INSTANCE_HOOK(
                 false
             );
         }
+        else if (splashPotionSources.contains(this))
+        {
+            damageSource = splashPotionSources[this];
+            splashPotionSources.erase(this);
+        }
         auto beforeEvent = MobHurtEffectBeforeEvent(
             *this,
             damageSource,
@@ -73,6 +101,6 @@ LL_TYPE_INSTANCE_HOOK(
     return origin(source, damage);
 }
 
-Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook>);
+Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook, SplashPotionEffectSubcomponentApplyMobEffectsHook>);
 
 } // namespace ila::mc::inline world::inline actor

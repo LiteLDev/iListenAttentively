@@ -34,7 +34,7 @@ void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(item());
     nbt["spawner"]   = serializeRefObj(spawner());
-    nbt["throwtime"] = throwTime();
+    nbt["throwTime"] = throwTime();
     nbt["itemActor"] = serializeRefObj(itemActor());
 }
 Vec3 const&      SpawnItemActorAfterEvent::pos() const { return mPos; }
