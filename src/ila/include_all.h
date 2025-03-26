@@ -20,6 +20,7 @@
 #include "ila/event/minecraft/world/actor/EndermanLeaveBlockEvent.h"
 #include "ila/event/minecraft/world/actor/EndermanTakeBlockEvent.h"
 #include "ila/event/minecraft/world/actor/item/ItemActorEvent.h"
+#include "ila/event/minecraft/world/actor/MobHealthChangeEvent.h"
 #include "ila/event/minecraft/world/actor/MobHurtEffectEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerAteEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerAttackBlockEvent.h"
