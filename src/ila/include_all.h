@@ -34,6 +34,8 @@
 #include "ila/event/minecraft/world/actor/player/PlayerOpenContainerEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerRequestItemActionEvent.h"
+#include "ila/event/minecraft/world/actor/player/PlayerStartSleepEvent.h"
+#include "ila/event/minecraft/world/actor/player/PlayerStopSleepEvent.h"
 #include "ila/event/minecraft/world/actor/ProjectileCreateEvent.h"
 #include "ila/event/minecraft/world/ExplosionEvent.h"
 #include "ila/event/minecraft/world/FireTryBurnBlockEvent.h"
