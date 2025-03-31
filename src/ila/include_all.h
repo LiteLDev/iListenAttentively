@@ -19,6 +19,7 @@
 #include "ila/event/minecraft/world/actor/DragonRespawnEvent.h"
 #include "ila/event/minecraft/world/actor/EndermanLeaveBlockEvent.h"
 #include "ila/event/minecraft/world/actor/EndermanTakeBlockEvent.h"
+#include "ila/event/minecraft/world/actor/FireworkRocketDealDamageEvent.h"
 #include "ila/event/minecraft/world/actor/item/ItemActorEvent.h"
 #include "ila/event/minecraft/world/actor/MobHealthChangeEvent.h"
 #include "ila/event/minecraft/world/actor/MobHurtEffectEvent.h"
