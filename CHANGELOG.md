@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+
+## [0.4.1]
+
+### Added
+
 - Added PlayerChangeSlot event @Lovelylavender4
 - Added PlayerCloseContainer event [#15] @zimuya4153
 - Added MobHealthChange event [#15] @zimuya4153
@@ -142,7 +151,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#16]: https://github.com/MiracleForest/iListenAttentively-Release/issues/16
 [#17]: https://github.com/MiracleForest/iListenAttentively-Release/issues/17
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.3...v0.3.0
