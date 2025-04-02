@@ -26,6 +26,10 @@ jobs:
         run: |
           xmake repo -u
 
+      - name: Clean Cache
+        run: |
+          xmake c -a
+
       - name: Configure
         run: |
           xmake f -a x64 -m release -p windows -v -y
