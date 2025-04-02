@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added LiquidFlow event [#14] @zimuya4153
 - Added FireworkRocketDealDamage event [#16] @zimuya4153
 - Added PlayerStartSleep and PlayerStopSleep event [#15] @zimuya4153
+- Added ActorDestroyBlock event [#17] @zimuya4153
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed PlayerChangeGameType typo @zimuya4153
 - Fixed PlayerRequestItemAction event @zimuya4153
 - Fixed MobHurtEffect event source [#13] @killcerr
+- Fixed itemActor method for SpawnItemActor event @zimuya4153
 
 ## [0.4.0] - 2025-03-10
 
@@ -138,6 +140,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#14]: https://github.com/MiracleForest/iListenAttentively-Release/issues/14
 [#15]: https://github.com/MiracleForest/iListenAttentively-Release/issues/15
 [#16]: https://github.com/MiracleForest/iListenAttentively-Release/issues/16
+[#17]: https://github.com/MiracleForest/iListenAttentively-Release/issues/17
 
 [Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...v0.4.0

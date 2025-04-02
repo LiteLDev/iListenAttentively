@@ -41,7 +41,7 @@ Vec3 const&      SpawnItemActorAfterEvent::pos() const { return mPos; }
 ItemStack const& SpawnItemActorAfterEvent::item() const { return mItem; }
 Actor* const&    SpawnItemActorAfterEvent::spawner() const { return mSpawner; }
 int const&       SpawnItemActorAfterEvent::throwTime() const { return mThrowTime; }
-ItemActor*&      SpawnItemActorAfterEvent::itemActor() const { return mItemActor; }
+ItemActor&       SpawnItemActorAfterEvent::itemActor() const { return mItemActor; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnItemActorEventHook,
@@ -68,7 +68,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto* result = origin(pRegion, pItem, pSpawner, pPos, pThrowTime);
     if (result != nullptr)
     {
-        LLEventBus.publish(SpawnItemActorAfterEvent(pRegion, pPos, pItem, pSpawner, pThrowTime, result));
+        LLEventBus.publish(SpawnItemActorAfterEvent(pRegion, pPos, pItem, pSpawner, pThrowTime, *result));
     }
     return result;
 }

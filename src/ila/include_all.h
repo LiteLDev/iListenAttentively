@@ -9,6 +9,7 @@
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include "ila/event/minecraft/server/ServerPongEvent.h"
 #include "ila/event/minecraft/world/actor/ActorChangeDimensionEvent.h"
+#include "ila/event/minecraft/world/actor/ActorDestroyBlockEvent.h"
 #include "ila/event/minecraft/world/actor/ActorGetEffectEvent.h"
 #include "ila/event/minecraft/world/actor/ActorPickupItemEvent.h"
 #include "ila/event/minecraft/world/actor/ActorRideEvent.h"
