@@ -5,6 +5,7 @@
 #include "ila/event/leviAntiCheat/PlayerCheatEvent.h"
 #include "ila/event/leviAntiCheat/SusClientEvent.h"
 #include "ila/event/minecraft/server/ClientLoginEvent.h"
+#include "ila/event/minecraft/server/ReceivePacketEvent.h"
 #include "ila/event/minecraft/server/RegisterCmdEvent.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include "ila/event/minecraft/server/ServerPongEvent.h"
