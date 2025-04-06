@@ -14,9 +14,9 @@ namespace ila::mc::inline world::inline actor
 void MobHurtEffectBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    if (source().has_value()) { nbt["source"] = serializeRefObj(*source()); }
-    nbt["value"] = value();
-    nbt["cause"] = magic_enum::enum_name(cause());
+    nbt["source"] = serializePtrObj(source().as_ptr());
+    nbt["value"]  = value();
+    nbt["cause"]  = magic_enum::enum_name(cause());
 }
 void MobHurtEffectBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -32,9 +32,9 @@ SharedTypes::Legacy::ActorDamageCause& MobHurtEffectBeforeEvent::cause() const {
 void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    if (source().has_value()) { nbt["source"] = serializeRefObj(*source()); }
-    nbt["value"] = value();
-    nbt["cause"] = magic_enum::enum_name(cause());
+    nbt["source"] = serializePtrObj(source().as_ptr());
+    nbt["value"]  = value();
+    nbt["cause"]  = magic_enum::enum_name(cause());
 }
 optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() const { return mSource; }
 float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }

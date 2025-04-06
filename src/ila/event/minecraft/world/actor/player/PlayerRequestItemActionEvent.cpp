@@ -52,6 +52,7 @@ void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
     {
         src().mFullContainerName.mDynamicId = nbt["src"]["fullContainerName"]["dynamicId"];
     }
+    else { src().mFullContainerName.mDynamicId->reset(); }
     src().mSlot = nbt["src"]["slot"];
     dst().mFullContainerName.mName =
         magic_enum::enum_cast<ContainerEnumName>(nbt["dst"]["fullContainerName"]["name"].get<StringTag>())
@@ -60,6 +61,7 @@ void PlayerRequestItemActionBeforeEvent::deserialize(CompoundTag const& nbt)
     {
         dst().mFullContainerName.mDynamicId = nbt["dst"]["fullContainerName"]["dynamicId"];
     }
+    else { dst().mFullContainerName.mDynamicId->reset(); }
     dst().mSlot = nbt["dst"]["slot"];
 }
 ItemStackRequestActionType& PlayerRequestItemActionBeforeEvent::actionType() const { return mActionType; }

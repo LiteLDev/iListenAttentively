@@ -70,10 +70,12 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     explosion().mSourceID->rawID = nbt["sourceId"];
     explosion().mMaxResistance   = nbt["maxResistance"];
     if (nbt.contains("inWaterOverride")) { explosion().mInWaterOverride = nbt["inWaterOverride"]; }
+    else { explosion().mInWaterOverride->reset(); }
     if (nbt.contains("totalDamageOverride"))
     {
         explosion().mTotalDamageOverride = nbt["totalDamageOverride"];
     }
+    else { explosion().mTotalDamageOverride.reset(); }
     explosion().mKnockbackScaling = nbt["knockbackScaling"];
 }
 Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
