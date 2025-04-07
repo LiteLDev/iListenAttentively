@@ -46,7 +46,7 @@ DimensionType getDimensionId(std::string const& dimName) { return VanillaDimensi
 NetworkIdentifier& getNetworkIdentifier(NetworkPeer& peer)
 {
     static ll::DenseMap<NetworkPeer*, optional_ref<NetworkIdentifier>> mMap;
-    if (auto it = mMap.find(&peer); it != mMap.end()) { return it->second; }
+    if (auto it = mMap.find(&peer); it != mMap.end() && it->first && it->second.has_value()) { return it->second; }
     auto& connections =
         ll::service::getNetworkSystem()->mUnk61fe2a.as<std::vector<std::unique_ptr<NetworkConnection>>>();
     auto result = std::find_if(
