@@ -28,9 +28,14 @@ LL_TYPE_INSTANCE_HOOK(
         if constexpr (std::is_same_v<T, Details::ValueOrRef<ActorGriefingBlockEvent const>>)
         {
             ActorGriefingBlockEvent const& griefingEvent = arg.value();
-            auto beforeEvent = ActorDestroyBlockEvent(griefingEvent.mActorContext->tryUnwrap(), griefingEvent.mPos);
+            auto                           beforeEvent =
+                ActorDestroyBlockEvent(griefingEvent.mActorContext->tryUnwrap(), griefingEvent.mPos);
             LLEventBus.publish(beforeEvent);
-            if (beforeEvent.isCancelled()) { return CoordinatorResult::Cancel; }
+            if (beforeEvent.isCancelled())
+            {
+                origin(event);
+                return CoordinatorResult::Cancel;
+            }
         }
         return origin(event);
     });

@@ -13,7 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed source deserialize for MobHurtEffectBefore event @zimuya4153
+
 ### Fixed
+
+- Fixed deserialize of some events @zimuya4153
+- Fixed ActorDestroyBlock event crash @zimuya4153
 
 
 ## [0.4.1]

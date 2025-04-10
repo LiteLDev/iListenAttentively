@@ -75,7 +75,7 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     {
         explosion().mTotalDamageOverride = nbt["totalDamageOverride"];
     }
-    else { explosion().mTotalDamageOverride.reset(); }
+    else { explosion().mTotalDamageOverride->reset(); }
     explosion().mKnockbackScaling = nbt["knockbackScaling"];
 }
 Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
