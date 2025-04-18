@@ -22,6 +22,7 @@ LL_TYPE_INSTANCE_HOOK(
     CoordinatorResult,
     EventRef<ActorGameplayEvent<CoordinatorResult>> const& event
 )
+try
 {
     return event.get().visit([&](auto&& arg) {
         using T = std::decay_t<decltype(arg)>;
@@ -39,6 +40,10 @@ LL_TYPE_INSTANCE_HOOK(
         }
         return origin(event);
     });
+}
+catch (...)
+{
+    return origin(event);
 }
 
 Event_Hook_Factory_Base(ActorDestroyBlock, <ActorDestroyBlockEventHook>);
