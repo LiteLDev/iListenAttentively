@@ -171,7 +171,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#18]: https://github.com/MiracleForest/iListenAttentively-Release/issues/18
 [#19]: https://github.com/MiracleForest/iListenAttentively-Release/issues/19
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.3.0...v0.3.1
