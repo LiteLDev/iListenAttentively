@@ -1,5 +1,7 @@
 #include "ila/event/minecraft/world/SpawnItemActorEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/deps/core/math/Vec3.h>
+#include <mc/world/actor/item/ItemActor.h>
 #include <mc/world/level/BedrockSpawner.h>
 
 namespace ila::mc::inline world

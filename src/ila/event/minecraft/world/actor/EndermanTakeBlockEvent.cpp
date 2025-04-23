@@ -6,11 +6,11 @@
 #include <mc/world/events/ActorEventCoordinator.h>
 #include <mc/world/events/BlockSourceHandle.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
-
 
 BlockSourceHandle::BlockSourceHandle() = default;
 

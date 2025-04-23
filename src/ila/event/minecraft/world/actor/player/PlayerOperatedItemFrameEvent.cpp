@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/item/ItemInstance.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/BlockLegacy.h>
 #include <mc/world/level/block/ItemFrameBlock.h>

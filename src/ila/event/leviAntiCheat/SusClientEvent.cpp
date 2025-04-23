@@ -1,5 +1,6 @@
 #include "ila/event/leviAntiCheat/SusClientEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/platform/UUID.h>
 
 namespace lac::punish
 {

@@ -3,9 +3,11 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
 #include <ll/api/event/world/WorldEvent.h>
-#include <mc/util/Random.h>
 #include <mc/world/actor/item/FallingBlockActor.h>
-#include <mc/world/level/BlockPos.h>
+
+// clang-format off
+class BlockPos;
+// clang-format on
 
 namespace ila::mc::inline world::inline level::inline block
 {

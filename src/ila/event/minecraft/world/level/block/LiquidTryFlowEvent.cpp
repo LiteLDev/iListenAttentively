@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/LiquidTryFlowEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/LiquidBlockDynamic.h>
 
 namespace ila::mc::inline world::inline level::inline block

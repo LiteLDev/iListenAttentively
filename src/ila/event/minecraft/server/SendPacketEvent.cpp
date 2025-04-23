@@ -1,6 +1,8 @@
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
+#include <mc/entity/components/UserEntityIdentifierComponent.h>
+#include <mc/network/LoopbackPacketSender.h>
 #include <mc/network/ServerNetworkHandler.h>
 
 namespace ila::mc::inline server

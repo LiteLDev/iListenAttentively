@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/VillageFeature.h>
 
 namespace ila::mc::inline world::inline level::inline levelgen::inline structure

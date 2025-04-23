@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerOpenContainerEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"
+#include <mc/legacy/ActorUniqueID.h>
 #include <mc/network/NetworkBlockPosition.h>
 #include <mc/network/packet/ContainerOpenPacket.h>
 

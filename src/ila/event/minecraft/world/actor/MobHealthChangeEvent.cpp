@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/actor/MobHealthChangeEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/attribute/AttributeBuff.h>
 #include <mc/world/attribute/HealthAttributeDelegate.h>
 
 namespace ila::mc::inline world::inline actor

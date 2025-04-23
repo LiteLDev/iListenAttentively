@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/PistonPushEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/actor/PistonBlockActor.h>
 
 namespace ila::mc::inline world

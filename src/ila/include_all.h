@@ -45,6 +45,7 @@
 #include "ila/event/minecraft/world/level/block/actor/BlockActorEvent.h"
 #include "ila/event/minecraft/world/level/block/actor/BlockActorTick.h"
 #include "ila/event/minecraft/world/level/block/actor/ChestPairWithEvent.h"
+#include "ila/event/minecraft/world/level/block/BlockFallEvent.h"
 #include "ila/event/minecraft/world/level/block/BlockTickEvent.h"
 #include "ila/event/minecraft/world/level/block/DragonEggBlockTeleportEvent.h"
 #include "ila/event/minecraft/world/level/block/FarmDecayEvent.h"

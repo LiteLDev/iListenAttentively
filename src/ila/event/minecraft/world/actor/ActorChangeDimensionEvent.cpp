@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/actor/ActorChangeDimensionEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/deps/core/math/Vec3.h>
 #include <mc/world/level/ActorDimensionTransferManager.h>
 
 namespace ila::mc::inline world::inline actor

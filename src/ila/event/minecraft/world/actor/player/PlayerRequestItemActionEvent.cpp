@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/containers/FullContainerName.h>
 #include <mc/world/inventory/network/ItemStackRequestActionHandler.h>
+#include <mc/world/inventory/network/ItemStackRequestActionTransferBase.h>
 #include <mc/world/inventory/network/ItemStackRequestSlotInfo.h>
 
 namespace ila::mc::inline world::inline actor::inline player

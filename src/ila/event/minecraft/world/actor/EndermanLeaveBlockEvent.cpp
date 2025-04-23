@@ -6,6 +6,7 @@
 #include <mc/world/actor/ai/goal/EndermanLeaveBlockGoal.h>
 #include <mc/world/actor/monster/EnderMan.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/Block.h>

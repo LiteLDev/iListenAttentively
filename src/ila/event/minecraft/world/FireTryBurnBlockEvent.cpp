@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/FireTryBurnBlockEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/FireBlock.h>
 
 namespace ila::mc::inline world

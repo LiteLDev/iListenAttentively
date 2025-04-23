@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/actor/ActorTriggerPressurePlateEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/BasePressurePlateBlock.h>
 
 namespace ila::mc::inline world::inline actor

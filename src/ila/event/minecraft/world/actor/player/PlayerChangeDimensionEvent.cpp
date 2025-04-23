@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerChangeDimensionEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/world/level/ChangeDimensionRequest.h>
 #include <mc/world/level/PlayerDimensionTransferer.h>
 
 namespace ila::mc::inline world::inline actor::inline player

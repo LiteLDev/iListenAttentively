@@ -3,6 +3,7 @@
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/level/BlockPos.h>
+#include <mc/world/level/Explosion.h>
 
 namespace ila::mc::inline world
 {

@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/FarmDecayEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/FarmBlock.h>
 
 namespace ila::mc::inline world::inline level::inline block

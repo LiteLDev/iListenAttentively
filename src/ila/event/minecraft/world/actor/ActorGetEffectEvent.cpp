@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/ActorGetEffectEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/effect/EffectDuration.h>
+#include <mc/world/effect/MobEffectInstance.h>
 
 namespace ila::mc::inline world::inline actor
 {

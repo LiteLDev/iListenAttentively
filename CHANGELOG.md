@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+
+## [0.4.2] - 2025-04-24
+
+### Added
+
 - Added ReceivePacket event @zimuya4153
 - Added flow from position to LiquidFlow event [#18] @zimuya4153
 - Added BlockFall event [#19] @zimuya4153
@@ -16,12 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed source deserialize for MobHurtEffectBefore event @zimuya4153
+- Reduced header dependencies in event header
 
 ### Fixed
 
 - Fixed deserialize of some events @zimuya4153
 - Fixed ActorDestroyBlock event crash @zimuya4153
-
 
 ## [0.4.1]
 
@@ -116,7 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.2] - 2025-01-13
 
-### Clanged
+### Changed
 
 - Adapted to LeviLamina 1.0.0-rc.3 and BDS version 1.21.50.10 @zimuya4153
 

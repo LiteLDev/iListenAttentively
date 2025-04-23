@@ -2,7 +2,9 @@
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Random.h>
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/util/Random.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/VanillaBlockTypeIds.h>

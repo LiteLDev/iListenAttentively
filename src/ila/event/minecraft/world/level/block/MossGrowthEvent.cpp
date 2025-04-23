@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/MossGrowthEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/WorldBlockTarget.h>
 #include <mc/world/level/levelgen/feature/VegetationPatchFeature.h>
 

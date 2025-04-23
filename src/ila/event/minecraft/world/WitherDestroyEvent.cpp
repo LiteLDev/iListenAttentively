@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/WitherDestroyEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/actor/boss/WitherBoss.h>
+#include <mc/world/phys/AABB.h>
 
 namespace ila::mc::inline world
 {

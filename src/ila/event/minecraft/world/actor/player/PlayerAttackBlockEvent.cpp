@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerAttackBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/network/ServerPlayerBlockUseHandler.h>
+#include <mc/world/level/BlockPos.h>
 
 namespace ila::mc::inline world::inline actor::inline player
 {

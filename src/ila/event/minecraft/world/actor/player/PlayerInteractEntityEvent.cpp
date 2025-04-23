@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/actor/player/PlayerInteractEntityEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/deps/core/math/Vec3.h>
 
 namespace ila::mc::inline world::inline actor::inline player
 {
