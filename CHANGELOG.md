@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added ReceivePacket event @zimuya4153
+- Added flow from position to LiquidFlow event [#18] @zimuya4153
+- Added BlockFall event [#19] @zimuya4153
 
 ### Changed
 
@@ -157,6 +159,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#15]: https://github.com/MiracleForest/iListenAttentively-Release/issues/15
 [#16]: https://github.com/MiracleForest/iListenAttentively-Release/issues/16
 [#17]: https://github.com/MiracleForest/iListenAttentively-Release/issues/17
+[#18]: https://github.com/MiracleForest/iListenAttentively-Release/issues/18
+[#19]: https://github.com/MiracleForest/iListenAttentively-Release/issues/19
 
 [Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.1...HEAD
 [0.4.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.4.0...v0.4.1
