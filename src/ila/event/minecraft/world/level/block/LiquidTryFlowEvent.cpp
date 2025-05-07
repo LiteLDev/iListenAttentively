@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/level/block/LiquidTryFlowEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/BlockPos.h>
-#include <mc/world/level/block/LiquidBlockDynamic.h>
+#include <mc/world/level/block/LiquidBlock.h>
 
 namespace ila::mc::inline world::inline level::inline block
 {
@@ -44,8 +44,8 @@ uchar const&    LiquidTryFlowAfterEvent::flowFromDirection() const { return mFlo
 LL_TYPE_INSTANCE_HOOK(
     LiquidTryFlowEventHook,
     HookPriority::Normal,
-    LiquidBlockDynamic,
-    &LiquidBlockDynamic::_isLiquidBlocking,
+    LiquidBlock,
+    &LiquidBlock::_isLiquidBlocking,
     bool,
     BlockSource&    pRegion,
     BlockPos const& pPos,

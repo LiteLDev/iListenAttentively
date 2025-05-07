@@ -67,7 +67,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         ActorDefinitionIdentifier(ActorType::FallingBlock),
         nullptr,
         pPos.center(),
-        Vec2::ZERO()
+        0
     );
     auto actor = actorContext.tryUnwrap().transform([](Actor& actor) -> FallingBlockActor& {
         return static_cast<FallingBlockActor&>(actor);

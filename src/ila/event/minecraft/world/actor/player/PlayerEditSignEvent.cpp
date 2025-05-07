@@ -53,7 +53,7 @@ LL_TYPE_INSTANCE_HOOK(
         || (*pPacket->mData)["id"] != "Sign")
         return origin(pSource, pPacket);
 
-    auto* player = thisFor<NetEventCallback>()->_getServerPlayer(pSource, pPacket->mClientSubId);
+    auto* player = thisFor<NetEventCallback>()->_getServerPlayer(pSource, pPacket->mSenderSubId);
     if (!player) return origin(pSource, pPacket);
 
     auto* blockActor =

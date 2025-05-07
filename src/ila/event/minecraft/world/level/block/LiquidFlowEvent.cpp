@@ -3,7 +3,7 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/Block.h>
-#include <mc/world/level/block/LiquidBlockDynamic.h>
+#include <mc/world/level/block/LiquidBlock.h>
 #include <mc/world/level/material/Material.h>
 
 namespace ila::mc::inline world::inline level::inline block
@@ -51,8 +51,8 @@ static BlockPos* mFlowFromPos = nullptr;
 LL_TYPE_INSTANCE_HOOK(
     LiquidFlowEventHook1,
     HookPriority::Normal,
-    LiquidBlockDynamic,
-    &LiquidBlockDynamic::_trySpreadTo,
+    LiquidBlock,
+    &LiquidBlock::_trySpreadTo,
     void,
     BlockSource&    region,
     BlockPos const& pos,
@@ -69,8 +69,8 @@ LL_TYPE_INSTANCE_HOOK(
 LL_TYPE_INSTANCE_HOOK(
     LiquidFlowEventHook2,
     HookPriority::Normal,
-    LiquidBlockDynamic,
-    &LiquidBlockDynamic::_spread,
+    LiquidBlock,
+    &LiquidBlock::_spread,
     void,
     BlockSource&    pRegion,
     BlockPos const& pPos,

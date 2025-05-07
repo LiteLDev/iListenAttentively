@@ -8,8 +8,8 @@ add_requires("magic_enum v0.9.7")
 add_requires("nlohmann_json v3.11.3")
 
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.1.1")
-add_requires("levibuildscript 0.3.0")
+add_requires("levilamina 1.2.0-rc.1")
+add_requires("levibuildscript 0.4.0")
 
 if not has_config("vs_runtime") then
     set_runtimes("MD")
@@ -31,7 +31,6 @@ target("iListenAttentively")
         "/w45263",
         "/w44738",
         "/w45204",
-        "/O2",
         "/Ob3",
         "/Zo-"
     )
@@ -39,10 +38,9 @@ target("iListenAttentively")
         "NOMINMAX", 
         "UNICODE",
         "ILA_EXPORT",
-        "_HAS_CXX17",
-        "_HAS_CXX20",
-        "_HAS_CXX23"
+        "_HAS_CXX23=1"
     )
+    set_optimize("aggressive")
     set_configdir("$(buildir)/config")
     set_configvar("IL_WORKSPACE_FOLDER", "$(projectdir)")
     add_configfiles("src/(ila/**.h.in)")

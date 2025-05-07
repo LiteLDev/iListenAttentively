@@ -5,6 +5,7 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/BlockLegacy.h>
 #include <mc/world/level/block/ItemFrameBlock.h>
+#include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
 
 namespace ila::mc::inline world::inline actor::inline player
@@ -37,26 +38,31 @@ LL_TYPE_INSTANCE_HOOK(
     PlayerOperatedItemFrameEventHook1,
     HookPriority::Normal,
     ItemFrameBlock,
-    &ItemFrameBlock::$use,
-    bool,
-    Player&         pPlayer,
-    BlockPos const& pPos,
-    uchar           pFace
+    &ItemFrameBlock::use,
+    void,
+    BlockEvents::BlockPlayerInteractEvent& pEventData
 )
 {
-    auto blockActor =
-        static_cast<ItemFrameBlockActor*>(pPlayer.getDimensionBlockSource().getBlockEntity(pPos));
-    if (!blockActor) { return origin(pPlayer, pPos, pFace); }
+    auto* blockActor = static_cast<ItemFrameBlockActor*>(
+        pEventData.mUnk765a41.as<Player&>().getDimensionBlockSource().getBlockEntity(
+            pEventData.mUnkd82caf.as<BlockPos>()
+        )
+    );
+    if (!blockActor) { return origin(pEventData); }
     auto type        = blockActor->mItem->isNull() ? Type::Place : Type::Rotate;
-    auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(pPlayer, const_cast<BlockPos&>(pPos), type);
+    auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(
+        pEventData.mUnk765a41.as<Player&>(),
+        pEventData.mUnkd82caf.as<BlockPos>(),
+        type
+    );
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
-    auto result = origin(pPlayer, pPos, pFace);
-    if (result)
-    {
-        LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(pPlayer, const_cast<BlockPos&>(pPos), type));
-    }
-    return result;
+    if (beforeEvent.isCancelled()) { return; }
+    origin(pEventData);
+    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(
+        pEventData.mUnk765a41.as<Player&>(),
+        pEventData.mUnkd82caf.as<BlockPos>(),
+        type
+    ));
 }
 
 LL_TYPE_INSTANCE_HOOK(
@@ -102,6 +108,6 @@ LL_TYPE_INSTANCE_HOOK(
     );
 }
 
-Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
+Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
 
 } // namespace ila::mc::inline world::inline actor::inline player

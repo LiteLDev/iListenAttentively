@@ -6,6 +6,7 @@
 #include <mc/world/events/ActorEventCoordinator.h>
 #include <mc/world/events/BlockSourceHandle.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
+#include <mc/world/level/Block/Block.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
@@ -54,7 +55,26 @@ LL_TYPE_INSTANCE_HOOK(
     auto  randomPos = getRandomNearbyBlockPos(mEnderman.getPosition());
     auto& beforeBlock     = region.getBlock(randomPos);
 
-    if (!EnderMan::mMayTake().contains(&beforeBlock)) { return; }
+    // if (!EnderMan::mMayTake().contains(&beforeBlock)) { return; }
+    // clang-format off
+    constexpr static auto mMayTake = {
+        "minecraft:grass_block",  "minecraft:dirt",           "minecraft:coarse_dirt",
+        "minecraft:podzol",       "minecraft:sand",           "minecraft:red_sand",
+        "minecraft:gravel",       "minecraft:crimson_roots",  "minecraft:warped_roots",
+        "minecraft:dandelion",    "minecraft:poppy",          "minecraft:brown_mushroom",
+        "minecraft:red_mushroom", "minecraft:crimson_fungus", "minecraft:warped_fungus",
+        "minecraft:tnt",          "minecraft:cactus",         "minecraft:clay",
+        "minecraft:pumpkin",      "minecraft:carved_pumpkin", "minecraft:melon_block",
+        "minecraft:mycelium",     "minecraft:warped_nylium",  "minecraft:crimson_nylium",
+        "minecraft:dirt_with_roots", "minecraft:cactus_flower"
+    };
+    // clang-format on
+    if (!std::any_of(mMayTake.begin(), mMayTake.end(), [&beforeBlock](auto& name) {
+            return beforeBlock.getTypeName() == name;
+        }))
+    {
+        return;
+    }
 
     auto beforeEvent = EndermanTakeBlockBeforeEvent(mEnderman, randomPos);
     LLEventBus.publish(beforeEvent);
@@ -63,24 +83,24 @@ LL_TYPE_INSTANCE_HOOK(
     auto& afterBlock = region.getBlock(randomPos);
 
     // clang-format off
-    constexpr static auto makeBlockSourceHandle = [](BlockSource& region) -> std::shared_ptr<BlockSourceHandle> {
-        auto blockSourceHandle = std::make_shared<BlockSourceHandle>();
-        blockSourceHandle->mUnk525e9e.as<BlockSource*>() = &region;
-        return blockSourceHandle;
-    };
+    // constexpr static auto makeBlockSourceHandle = [](BlockSource& region) -> std::shared_ptr<BlockSourceHandle> {
+    //     auto blockSourceHandle = std::make_shared<BlockSourceHandle>();
+    //     blockSourceHandle->mUnk525e9e.as<BlockSource*>() = &region;
+    //     return blockSourceHandle;
+    // };
     
-    auto const& actorGriefingBlockEvent = ActorGriefingBlockEvent {
-        mEnderman.getWeakEntity(),
-        &afterBlock,
-        randomPos,
-        makeBlockSourceHandle(region)
-    };
+    // auto const& actorGriefingBlockEvent = ActorGriefingBlockEvent {
+    //     mEnderman.getWeakEntity(),
+    //     &afterBlock,
+    //     randomPos,
+    //     makeBlockSourceHandle(region)
+    // };
     // clang-format on
 
-    auto event = mEnderman.getLevel().getActorEventCoordinator().sendEvent(
-        EventRef<ActorGameplayEvent<CoordinatorResult>>(actorGriefingBlockEvent)
-    );
-    if (event == CoordinatorResult::Cancel) { return; }
+    // auto event = mEnderman.getLevel().getActorEventCoordinator().sendEvent(
+    //     EventRef<ActorGameplayEvent<CoordinatorResult>>(actorGriefingBlockEvent)
+    // );
+    // if (event == CoordinatorResult::Cancel) { return; }
 
     mEnderman.setCarryingBlock(afterBlock);
 
