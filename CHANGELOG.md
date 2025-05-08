@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Hard coding for EndermanTakeBlock event @zimuya4153
+
 ## [0.5.0-rc.1] - 2025-05-08
 
 ### Changed
