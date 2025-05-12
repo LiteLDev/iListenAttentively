@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Added ipAndPort info in ServerPongEvent @zimuya4153
+
 ### Fixed
 
 - Fixed Hard coding for EndermanTakeBlock event @zimuya4153
