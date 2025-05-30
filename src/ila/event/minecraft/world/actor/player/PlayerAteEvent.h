@@ -1,6 +1,8 @@
 #pragma once
 #include "ila/base/Macro.h"
-#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/player/ServerPlayerEvent.h>
+
 
 // clang-format off
 class ItemStack;
@@ -8,14 +10,14 @@ class ItemStack;
 
 namespace ila::mc::inline world::inline actor::inline player
 {
-class PlayerAteEvent final : public ll::event::PlayerEvent
+class PlayerAteBeforeEvent final : public ll::event::Cancellable<ll::event::ServerPlayerEvent>
 {
 protected:
     ItemStack& mItem;
 
 public:
-    constexpr explicit PlayerAteEvent(Player& player, ItemStack& item)
-        : PlayerEvent(player)
+    constexpr explicit PlayerAteBeforeEvent(ServerPlayer& player, ItemStack& item)
+        : ll::event::Cancellable<ll::event::ServerPlayerEvent>(player)
         , mItem(item)
     {
     }
@@ -25,4 +27,21 @@ public:
 
     ILNDAPI ItemStack& item() const;
 };
-} // namespace ila::mc::inline player
+class PlayerAteAfterEvent final : public ll::event::ServerPlayerEvent
+{
+protected:
+    int mSlot;
+
+public:
+    constexpr explicit PlayerAteAfterEvent(ServerPlayer& player, int slot)
+        : ll::event::ServerPlayerEvent(player)
+        , mSlot(slot)
+    {
+    }
+
+    ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
+
+    ILNDAPI int slot() const;
+};
+} // namespace ila::mc::inline world::inline actor::inline player
