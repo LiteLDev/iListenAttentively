@@ -7,6 +7,7 @@
 #include <ll/api/event/ListenerBase.h>
 #include <ll/api/io/Logger.h>
 #include <ll/api/memory/Hook.h>
+#include <mc/network/MinecraftPacketIds.h>
 
 #ifndef SelfLogger
 #    define SelfLogger ll::mod::NativeMod::current()->getLogger()
@@ -91,3 +92,10 @@ constexpr FuncPtr resolveIdentifier(ll::memory::FuncPtr func)
     return func;
 }
 } // namespace ll::memory
+
+template<>
+struct magic_enum::customize::enum_range<MinecraftPacketIds>
+{
+    static constexpr int min = static_cast<int>(MinecraftPacketIds::KeepAlive);
+    static constexpr int max = static_cast<int>(MinecraftPacketIds::EndId);
+};

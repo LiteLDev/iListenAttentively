@@ -46,44 +46,44 @@ bool const& PlayerCloseContainerAfterEvent::serverInitiatedClose() const { retur
 Event_Listener_Factory(PlayerCloseContainerBefore)
 {
     nextTick([this]() -> void { // Prevent deadlock
-        mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::server::SendPacketBeforeEvent>(
-            [](ila::mc::server::SendPacketBeforeEvent& event) -> void {
-                if (event.packet().getId() != MinecraftPacketIds::ContainerClose || event.isBroadcast()
-                    || !event.player().has_value())
-                {
-                    return;
+        mListeners.emplace_back(
+            LLEventBus.emplaceListener<ila::mc::server::SendPacketBeforeEvent<ContainerClosePacket>>(
+                [](ila::mc::server::SendPacketBeforeEvent<ContainerClosePacket>& event) -> void {
+                    if (auto player = event.player(); player)
+                    {
+                        auto& packet = event.packet();
+                        LLEventBus.publish(PlayerCloseContainerBeforeEvent(
+                            *event.player(),
+                            packet.mContainerId,
+                            packet.mContainerType,
+                            packet.mServerInitiatedClose
+                        ));
+                    }
                 }
-                auto& packet = static_cast<ContainerClosePacket&>(event.packet());
-                LLEventBus.publish(PlayerCloseContainerBeforeEvent(
-                    *event.player(),
-                    packet.mContainerId,
-                    packet.mContainerType,
-                    packet.mServerInitiatedClose
-                ));
-            }
-        ));
+            )
+        );
     });
 }
 
 Event_Listener_Factory(PlayerCloseContainerAfter)
 {
     nextTick([this]() -> void { // Prevent deadlock
-        mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::server::SendPacketAfterEvent>(
-            [](ila::mc::server::SendPacketAfterEvent& event) -> void {
-                if (event.packet().getId() != MinecraftPacketIds::ContainerClose || event.isBroadcast()
-                    || !event.player().has_value())
-                {
-                    return;
+        mListeners.emplace_back(
+            LLEventBus.emplaceListener<ila::mc::server::SendPacketAfterEvent<ContainerClosePacket>>(
+                [](ila::mc::server::SendPacketAfterEvent<ContainerClosePacket>& event) -> void {
+                    if (auto player = event.player(); player)
+                    {
+                        auto& packet = event.packet();
+                        LLEventBus.publish(PlayerCloseContainerAfterEvent(
+                            *event.player(),
+                            packet.mContainerId,
+                            packet.mContainerType,
+                            packet.mServerInitiatedClose
+                        ));
+                    }
                 }
-                auto& packet = static_cast<ContainerClosePacket const&>(event.packet());
-                LLEventBus.publish(PlayerCloseContainerAfterEvent(
-                    *event.player(),
-                    packet.mContainerId,
-                    packet.mContainerType,
-                    packet.mServerInitiatedClose
-                ));
-            }
-        ));
+            )
+        );
     });
 }
 

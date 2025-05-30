@@ -1,120 +1,131 @@
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
-#include <mc/entity/components/UserEntityIdentifierComponent.h>
-#include <mc/network/LoopbackPacketSender.h>
+#include <ll/api/utils/StringUtils.h>
+#include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
+#include <mc/network/packet/Packet.h>
+
 
 namespace ila::mc::inline server
 {
 
-void SendPacketBeforeEvent::serialize(CompoundTag& nbt) const
+void ISendPacketBeforeEvent::serialize(CompoundTag& nbt) const
 {
-    Cancellable::serialize(nbt);
-    nbt["packetSender"] = serializeRefObj(packetSender());
-    nbt["packet"]       = serializeRefObj(packet());
-    nbt["broadcast"]    = isBroadcast();
-    nbt["player"]       = serializePtrObj(player().as_ptr());
+    nbt["networkSystem"]     = serializeRefObj(networkSystem());
+    nbt["packet"]            = serializeRefObj(packet());
+    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
+    nbt["senderSubId"]       = magic_enum::enum_name(senderSubId());
 }
-LoopbackPacketSender&      SendPacketBeforeEvent::packetSender() const { return mPacketSender; }
-Packet&                    SendPacketBeforeEvent::packet() const { return mPacket; }
-bool const&                SendPacketBeforeEvent::isBroadcast() const { return mIsBroadcast; }
-optional_ref<ServerPlayer> SendPacketBeforeEvent::player() const { return mPlayer; }
-
-void SendPacketAfterEvent::serialize(CompoundTag& nbt) const
+void ISendPacketBeforeEvent::deserialize(CompoundTag const& nbt)
 {
-    Event::serialize(nbt);
-    nbt["packetSender"] = serializeRefObj(packetSender());
-    nbt["packet"]       = serializeRefObj(packet());
-    nbt["broadcast"]    = isBroadcast();
-    nbt["player"]       = serializePtrObj(player().as_ptr());
+    senderSubId() =
+        magic_enum::enum_cast<SubClientId>(nbt["senderSubId"].get<StringTag>()).value_or(senderSubId());
 }
-LoopbackPacketSender&      SendPacketAfterEvent::packetSender() const { return mPacketSender; }
-Packet const&              SendPacketAfterEvent::packet() const { return mPacket; }
-bool const&                SendPacketAfterEvent::isBroadcast() const { return mIsBroadcast; }
-optional_ref<ServerPlayer> SendPacketAfterEvent::player() const { return mPlayer; }
-
-LL_TYPE_INSTANCE_HOOK(
-    SendPacketEventHook1,
-    HookPriority::Normal,
-    LoopbackPacketSender,
-    &LoopbackPacketSender::$sendToClient,
-    void,
-    UserEntityIdentifierComponent const* pUser,
-    Packet const&                        pPacket
-)
+NetworkSystem&             ISendPacketBeforeEvent::networkSystem() const { return mNetworkSystem; }
+Packet&                    ISendPacketBeforeEvent::packet() const { return mPacket; }
+NetworkIdentifier const&   ISendPacketBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
+SubClientId&               ISendPacketBeforeEvent::senderSubId() const { return mSenderSubId; }
+optional_ref<ServerPlayer> ISendPacketBeforeEvent::player() const
 {
-    optional_ref<ServerPlayer> player = std::nullopt;
-    ll::service::getServerNetworkHandler().and_then([&pUser, &player](ServerNetworkHandler& handler) -> bool {
-        player = handler._getServerPlayer(pUser->mNetworkId, pUser->mClientSubId);
-        return true;
-    });
-    auto beforeEvent = SendPacketBeforeEvent(*this, const_cast<Packet&>(pPacket), false, player);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pUser, pPacket);
-    LLEventBus.publish(SendPacketAfterEvent(*this, pPacket, false, player));
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), senderSubId());
+}
+
+void ISendPacketAfterEvent::serialize(CompoundTag& nbt) const
+{
+    nbt["networkSystem"]     = serializeRefObj(networkSystem());
+    nbt["packet"]            = serializeRefObj(packet());
+    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
+    nbt["senderSubId"]       = magic_enum::enum_name(senderSubId());
+}
+NetworkSystem&             ISendPacketAfterEvent::networkSystem() const { return mNetworkSystem; }
+Packet const&              ISendPacketAfterEvent::packet() const { return mPacket; }
+NetworkIdentifier const&   ISendPacketAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
+SubClientId const&         ISendPacketAfterEvent::senderSubId() const { return mSenderSubId; }
+optional_ref<ServerPlayer> ISendPacketAfterEvent::player() const
+{
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), senderSubId());
 }
 
 LL_TYPE_INSTANCE_HOOK(
-    SendPacketEventHook2,
+    SendPacketEventHook,
     HookPriority::Normal,
-    LoopbackPacketSender,
-    &LoopbackPacketSender::$sendToClient,
+    NetworkSystem,
+    &NetworkSystem::send,
     void,
-    NetworkIdentifier const& pUser,
-    Packet const&            pPacket,
-    SubClientId              pId
+    NetworkIdentifier const& id,
+    Packet const&            packet,
+    SubClientId              senderSubId
 )
 {
-    optional_ref<ServerPlayer> player = std::nullopt;
-    ll::service::getServerNetworkHandler().and_then(
-        [&pUser, &pId, &player](ServerNetworkHandler& handler) -> bool {
-            player = handler._getServerPlayer(pUser, pId);
-            return true;
+    auto& eventBus    = LLEventBus;
+    auto  beforeEvent = SendPacketBeforeEvent<Packet>(*this, const_cast<Packet&>(packet), id, senderSubId);
+    eventBus.publish(beforeEvent);
+    eventBus.publish(beforeEvent, [&]() -> ll::event::EventIdView {
+        auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
+        if (!packetName.ends_with("Packet")) packetName += "Packet";
+        return ll::event::EventIdView { fmt::format(
+            "{0}<class {1}>",
+            ll::reflection::type_name_v<SendPacketBeforeEvent<Packet>>,
+            packetName
+        ) };
+    }());
+    if (beforeEvent.isCancelled()) return;
+    origin(id, packet, senderSubId);
+    auto afterEvent = SendPacketAfterEvent(*this, const_cast<Packet&>(packet), id, senderSubId);
+    eventBus.publish(afterEvent);
+    eventBus.publish(afterEvent, [&]() -> ll::event::EventIdView {
+        auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
+        if (!packetName.ends_with("Packet")) packetName += "Packet";
+        return ll::event::EventIdView { fmt::format(
+            "{0}<class {1}>",
+            ll::reflection::type_name_v<SendPacketAfterEvent<Packet>>,
+            packetName
+        ) };
+    }());
+}
+
+static std::unique_ptr<ll::event::EmitterBase> SendPacketEventEmitterFactory();
+class SendPacketEventEventEmitter : public ll::event::Emitter<SendPacketEventEmitterFactory>
+{
+private:
+    static inline bool reg = []() -> bool {
+        constexpr static auto addEvent = [](std::string const& eventName) -> void {
+            LLEventBus.setEventEmitter(
+                SendPacketEventEmitterFactory,
+                ll::event::EventIdView { fmt::format(
+                    "{0}<class {1}>",
+                    ll::reflection::type_name_v<SendPacketBeforeEvent<Packet>>,
+                    eventName
+                ) }
+            );
+            LLEventBus.setEventEmitter(
+                SendPacketEventEmitterFactory,
+                ll::event::EventIdView { fmt::format(
+                    "{0}<class {1}>",
+                    ll::reflection::type_name_v<SendPacketAfterEvent<Packet>>,
+                    eventName
+                ) }
+            );
+        };
+        for (auto& [id, name] : magic_enum::enum_entries<MinecraftPacketIds>())
+        {
+            if (id == MinecraftPacketIds::EndId) continue;
+            auto packetName = std::string { name };
+            if (!packetName.ends_with("Packet")) packetName += "Packet";
+            addEvent(packetName);
         }
-    );
-    auto beforeEvent = SendPacketBeforeEvent(*this, const_cast<Packet&>(pPacket), false, player);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pUser, pPacket, pId);
-    LLEventBus.publish(SendPacketAfterEvent(*this, pPacket, false, player));
-}
+        addEvent("Packet");
+        return true;
+    }();
 
-LL_TYPE_INSTANCE_HOOK(
-    SendPacketEventHook3,
-    HookPriority::Normal,
-    LoopbackPacketSender,
-    &LoopbackPacketSender::$sendBroadcast,
-    void,
-    Packet const& pPacket
-)
+public:
+    SendPacketEventEventEmitter() { ll::memory::HookRegistrar<SendPacketEventHook>().hook(); }
+    ~SendPacketEventEventEmitter() { ll::memory::HookRegistrar<SendPacketEventHook>().unhook(); }
+};
+static std::unique_ptr<ll::event::EmitterBase> SendPacketEventEmitterFactory()
 {
-    auto beforeEvent = SendPacketBeforeEvent(*this, const_cast<Packet&>(pPacket), true, std::nullopt);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pPacket);
-    LLEventBus.publish(SendPacketAfterEvent(*this, pPacket, true, std::nullopt));
+    return std::make_unique<SendPacketEventEventEmitter>();
 }
-
-LL_TYPE_INSTANCE_HOOK(
-    SendPacketEventHook4,
-    HookPriority::Normal,
-    LoopbackPacketSender,
-    &LoopbackPacketSender::$sendBroadcast,
-    void,
-    NetworkIdentifier const& pUser,
-    SubClientId              pId,
-    Packet const&            pPacket
-)
-{
-    auto beforeEvent = SendPacketBeforeEvent(*this, const_cast<Packet&>(pPacket), true, std::nullopt);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pUser, pId, pPacket);
-    LLEventBus.publish(SendPacketAfterEvent(*this, pPacket, true, std::nullopt));
-}
-
-Event_Hook_Factory(SendPacket, <SendPacketEventHook1, SendPacketEventHook2, SendPacketEventHook3, SendPacketEventHook4>);
 
 } // namespace ila::mc::inline server
