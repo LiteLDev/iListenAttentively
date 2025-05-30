@@ -53,8 +53,15 @@ ushort&                   ServerPongBeforeEvent::localPort() const { return mLoc
 ushort&                   ServerPongBeforeEvent::localPortV6() const { return mLocalPortV6; }
 std::vector<std::string>& ServerPongBeforeEvent::other() const { return mOther; }
 std::string const&        ServerPongBeforeEvent::ipAndPort() const { return mIpAndPort; }
-std::string ServerPongBeforeEvent::ip() const { return mIpAndPort.substr(0, mIpAndPort.find('|')); }
-ushort ServerPongBeforeEvent::port() const { return std::stoi(mIpAndPort.substr(mIpAndPort.find('|') + 1)); }
+std::string ServerPongBeforeEvent::ip() const {
+    auto address = ipAndPort();
+    return address.substr(0, address.find('|'));
+}
+ushort ServerPongBeforeEvent::port() const
+{
+    auto address = ipAndPort();
+    return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
+}
 
 void ServerPongAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -85,8 +92,16 @@ ushort const&                   ServerPongAfterEvent::localPort() const { return
 ushort const&                   ServerPongAfterEvent::localPortV6() const { return mLocalPortV6; }
 std::vector<std::string> const& ServerPongAfterEvent::other() const { return mOther; }
 std::string const&              ServerPongAfterEvent::ipAndPort() const { return mIpAndPort; }
-std::string ServerPongAfterEvent::ip() const { return mIpAndPort.substr(0, mIpAndPort.find('|')); }
-ushort ServerPongAfterEvent::port() const { return std::stoi(mIpAndPort.substr(mIpAndPort.find('|') + 1)); }
+std::string                     ServerPongAfterEvent::ip() const
+{
+    auto address = ipAndPort();
+    return address.substr(0, address.find('|'));
+}
+ushort ServerPongAfterEvent::port() const
+{
+    auto address = ipAndPort();
+    return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
+}
 
 LL_STATIC_HOOK(
     ServerPongEventHook,

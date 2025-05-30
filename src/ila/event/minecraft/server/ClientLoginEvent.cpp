@@ -17,10 +17,7 @@ void ClientLoginBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
     nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
 }
-ServerNetworkHandler const& ClientLoginBeforeEvent::serverNetworkHandler() const
-{
-    return mServerNetworkHandler;
-}
+ServerNetworkHandler& ClientLoginBeforeEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const& ClientLoginBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
 
 void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const
@@ -34,10 +31,7 @@ void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const
     nbt["realName"]             = realName();
     nbt["ipAndPort"]            = ipAndPort();
 }
-ServerNetworkHandler const& ClientLoginAfterEvent::serverNetworkHandler() const
-{
-    return mServerNetworkHandler;
-}
+ServerNetworkHandler&    ClientLoginAfterEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const& ClientLoginAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
 mce::UUID const&         ClientLoginAfterEvent::uuid() const { return mUuid; }
 std::string const&       ClientLoginAfterEvent::serverAuthXuid() const { return mServerAuthXuid; }
