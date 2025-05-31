@@ -8,7 +8,7 @@ add_requires("magic_enum v0.9.7")
 add_requires("nlohmann_json v3.11.3")
 
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.2.0-rc.1")
+add_requires("levilamina 1.2.0")
 add_requires("levibuildscript 0.4.0")
 
 if not has_config("vs_runtime") then

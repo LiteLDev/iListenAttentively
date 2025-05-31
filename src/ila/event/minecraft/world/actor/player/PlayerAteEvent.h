@@ -1,8 +1,7 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
-#include <ll/api/event/player/ServerPlayerEvent.h>
-
+#include <ll/api/event/player/PlayerEvent.h>
 
 // clang-format off
 class ItemStack;
@@ -10,37 +9,36 @@ class ItemStack;
 
 namespace ila::mc::inline world::inline actor::inline player
 {
-class PlayerAteBeforeEvent final : public ll::event::Cancellable<ll::event::ServerPlayerEvent>
+class PlayerAteBeforeEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
 {
 protected:
     ItemStack& mItem;
 
 public:
-    constexpr explicit PlayerAteBeforeEvent(ServerPlayer& player, ItemStack& item)
-        : ll::event::Cancellable<ll::event::ServerPlayerEvent>(player)
+    constexpr explicit PlayerAteBeforeEvent(Player& player, ItemStack& item)
+        : Cancellable(player)
         , mItem(item)
     {
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
-    ILAPI void deserialize(CompoundTag const& nbt) override;
 
     ILNDAPI ItemStack& item() const;
 };
-class PlayerAteAfterEvent final : public ll::event::ServerPlayerEvent
+
+class PlayerAteAfterEvent final : public ll::event::PlayerEvent
 {
 protected:
     int mSlot;
 
 public:
-    constexpr explicit PlayerAteAfterEvent(ServerPlayer& player, int slot)
-        : ll::event::ServerPlayerEvent(player)
+    constexpr explicit PlayerAteAfterEvent(Player& player, int slot)
+        : PlayerEvent(player)
         , mSlot(slot)
     {
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
-    ILAPI void deserialize(CompoundTag const& nbt) override;
 
     ILNDAPI int slot() const;
 };
