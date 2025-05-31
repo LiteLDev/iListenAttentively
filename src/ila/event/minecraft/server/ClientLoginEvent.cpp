@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/server/ClientLoginEvent.h"
 #include "ila/base/Gloabl.h"
+#include "ila/event/minecraft/server/ReceivePacketEvent.h"
 #include <ll/api/service/Bedrock.h>
 #include <mc/certificates/identity/GameServerToken.h>
 #include <mc/network/ConnectionRequest.h>
@@ -50,7 +51,7 @@ std::string ClientLoginAfterEvent::port() const
 }
 void ClientLoginAfterEvent::disConnectClient(std::string reason) const
 {
-    ll::service::getServerNetworkHandler()->disconnectClient(
+    serverNetworkHandler().disconnectClient(
         networkIdentifier(),
         Connection::DisconnectFailReason::Kicked,
         reason,
@@ -59,32 +60,34 @@ void ClientLoginAfterEvent::disConnectClient(std::string reason) const
     );
 }
 
-LL_TYPE_INSTANCE_HOOK(
-    ClientLoginEventHook,
-    HookPriority::Normal,
-    ServerNetworkHandler,
-    &ServerNetworkHandler::$handle,
-    void,
-    NetworkIdentifier const& pSource,
-    LoginPacket const&       pPacket
-)
+Event_Listener_Factory(ClientLoginBefore)
 {
-    auto beforeEvent = ClientLoginBeforeEvent(*this, pSource);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pSource, pPacket);
-    auto& cert = pPacket.mConnectionRequest->mGameServerToken;
-    LLEventBus.publish(ClientLoginAfterEvent(
-        *this,
-        pSource,
-        cert->getIdentity(),
-        cert->getXuid(false),
-        cert->getXuid(true),
-        cert->getIdentityName(),
-        pSource.getIPAndPort()
+    mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketBeforeEvent<LoginPacket>>(
+        [](ila::mc::ReceivePacketBeforeEvent<LoginPacket>& event) -> void {
+            auto beforeEvent =
+                ClientLoginBeforeEvent(*ll::service::getServerNetworkHandler(), event.networkIdentifier());
+            LLEventBus.publish(beforeEvent);
+            if (beforeEvent.isCancelled()) { event.cancel(); }
+        }
     ));
 }
 
-Event_Hook_Factory(ClientLogin, <ClientLoginEventHook>);
+Event_Listener_Factory(ClientLoginAfter)
+{
+    mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketAfterEvent<LoginPacket>>(
+        [](ila::mc::ReceivePacketAfterEvent<LoginPacket>& event) -> void {
+            auto& cert = event.packet().mConnectionRequest->mGameServerToken;
+            LLEventBus.publish(ClientLoginAfterEvent(
+                *ll::service::getServerNetworkHandler(),
+                event.networkIdentifier(),
+                cert->getIdentity(),
+                cert->getXuid(false),
+                cert->getXuid(true),
+                cert->getIdentityName(),
+                event.networkIdentifier().getIPAndPort()
+            ));
+        }
+    ));
+}
 
 } // namespace ila::mc::inline server
