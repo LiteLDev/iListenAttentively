@@ -5,8 +5,8 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/BlockLegacy.h>
 #include <mc/world/level/block/ItemFrameBlock.h>
-#include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
+#include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
 
 namespace ila::mc::inline world::inline actor::inline player
 {
@@ -18,10 +18,7 @@ void PlayerOperatedItemFrameBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["type"] = magic_enum::enum_name(type());
 }
 BlockPos const& PlayerOperatedItemFrameBeforeEvent::blockPos() const { return mBlockPos; }
-PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::type() const
-{
-    return mType;
-}
+PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::type() const { return mType; }
 
 void PlayerOperatedItemFrameAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -44,25 +41,15 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     auto* blockActor = static_cast<ItemFrameBlockActor*>(
-        pEventData.mUnk765a41.as<Player&>().getDimensionBlockSource().getBlockEntity(
-            pEventData.mUnkd82caf.as<BlockPos>()
-        )
+        pEventData.mPlayer.getDimensionBlockSource().getBlockEntity(pEventData.mPos)
     );
     if (!blockActor) { return origin(pEventData); }
     auto type        = blockActor->mItem->isNull() ? Type::Place : Type::Rotate;
-    auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(
-        pEventData.mUnk765a41.as<Player&>(),
-        pEventData.mUnkd82caf.as<BlockPos>(),
-        type
-    );
+    auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(pEventData.mPlayer, pEventData.mPos, type);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pEventData);
-    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(
-        pEventData.mUnk765a41.as<Player&>(),
-        pEventData.mUnkd82caf.as<BlockPos>(),
-        type
-    ));
+    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(pEventData.mPlayer, pEventData.mPos, type));
 }
 
 LL_TYPE_INSTANCE_HOOK(
