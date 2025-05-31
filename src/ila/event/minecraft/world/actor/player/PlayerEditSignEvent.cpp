@@ -22,11 +22,11 @@ void PlayerEditSignBeforeEvent::deserialize(CompoundTag const& nbt)
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
     pos().z = nbt["pos"][2];
-    text()  = nbt["text"].get<StringTag>();
+    text()  = nbt["text"];
 }
 BlockPos&           PlayerEditSignBeforeEvent::pos() const { return mPos; }
 SignTextSide const& PlayerEditSignBeforeEvent::textSide() const { return mTextSide; }
-StringTag&          PlayerEditSignBeforeEvent::text() const { return mText; }
+std::string&        PlayerEditSignBeforeEvent::text() const { return mText; }
 
 void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const
 {
@@ -37,7 +37,7 @@ void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const
 }
 BlockPos const&     PlayerEditSignAfterEvent::pos() const { return mPos; }
 SignTextSide const& PlayerEditSignAfterEvent::textSide() const { return mTextSide; }
-StringTag const&    PlayerEditSignAfterEvent::text() const { return mText; }
+std::string const&  PlayerEditSignAfterEvent::text() const { return mText; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerEditSignEventHook,
