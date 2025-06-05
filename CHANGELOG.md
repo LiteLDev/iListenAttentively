@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added ipAndPort info in ServerPongEvent @zimuya4153
 - Change ServerNetworkHandler to non-const @zimuya4153
 - Refactor SendPacket, ReceivePacket, ClientLogin event @zimuya4153
+- Optimize client disconnection handling for ClientLogin event @zimuya4153
 
 ### Fixed
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
+#include <optional>
 
 // clang-format off
 namespace mce { class UUID; }
@@ -37,23 +38,25 @@ public:
 class ClientLoginAfterEvent final : public ll::event::Event
 {
 protected:
-    ServerNetworkHandler&    mServerNetworkHandler;
-    NetworkIdentifier const& mNetworkIdentifier;
-    mce::UUID const&         mUuid;
-    std::string const&       mServerAuthXuid;
-    std::string const&       mClientAuthXuid;
-    std::string const&       mRealName;
-    std::string const&       mIpAndPort;
+    ServerNetworkHandler&                    mServerNetworkHandler;
+    NetworkIdentifier const&                 mNetworkIdentifier;
+    mce::UUID const&                         mUuid;
+    std::string const&                       mServerAuthXuid;
+    std::string const&                       mClientAuthXuid;
+    std::string const&                       mRealName;
+    std::string const&                       mIpAndPort;
+    std::optional<std::vector<std::string>>& mKickReasons;
 
 public:
     constexpr explicit ClientLoginAfterEvent(
-        ServerNetworkHandler&    serverNetworkHandler,
-        NetworkIdentifier const& networkIdentifier,
-        mce::UUID const&         uuid,
-        std::string const&       serverAuthXuid,
-        std::string const&       clientAuthXuid,
-        std::string const&       realName,
-        std::string const&       ipAndPort
+        ServerNetworkHandler&                    serverNetworkHandler,
+        NetworkIdentifier const&                 networkIdentifier,
+        mce::UUID const&                         uuid,
+        std::string const&                       serverAuthXuid,
+        std::string const&                       clientAuthXuid,
+        std::string const&                       realName,
+        std::string const&                       ipAndPort,
+        std::optional<std::vector<std::string>>& kickReasons
     )
         : mServerNetworkHandler(serverNetworkHandler)
         , mNetworkIdentifier(networkIdentifier)
@@ -62,6 +65,7 @@ public:
         , mClientAuthXuid(clientAuthXuid)
         , mRealName(realName)
         , mIpAndPort(ipAndPort)
+        , mKickReasons(kickReasons)
     {
     }
 
@@ -76,7 +80,7 @@ public:
     ILNDAPI std::string const& ipAndPort() const;
     ILNDAPI std::string ip() const;
     ILNDAPI std::string port() const;
-    ILAPI void          disConnectClient(std::string reason = "") const;
+    ILAPI void          disConnectClient(std::string const& reason = {}) const;
 };
 
 } // namespace ila::mc::inline server

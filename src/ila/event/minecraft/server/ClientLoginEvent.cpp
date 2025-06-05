@@ -49,15 +49,10 @@ std::string ClientLoginAfterEvent::port() const
     auto address = ipAndPort();
     return address.substr(address.find("|") + 1);
 }
-void ClientLoginAfterEvent::disConnectClient(std::string reason) const
+void ClientLoginAfterEvent::disConnectClient(std::string const& reason) const
 {
-    serverNetworkHandler().disconnectClient(
-        networkIdentifier(),
-        Connection::DisconnectFailReason::Kicked,
-        reason,
-        std::nullopt,
-        false
-    );
+    if (!mKickReasons) mKickReasons.emplace();
+    if (!reason.empty()) mKickReasons->emplace_back(reason);
 }
 
 Event_Listener_Factory(ClientLoginBefore)
@@ -77,6 +72,7 @@ Event_Listener_Factory(ClientLoginAfter)
     mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketAfterEvent<LoginPacket>>(
         [](ila::mc::ReceivePacketAfterEvent<LoginPacket>& event) -> void {
             auto& cert = event.packet().mConnectionRequest->mGameServerToken;
+            std::optional<std::vector<std::string>> kickReasons;
             LLEventBus.publish(ClientLoginAfterEvent(
                 *ll::service::getServerNetworkHandler(),
                 event.networkIdentifier(),
@@ -84,8 +80,19 @@ Event_Listener_Factory(ClientLoginAfter)
                 cert->getXuid(false),
                 cert->getXuid(true),
                 cert->getIdentityName(),
-                event.networkIdentifier().getIPAndPort()
+                event.networkIdentifier().getIPAndPort(),
+                kickReasons
             ));
+            if (kickReasons)
+            {
+                ll::service::getServerNetworkHandler()->disconnectClient(
+                    event.networkIdentifier(),
+                    Connection::DisconnectFailReason::Kicked,
+                    fmt::to_string(fmt::join(*kickReasons, "§r\n\n")),
+                    std::nullopt,
+                    false
+                );
+            }
         }
     ));
 }
