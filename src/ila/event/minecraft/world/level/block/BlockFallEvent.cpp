@@ -64,7 +64,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     auto actorContext = pRegion.getLevel().getActorFactory().createSpawnedActor(
-        ActorDefinitionIdentifier(ActorType::FallingBlock),
+        ActorDefinitionIdentifier(ActorType::FallingBlock, ""),
         nullptr,
         pPos.center(),
         0

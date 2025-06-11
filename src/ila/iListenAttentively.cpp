@@ -40,22 +40,6 @@ std::string getDimensionName(DimensionType const& dimId)
     return getDimensionName(*ll::service::getLevel()->getOrCreateDimension(dimId).lock());
 }
 DimensionType getDimensionId(std::string const& dimName) { return VanillaDimensions::fromString(dimName); }
-NetworkIdentifier& getNetworkIdentifier(NetworkPeer& peer)
-{
-    static ll::DenseMap<NetworkPeer*, optional_ref<NetworkIdentifier>> mMap;
-    if (auto it = mMap.find(&peer); it != mMap.end() && it->first && it->second.has_value()) { return it->second; }
-    auto& connections =
-        ll::service::getNetworkSystem()->mUnk61fe2a.as<std::vector<std::unique_ptr<NetworkConnection>>>();
-    auto result = std::find_if(
-        connections.begin(),
-        connections.end(),
-        [&peer](std::unique_ptr<NetworkConnection>& connection) -> bool {
-            return connection->mPeer.get() == &peer;
-        }
-    );
-    if (result != connections.end()) { return mMap[&peer] = result->get()->mId.get(); }
-    std::unreachable();
-}
 
 } // namespace ila
 

@@ -47,7 +47,7 @@ void EndermanTakeBlockAfterEvent::serialize(CompoundTag& nbt) const
 EnderMan&       EndermanTakeBlockAfterEvent::self() const { return static_cast<EnderMan&>(MobEvent::self()); }
 BlockPos const& EndermanTakeBlockAfterEvent::pos() const { return mPos; }
 
-LL_TYPE_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     EndermanTakeBlockHook,
     HookPriority::Low,
     EndermanTakeBlockGoal,
@@ -59,7 +59,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto  randomPos = getRandomNearbyBlockPos(mEnderman.getPosition());
     auto& beforeBlock     = region.getBlock(randomPos);
 
-    static auto* mMayTake = reinterpret_cast<std::unordered_set<Block*>*>(ll::sys_utils::getImageRange().data() + 0x5654FB0);
+    static auto* mMayTake = reinterpret_cast<std::unordered_set<Block*>*>(ll::sys_utils::getImageRange().data() + 0X5983D90);
     if (
         !std::any_of(
             mMayTake->begin(),

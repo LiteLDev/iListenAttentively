@@ -21,31 +21,23 @@ void SpawnWanderingTraderBeforeEvent::deserialize(CompoundTag const& nbt)
 }
 BlockPos& SpawnWanderingTraderBeforeEvent::pos() const { return mPos; }
 
-void SpawnWanderingTraderAfterEvent::serialize(CompoundTag& nbt) const
-{
-    WorldEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimId"] = getDimensionName(blockSource());
-}
-BlockPos const& SpawnWanderingTraderAfterEvent::pos() const { return mPos; }
-
 LL_TYPE_INSTANCE_HOOK(
     SpawnWanderingTraderEventHook,
     HookPriority::Normal,
     WanderingTraderScheduler,
-    &WanderingTraderScheduler::_spawnWanderingTraderAtPos,
-    void,
+    &WanderingTraderScheduler::_canSpawnAtPosition,
+    bool,
     BlockPos const& pPos,
     BlockSource&    pRegion
 )
 {
+    if (!origin(pPos, pRegion)) { return false; }
     auto beforeEvent = SpawnWanderingTraderBeforeEvent(pRegion, const_cast<BlockPos&>(pPos));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pPos, pRegion);
-    LLEventBus.publish(SpawnWanderingTraderAfterEvent(pRegion, pPos));
+    if (beforeEvent.isCancelled()) { return false; }
+    return true;
 }
 
-Event_Hook_Factory(SpawnWanderingTrader, <SpawnWanderingTraderEventHook>);
+Event_Hook_Factory_Base(SpawnWanderingTraderBefore, <SpawnWanderingTraderEventHook>);
 
 } // namespace ila::mc::inline world

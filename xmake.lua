@@ -2,13 +2,8 @@ add_rules("mode.debug", "mode.release")
 
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
--- Dependencies from xmake-repo.
-add_requires("fmt 10.2.1")
-add_requires("magic_enum v0.9.7")
-add_requires("nlohmann_json v3.11.3")
-
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.2.0")
+add_requires("levilamina 1.3.0")
 add_requires("levibuildscript 0.4.0")
 
 if not has_config("vs_runtime") then
