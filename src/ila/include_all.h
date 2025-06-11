@@ -35,7 +35,6 @@
 #include "ila/event/minecraft/world/actor/player/PlayerDropItemEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerEditSignEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerInteractEntityEvent.h"
-#include "ila/event/minecraft/world/actor/player/PlayerMoveEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerOpenContainerEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/event/minecraft/world/actor/player/PlayerRequestItemActionEvent.h"
