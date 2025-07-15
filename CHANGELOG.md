@@ -13,20 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-
 ## [0.7.0] - 2025-07-15
 
 ### Fixed
 
 - Adapted to LeviLamina 1.4.0 and bds 1.21.93.1 @zimuya4153
 
-
 ## [0.6.0] - 2025-06-12
 
 ### Changed
 
 - Adapted to LeviLamina 1.3.0 and bds 1.21.80.03 @zimuya4153
-
 
 ## [0.5.0] - 2025-06-11
 
@@ -65,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed deserialize of some events @zimuya4153
 - Fixed ActorDestroyBlock event crash @zimuya4153
 
-## [0.4.1]
+## [0.4.1] - 2025-04-02
 
 ### Added
 
@@ -107,7 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed some event pos deserialization @zimuya4153
 
-## [0.3.1]
+## [0.3.1] - 2025-03-01
 
 ### Added
 
@@ -121,7 +118,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed typo in local port for ServerPong event @zimuya4153
 - Fixed PlayerDropItem event crash [#10] @zimuya4153
-
 
 ## [0.3.0] - 2025-02-24
 
@@ -138,7 +134,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed the serialize and deserialize for PlayerRequestItemAction event @zimuya4153
-
 
 ## [0.2.3] - 2025-01-27
 
