@@ -53,13 +53,15 @@ LL_TYPE_INSTANCE_HOOK(
     Actor&                               projectile,
     std::shared_ptr<Potion const> const& potion,
     float                                splashRange,
+    float                                collisionMargin,
     MobEffect*                           effect,
     HitResult&                           res,
-    int                                  aux
+    int                                  aux,
+    BaseGameVersion const&               currVer
 )
 {
     for (auto actor : actors) { mSplashPotionSources[actor] = &projectile; }
-    origin(effectInst, actors, projectile, potion, splashRange, effect, res, aux);
+    origin(effectInst, actors, projectile, potion, splashRange, collisionMargin, effect, res, aux, currVer);
 }
 
 LL_TYPE_INSTANCE_HOOK(

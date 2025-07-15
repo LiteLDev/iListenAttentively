@@ -1,7 +1,5 @@
 #include "ila/event/minecraft/server/ReceivePacketEvent.h"
 #include "ila/base/Gloabl.h"
-// #include "ll/api/memory/Hook.h"
-// #include "mc/diagnostics/LogLevel.h"
 #include <ll/api/service/Bedrock.h>
 #include <mc/deps/core/debug/BedrockLog.h>
 #include <mc/deps/core/utility/ReadOnlyBinaryStream.h>
@@ -15,7 +13,7 @@
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
-#include <mc/network/packet/Packet.h>
+#include <mc/client/renderer/rendergraph/Packet.h>
 #include <mc/scripting/event_handlers/ScriptServerNetworkEventHandler.h>
 #include <mc/world/events/IncomingPacketEvent.h>
 

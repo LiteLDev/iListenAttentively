@@ -13,7 +13,6 @@
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
-BlockSourceHandle::BlockSourceHandle() = default;
 template<>
 struct MutableActorGameplayEvent<void>
 {
@@ -55,18 +54,19 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     void
 )
 {
-    auto& region    = mEnderman.getDimensionBlockSource();
-    auto  randomPos = getRandomNearbyBlockPos(mEnderman.getPosition());
-    auto& beforeBlock     = region.getBlock(randomPos);
+    auto& region      = mEnderman.getDimensionBlockSource();
+    auto  randomPos   = getRandomNearbyBlockPos(mEnderman.getPosition());
+    auto& beforeBlock = region.getBlock(randomPos);
 
-    static auto* mMayTake = reinterpret_cast<std::unordered_set<Block*>*>(ll::sys_utils::getImageRange().data() + 0X5983D90);
-    if (
-        !std::any_of(
-            mMayTake->begin(),
-            mMayTake->end(),
-            [&beforeBlock](auto& block) { return block == &beforeBlock; }
-        )
-    ) { return; }
+    static auto& mMayTake =
+        dAccess<std::unordered_set<Block*>>(ll::sys_utils::getImageRange().data(), 0x5ADF140);
+
+    if (!std::any_of(mMayTake.begin(), mMayTake.end(), [&beforeBlock](auto& block) {
+            return block == &beforeBlock;
+        }))
+    {
+        return;
+    }
 
     auto beforeEvent = EndermanTakeBlockBeforeEvent(mEnderman, randomPos);
     LLEventBus.publish(beforeEvent);
@@ -77,7 +77,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     // clang-format off
     constexpr static auto makeBlockSourceHandle = [](BlockSource& region) -> std::shared_ptr<BlockSourceHandle> {
         auto blockSourceHandle = std::make_shared<BlockSourceHandle>();
-        blockSourceHandle->mUnk525e9e.as<BlockSource*>() = &region;
+        blockSourceHandle->mSource = &region;
         return blockSourceHandle;
     };
     

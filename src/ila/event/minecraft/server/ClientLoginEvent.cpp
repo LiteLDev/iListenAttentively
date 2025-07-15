@@ -71,7 +71,7 @@ Event_Listener_Factory(ClientLoginAfter)
 {
     mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketAfterEvent<LoginPacket>>(
         [](ila::mc::ReceivePacketAfterEvent<LoginPacket>& event) -> void {
-            auto& cert = event.packet().mConnectionRequest->mGameServerToken;
+            auto& cert = event.packet().mConnectionRequest->mLegacyMultiplayerToken;
             std::optional<std::vector<std::string>> kickReasons;
             LLEventBus.publish(ClientLoginAfterEvent(
                 *ll::service::getServerNetworkHandler(),
