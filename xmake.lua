@@ -3,7 +3,7 @@ add_rules("mode.debug", "mode.release")
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.4.0")
+add_requires("levilamina 1.4.1")
 add_requires("levibuildscript 0.4.1")
 
 if not has_config("vs_runtime") then
@@ -36,13 +36,13 @@ target("iListenAttentively")
         "_HAS_CXX23=1"
     )
     set_optimize("aggressive")
-    set_configdir("$(buildir)/config")
+    set_configdir("$(builddir)/config")
     set_configvar("IL_WORKSPACE_FOLDER", "$(projectdir)")
     add_configfiles("src/(ila/**.h.in)")
     add_files("src/ila/**.cpp")
     add_files("src/ila/**.rc")
     add_headerfiles("src/(ila/**.h)")
-    add_includedirs("src", "$(buildir)/config")
+    add_includedirs("src", "$(builddir)/config")
     add_packages(
 		"levilamina",
  		"fmt",
@@ -132,7 +132,7 @@ target("iListenAttentively")
         end 
         for _, headerfile in ipairs(target:configfiles()) do
             os.cp(
-                path.join("$(buildir)/config", path.relative(string.sub(headerfile, 0, -4), "src")), 
+                path.join("$(builddir)/config", path.relative(string.sub(headerfile, 0, -4), "src")), 
                 path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
             )
         end
