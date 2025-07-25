@@ -1,7 +1,10 @@
 #include "ila/event/minecraft/world/level/levelgen/system/BiomeDecorationSystemEvent.h"
+#include "ll/api/memory/Hook.h"
+#include "ll/api/memory/Memory.h"
+#include <ila/base/Gloabl.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline system
-{
+using namespace ila::mc;
+
 // BiomeDecorationSystemEvent
 LevelChunk&        BiomeDecorationSystemEvent::levelChunk() const { return mLevelChunk; }
 std::string const& BiomeDecorationSystemEvent::pass() const { return mPass; }
@@ -22,6 +25,7 @@ IPreliminarySurfaceProvider const&         DecorateBiomeEvent::preliminarySurfac
 {
     return mPreliminarySurfaceProvider;
 }
+BlockSource& DecorateBiomeEvent::blockSource() const { return mBlockSource; }
 
 // DecorateLargeFeature1Event
 GeneratorType&     DecorateLargeFeature1Event::generatorType() const { return mGeneratorType; }
@@ -37,4 +41,81 @@ ChunkPos const& DecorateLargeFeature1Event::chunkPos() const { return mChunkPos;
 Biome const&       DecorateLargeFeature2Event::biome() const { return mBiome; }
 BlockVolumeTarget& DecorateLargeFeature2Event::target() const { return mTarget; }
 ChunkPos const&    DecorateLargeFeature2Event::chunkPos() const { return mChunkPos; }
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline system
+
+
+LL_STATIC_HOOK(
+    DecorateEventHook,
+    ll::memory::HookPriority::Normal,
+    &BiomeDecorationSystem::decorate,
+    void,
+    ::LevelChunk&                        lc,
+    ::BlockSource&                       source,
+    ::Random&                            random,
+    ::std::vector<::Biome const*>&       uniqueBiomes,
+    ::std::string const&                 pass,
+    ::IPreliminarySurfaceProvider const& preliminarySurfaceProvider
+)
+{
+    auto event = DecorateEvent(lc, source, random, uniqueBiomes, pass, preliminarySurfaceProvider);
+    LLEventBus.publish(event);
+    if (event.isCancelled()) { return; }
+    origin(lc, source, random, uniqueBiomes, pass, preliminarySurfaceProvider);
+}
+LL_STATIC_HOOK(
+    DecorateBiomeEventHook,
+    ll::memory::HookPriority::Normal,
+    &BiomeDecorationSystem::decorateBiome,
+    bool,
+    ::LevelChunk&                               lc,
+    ::BlockSource&                              source,
+    ::Random&                                   random,
+    ::gsl::span<::BiomeDecorationFeature const> featureList,
+    ::std::string const&                        pass,
+    ::Biome const*                              biome,
+    ::IPreliminarySurfaceProvider const&        preliminarySurfaceProvider
+)
+{
+    auto event = DecorateBiomeEvent(lc, source, random, featureList, pass, biome, preliminarySurfaceProvider);
+    LLEventBus.publish(event);
+    if (event.isCancelled()) { return false; }
+    return origin(lc, source, random, featureList, pass, biome, preliminarySurfaceProvider);
+}
+
+LL_STATIC_HOOK(
+    DecorateLargeFeature1EventHook,
+    ll::memory::HookPriority::Normal,
+    &BiomeDecorationSystem::decorateLargeFeature,
+    bool,
+    ::GeneratorType                             generatorType,
+    uint const&                                 seed,
+    ::BlockVolumeTarget&                        target,
+    ::Random&                                   random,
+    ::gsl::span<::BiomeDecorationFeature const> featureList,
+    ::ChunkPos const&                           pos,
+    ::std::string const&                        pass
+)
+{
+    auto event = DecorateLargeFeature1Event(generatorType, seed, target, random, featureList, pos, pass);
+    LLEventBus.publish(event);
+    if (event.isCancelled()) { return false; }
+    origin(generatorType, seed, target, random, featureList, pos, pass);
+}
+
+LL_STATIC_HOOK(
+    DecorateLargeFeature2EventHook,
+    ll::memory::HookPriority::Normal,
+    &BiomeDecorationSystem::decorateLargeFeature,
+    void,
+    ::Biome const&       biome,
+    ::LevelChunk&        lc,
+    ::BlockVolumeTarget& target,
+    ::Random&            random,
+    ::ChunkPos const&    pos,
+    ::std::string const& pass
+)
+{
+    auto event = DecorateLargeFeature2Event(biome, lc, target, random, pos, pass);
+    LLEventBus.publish(event);
+    if (event.isCancelled()) { return; }
+    origin(biome, lc, target, random, pos, pass);
+}
