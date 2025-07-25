@@ -26,6 +26,9 @@ public:
     ILAPI LevelChunk& levelChunk() const;
     ILAPI std::string const& pass() const;
     ILAPI Random&            random() const;
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const;
 };
 
 class DecorateEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
@@ -54,6 +57,9 @@ public:
     ILAPI BlockSource& blockSource() const;
     ILAPI std::vector<::Biome const*>&       uniqueBiomes() const;
     ILAPI IPreliminarySurfaceProvider const& preliminarySurfaceProvider() const;
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const;
 };
 
 class DecorateBiomeEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
@@ -86,6 +92,9 @@ public:
     ILAPI Biome const*&                              biome() const;
     ILAPI IPreliminarySurfaceProvider const&         preliminarySurfaceProvider() const;
     ILAPI BlockSource&                               blockSource() const;
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const;
 };
 
 class DecorateLargeFeature1Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
@@ -121,6 +130,9 @@ public:
     ILAPI BlockVolumeTarget& target() const;
     ILAPI gsl::span<::BiomeDecorationFeature const>& featureList() const;
     ILAPI ChunkPos const&                            chunkPos() const;
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const;
 };
 
 class DecorateLargeFeature2Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
@@ -149,5 +161,8 @@ public:
     ILAPI Biome const&       biome() const;
     ILAPI BlockVolumeTarget& target() const;
     ILAPI ChunkPos const&    chunkPos() const;
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const;
 };
 } // namespace ila::mc::inline world::inline level::inline levelgen::inline system

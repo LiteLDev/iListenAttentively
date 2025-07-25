@@ -5,14 +5,13 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Explosion.h>
 
-namespace ila::mc::inline world
-{
+using namespace ila::mc;
 
 void ExplosionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]    = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
-    nbt["radius"] = explosion().mRadius;
+    nbt["pos"]            = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
+    nbt["radius"]         = explosion().mRadius;
     nbt["affectedBlocks"] = ListTag {};
     for (auto& blockPos : *explosion().mAffectedBlocks)
     {
@@ -84,8 +83,8 @@ Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
 void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]    = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
-    nbt["radius"] = explosion().mRadius;
+    nbt["pos"]            = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
+    nbt["radius"]         = explosion().mRadius;
     nbt["affectedBlocks"] = ListTag {};
     for (auto& blockPos : *explosion().mAffectedBlocks)
     {
@@ -125,5 +124,3 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Normal, Explosion, &Expl
 }
 
 Event_Hook_Factory(Explosion, <ExplosionEventHook>);
-
-} // namespace ila::mc::inline world
