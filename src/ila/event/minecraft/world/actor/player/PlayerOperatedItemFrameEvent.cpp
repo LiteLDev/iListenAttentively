@@ -6,6 +6,7 @@
 #include <mc/world/level/block/BlockLegacy.h>
 #include <mc/world/level/block/ItemFrameBlock.h>
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
+#include <mc/world/level/block/block_events/BlockPlaceEvent.h>
 #include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
 
 namespace ila::mc::inline world::inline actor::inline player
@@ -44,7 +45,8 @@ LL_TYPE_INSTANCE_HOOK(
         pEventData.mPlayer.getDimensionBlockSource().getBlockEntity(pEventData.mPos)
     );
     if (!blockActor) { return origin(pEventData); }
-    auto type        = blockActor->mItem->isNull() ? Type::Place : Type::Rotate;
+    auto type = blockActor->mItem->isNull() ? Type::Place : Type::Rotate;
+    if (type == Type::Place && pEventData.mPlayer.getSelectedItem().isNull()) { return origin(pEventData); }
     auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(pEventData.mPlayer, pEventData.mPos, type);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
@@ -63,6 +65,11 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     if (pPlayer == nullptr) { return origin(pPlayer, pPos); }
+    if (auto* blockEntity = pPlayer->getDimensionBlockSource().getBlockEntity(pPos);
+        !blockEntity || static_cast<ItemFrameBlockActor*>(blockEntity)->mItem->isNull())
+    {
+        return origin(pPlayer, pPos);
+    }
     auto beforeEvent = PlayerOperatedItemFrameBeforeEvent(*pPlayer, const_cast<BlockPos&>(pPos), Type::Take);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return false; }
@@ -82,7 +89,7 @@ LL_TYPE_INSTANCE_HOOK(
     Actor*       pActor
 )
 {
-    if (pActor == nullptr || !pActor->isPlayer() || !((Player*)pActor)->isCreative())
+    if (pActor == nullptr || !pActor->isPlayer() || !pActor->isCreative())
     {
         return origin(pRegion, pIsSurvival, pActor);
     }
@@ -95,6 +102,6 @@ LL_TYPE_INSTANCE_HOOK(
     );
 }
 
-Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
+Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
 
 } // namespace ila::mc::inline world::inline actor::inline player

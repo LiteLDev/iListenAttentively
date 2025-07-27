@@ -46,7 +46,7 @@ void EndermanTakeBlockAfterEvent::serialize(CompoundTag& nbt) const
 EnderMan&       EndermanTakeBlockAfterEvent::self() const { return static_cast<EnderMan&>(MobEvent::self()); }
 BlockPos const& EndermanTakeBlockAfterEvent::pos() const { return mPos; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     EndermanTakeBlockHook,
     HookPriority::Low,
     EndermanTakeBlockGoal,

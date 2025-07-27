@@ -99,12 +99,3 @@ struct magic_enum::customize::enum_range<MinecraftPacketIds>
     static constexpr int min = static_cast<int>(MinecraftPacketIds::KeepAlive);
     static constexpr int max = static_cast<int>(MinecraftPacketIds::EndId);
 };
-
-template <typename T>
-    requires(std::is_enum_v<T>)
-struct fmt::formatter<T> : fmt::formatter<std::string> {
-    template <class FormatContext>
-    auto format(T const& t, FormatContext& ctx) const {
-        return formatter<std::string>::format(magic_enum::enum_name(t), ctx);
-    }
-};
