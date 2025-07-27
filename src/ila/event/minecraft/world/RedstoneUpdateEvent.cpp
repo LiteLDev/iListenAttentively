@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/BlockLegacy.h>
+#include <mc/world/level/block/ObserverBlock.h>
 #include <mc/world/redstone/circuit/ChunkCircuitComponentList.h>
 #include <mc/world/redstone/circuit/CircuitSceneGraph.h>
 #include <mc/world/redstone/circuit/CircuitSystem.h>
@@ -44,20 +45,39 @@ int const&      RedstoneUpdateAfterEvent::strength() const { return mStrength; }
 bool const&     RedstoneUpdateAfterEvent::isFirstTime() const { return mIsFirstTime; }
 
 LL_TYPE_INSTANCE_HOOK(
-    RedstoneUpdateEventHook,
+    RedstoneUpdateEventHook1,
+    HookPriority::Normal,
+    ObserverBlock,
+    &ObserverBlock::_startSignal,
+    void,
+    BlockSource&    pRegion,
+    BlockPos const& pPos
+)
+{
+    int  strength    = 15;
+    bool isFirstTime = false;
+    auto beforeEvent = RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), strength, isFirstTime);
+    LLEventBus.publish(beforeEvent);
+    if (beforeEvent.isCancelled()) { return; }
+    origin(pRegion, pPos);
+    LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pPos, strength, isFirstTime));
+}
+
+LL_TYPE_INSTANCE_HOOK(
+    RedstoneUpdateEventHook2,
     HookPriority::Low,
     CircuitSystem,
     &CircuitSystem::updateBlocks,
     void,
-    BlockSource&    region,
-    BlockPos const& chunkPos
+    BlockSource&    pRegion,
+    BlockPos const& pChunkPos
 )
 {
     if (!mHasBeenEvaluated) { return; }
     auto& activeComponents = mSceneGraph->mActiveComponentsPerChunk;
     if (activeComponents.empty()) { return; }
 
-    auto const& components = activeComponents.find(chunkPos);
+    auto const& components = activeComponents.find(pChunkPos);
     if (components == activeComponents.end()) { return; }
 
     std::vector<ChunkCircuitComponentList::Item> secondaryPoweredList;
@@ -87,20 +107,20 @@ LL_TYPE_INSTANCE_HOOK(
 
     for (auto& item : *components->second.mComponents)
     {
-        if (BaseCircuitComponent* comp = item.mComponent; comp && !comp->mRemoved && comp->mNeedsUpdate)
+        if (auto* comp = item.mComponent; comp && !comp->mRemoved && comp->mNeedsUpdate)
         {
             comp->mNeedsUpdate = false;
             if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
-            else { processComponent(comp, region, item.mPos); }
+            else { processComponent(comp, pRegion, item.mPos); }
         }
     }
 
     for (auto const& item : secondaryPoweredList)
     {
-        if (BaseCircuitComponent* comp = item.mComponent; comp) { processComponent(comp, region, item.mPos); }
+        if (auto* comp = item.mComponent; comp) { processComponent(comp, pRegion, item.mPos); }
     }
 }
 
-Event_Hook_Factory(RedstoneUpdate, <RedstoneUpdateEventHook>);
+Event_Hook_Factory(RedstoneUpdate, <RedstoneUpdateEventHook1, RedstoneUpdateEventHook2>);
 
 } // namespace ila::mc::inline world
