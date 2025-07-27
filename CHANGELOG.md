@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added BiomeDecorationSystemEvent, DecorateEvent, DecorateBiomeEvent, DecorateLargeFeature1Event, DecorateLargeFeature2Event @Lovelylavender4
+- Adapted to LeviLamina 1.4.1 @Lovelylavender4
+
 ### Changed
 
 ### Fixed
