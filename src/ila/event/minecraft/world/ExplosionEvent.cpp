@@ -2,8 +2,10 @@
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/legacy/ActorUniqueID.h>
+#include <mc/world/events/BlockEventCoordinator.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Explosion.h>
+
 
 using namespace ila::mc;
 
@@ -63,19 +65,25 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     explosion().mParticleType =
         magic_enum::enum_cast<SharedTypes::Legacy::LevelEvent>(nbt["particleType"].get<StringTag>())
             .value_or(explosion().mParticleType);
-    explosion().mSoundExplosionType =
-        magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(nbt["soundExplosionType"].get<StringTag>()
-        )
-            .value_or(explosion().mSoundExplosionType);
+    explosion().mSoundExplosionType = magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(
+                                          nbt["soundExplosionType"].get<StringTag>()
+    )
+                                          .value_or(explosion().mSoundExplosionType);
     explosion().mSourceID->rawID = nbt["sourceId"];
     explosion().mMaxResistance   = nbt["maxResistance"];
     if (nbt.contains("inWaterOverride")) { explosion().mInWaterOverride = nbt["inWaterOverride"]; }
-    else { explosion().mInWaterOverride->reset(); }
+    else
+    {
+        explosion().mInWaterOverride->reset();
+    }
     if (nbt.contains("totalDamageOverride"))
     {
         explosion().mTotalDamageOverride = nbt["totalDamageOverride"];
     }
-    else { explosion().mTotalDamageOverride->reset(); }
+    else
+    {
+        explosion().mTotalDamageOverride->reset();
+    }
     explosion().mKnockbackScaling = nbt["knockbackScaling"];
 }
 Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
@@ -111,16 +119,38 @@ void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
     nbt["knockbackScaling"] = explosion().mKnockbackScaling;
     nbt["dimId"]            = getDimensionName(blockSource());
 }
-Explosion const& ExplosionAfterEvent::explosion() const { return mExplosion; }
-
-LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Normal, Explosion, &Explosion::explode, bool)
+Explosion const&                      ExplosionAfterEvent::explosion() const { return mExplosion; }
+std::unique_ptr<ExplosionBeforeEvent> beforeEvent;
+LL_TYPE_INSTANCE_HOOK(ExplosionEventHook1, HookPriority::Normal, Explosion, &Explosion::explode, bool)
 {
-    auto beforeEvent = ExplosionBeforeEvent(mRegion, *this);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    beforeEvent = std::make_unique<ExplosionBeforeEvent>(mRegion, *this);
     auto result = origin();
     if (result) { LLEventBus.publish(ExplosionAfterEvent(mRegion, *this)); }
     return result;
 }
 
-Event_Hook_Factory(Explosion, <ExplosionEventHook>);
+LL_TYPE_INSTANCE_HOOK(
+    ExplosionEventHook2,
+    HookPriority::Normal,
+    BlockEventCoordinator,
+    &BlockEventCoordinator::sendEvent,
+    CoordinatorResult,
+    EventRef<::MutableBlockGameplayEvent<::CoordinatorResult>> event
+)
+{
+    return event.get().visit([&]<typename T>(T& ev) {
+        if constexpr (std::is_same_v<
+                          std::remove_cvref_t<decltype(std::declval<T>().value())>,
+                          ExplosionStartedEvent>)
+        {
+            beforeEvent->explosion().mAffectedBlocks = ev.value().mBlocks;
+            LLEventBus.publish(*beforeEvent);
+            beforeEvent->explosion().mAffectedBlocks->clear();
+            if (beforeEvent->isCancelled()) return CoordinatorResult::Cancel;
+        }
+        return origin(event);
+    });
+}
+
+
+Event_Hook_Factory(Explosion, <ExplosionEventHook1, ExplosionEventHook2>);
