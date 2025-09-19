@@ -120,7 +120,7 @@ void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
     nbt["dimId"]            = getDimensionName(blockSource());
 }
 Explosion const&                      ExplosionAfterEvent::explosion() const { return mExplosion; }
-std::unique_ptr<ExplosionBeforeEvent> beforeEvent;
+std::unique_ptr<ExplosionBeforeEvent> beforeEvent { nullptr };
 LL_TYPE_INSTANCE_HOOK(ExplosionEventHook1, HookPriority::Normal, Explosion, &Explosion::explode, bool)
 {
     beforeEvent = std::make_unique<ExplosionBeforeEvent>(mRegion, *this);
@@ -143,9 +143,9 @@ LL_TYPE_INSTANCE_HOOK(
                           std::remove_cvref_t<decltype(std::declval<T>().value())>,
                           ExplosionStartedEvent>)
         {
-            beforeEvent->explosion().mAffectedBlocks = ev.value().mBlocks;
+            std::swap(beforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
             LLEventBus.publish(*beforeEvent);
-            beforeEvent->explosion().mAffectedBlocks->clear();
+            std::swap(beforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
             if (beforeEvent->isCancelled()) return CoordinatorResult::Cancel;
         }
         return origin(event);
