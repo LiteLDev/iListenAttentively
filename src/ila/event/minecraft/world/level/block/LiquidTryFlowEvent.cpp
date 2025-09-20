@@ -3,6 +3,7 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/LiquidBlock.h>
 
+
 namespace ila::mc::inline world::inline level::inline block
 {
 
@@ -41,6 +42,21 @@ BlockPos const& LiquidTryFlowAfterEvent::pos() const { return mPos; }
 BlockPos const& LiquidTryFlowAfterEvent::flowFromPos() const { return mFlowFromPos; }
 uchar const&    LiquidTryFlowAfterEvent::flowFromDirection() const { return mFlowFromDirection; }
 
+template<typename F, typename... Ts>
+auto safeCall(F&& fn, Ts&&... args)
+    -> std::optional<decltype(std::invoke(std::forward<F>(fn), std::forward<Ts>(args)...))>
+{
+    __try
+    {
+        auto result = std::invoke(std::forward<F>(fn), std::forward<Ts>(args)...);
+        return result;
+    }
+    __except (1)
+    {
+        return std::nullopt;
+    }
+}
+
 LL_TYPE_INSTANCE_HOOK(
     LiquidTryFlowEventHook,
     HookPriority::Normal,
@@ -61,12 +77,13 @@ LL_TYPE_INSTANCE_HOOK(
     );
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return true; }
-    auto result = origin(pRegion, pPos, pFlowFromPos, pFlowFromDirection);
-    if (!result)
+    auto result =
+        safeCall(std::bind_front(_OriginalFunc, this), pRegion, pPos, pFlowFromPos, pFlowFromDirection);
+    if (result && !*result)
     {
         LLEventBus.publish(LiquidTryFlowAfterEvent(pRegion, pPos, pFlowFromPos, pFlowFromDirection));
     }
-    return result;
+    return result ? *result : false;
 }
 
 Event_Hook_Factory(LiquidTryFlow, <LiquidTryFlowEventHook>);
