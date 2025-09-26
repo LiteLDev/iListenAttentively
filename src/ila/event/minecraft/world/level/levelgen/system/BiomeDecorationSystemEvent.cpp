@@ -137,7 +137,7 @@ LL_STATIC_HOOK(
     auto event = DecorateLargeFeature1Event(generatorType, seed, target, random, featureList, pos, pass);
     LLEventBus.publish(event);
     if (event.isCancelled()) { return false; }
-    origin(generatorType, seed, target, random, featureList, pos, pass);
+    return origin(generatorType, seed, target, random, featureList, pos, pass);
 }
 
 LL_STATIC_HOOK(

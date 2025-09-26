@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/LiquidTryFlowEvent.h"
 #include "ila/base/Gloabl.h"
+#include <Windows.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/LiquidBlock.h>
 
@@ -56,7 +57,7 @@ auto safeCall(F&& fn, Ts&&... args)
         return std::nullopt;
     }
 }
-
+#pragma optimize("", off)
 LL_TYPE_INSTANCE_HOOK(
     LiquidTryFlowEventHook,
     HookPriority::Normal,
@@ -69,6 +70,8 @@ LL_TYPE_INSTANCE_HOOK(
     uchar           pFlowFromDirection
 )
 {
+    if (this == nullptr || IsBadReadPtr(this, sizeof(void*))) /*NOLINT*/
+        return origin(pRegion, pPos, pFlowFromPos, pFlowFromDirection);
     auto beforeEvent = LiquidTryFlowBeforeEvent(
         pRegion,
         const_cast<BlockPos&>(pPos),
@@ -87,5 +90,5 @@ LL_TYPE_INSTANCE_HOOK(
 }
 
 Event_Hook_Factory(LiquidTryFlow, <LiquidTryFlowEventHook>);
-
+#pragma optimize("", on)
 } // namespace ila::mc::inline world::inline level::inline block
