@@ -60,10 +60,10 @@ LL_TYPE_INSTANCE_HOOK(
     auto& eventBus    = LLEventBus;
     auto  beforeEvent = SendPacketBeforeEvent<Packet>(*this, const_cast<Packet&>(packet), id, senderSubId);
     eventBus.publish(beforeEvent);
-    eventBus.publish(beforeEvent, [&]() -> ll::event::EventIdView {
+    eventBus.publish(beforeEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventIdView { fmt::format(
+        return ll::event::EventId { fmt::format(
             "{0}<class {1}>",
             ll::reflection::type_name_v<SendPacketBeforeEvent<Packet>>,
             packetName
@@ -73,10 +73,10 @@ LL_TYPE_INSTANCE_HOOK(
     origin(id, packet, senderSubId);
     auto afterEvent = SendPacketAfterEvent(*this, const_cast<Packet&>(packet), id, senderSubId);
     eventBus.publish(afterEvent);
-    eventBus.publish(afterEvent, [&]() -> ll::event::EventIdView {
+    eventBus.publish(afterEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventIdView { fmt::format(
+        return ll::event::EventId { fmt::format(
             "{0}<class {1}>",
             ll::reflection::type_name_v<SendPacketAfterEvent<Packet>>,
             packetName
@@ -92,7 +92,7 @@ private:
         constexpr static auto addEvent = [](std::string const& eventName) -> void {
             LLEventBus.setEventEmitter(
                 SendPacketEventEmitterFactory,
-                ll::event::EventIdView { fmt::format(
+                ll::event::EventId { fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<SendPacketBeforeEvent<Packet>>,
                     eventName
@@ -100,7 +100,7 @@ private:
             );
             LLEventBus.setEventEmitter(
                 SendPacketEventEmitterFactory,
-                ll::event::EventIdView { fmt::format(
+                ll::event::EventId { fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<SendPacketAfterEvent<Packet>>,
                     eventName

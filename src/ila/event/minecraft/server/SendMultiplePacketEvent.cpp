@@ -79,10 +79,10 @@ LL_TYPE_INSTANCE_HOOK(
     auto& eventBus    = LLEventBus;
     auto  beforeEvent = SendMultiplePacketBeforeEvent<Packet>(*this, const_cast<Packet&>(packet), ids);
     eventBus.publish(beforeEvent);
-    eventBus.publish(beforeEvent, [&]() -> ll::event::EventIdView {
+    eventBus.publish(beforeEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventIdView { fmt::format(
+        return ll::event::EventId { fmt::format(
             "{0}<class {1}>",
             ll::reflection::type_name_v<SendMultiplePacketBeforeEvent<Packet>>,
             packetName
@@ -92,10 +92,10 @@ LL_TYPE_INSTANCE_HOOK(
     origin(ids, packet);
     auto afterEvent = SendMultiplePacketAfterEvent(*this, const_cast<Packet&>(packet), ids);
     eventBus.publish(afterEvent);
-    eventBus.publish(afterEvent, [&]() -> ll::event::EventIdView {
+    eventBus.publish(afterEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string { magic_enum::enum_name(packet.getId()) };
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventIdView { fmt::format(
+        return ll::event::EventId { fmt::format(
             "{0}<class {1}>",
             ll::reflection::type_name_v<SendMultiplePacketAfterEvent<Packet>>,
             packetName
@@ -111,7 +111,7 @@ private:
         constexpr static auto addEvent = [](std::string const& eventName) -> void {
             LLEventBus.setEventEmitter(
                 SendMultiplePacketEventEmitterFactory,
-                ll::event::EventIdView { fmt::format(
+                ll::event::EventId { fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<SendMultiplePacketBeforeEvent<Packet>>,
                     eventName
@@ -119,7 +119,7 @@ private:
             );
             LLEventBus.setEventEmitter(
                 SendMultiplePacketEventEmitterFactory,
-                ll::event::EventIdView { fmt::format(
+                ll::event::EventId { fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<SendMultiplePacketAfterEvent<Packet>>,
                     eventName

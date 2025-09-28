@@ -8,7 +8,7 @@ inline struct EventTest
 
 EventTest::EventTest()
 {
-    static std::vector<ll::event::EventIdView> mEventList;
+    static std::vector<ll::event::EventId> mEventList;
     static auto const&                         callback =
         ll::event::Listener<ll::event::Event>::create([](ll::event::Event& event) -> void {
             auto const& it = std::find(mEventList.begin(), mEventList.end(), event.getId());

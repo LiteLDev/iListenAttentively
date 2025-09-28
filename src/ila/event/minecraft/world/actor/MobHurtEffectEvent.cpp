@@ -1,12 +1,13 @@
 #include "ila/event/minecraft/world/actor/MobHurtEffectEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
+#include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
+#include <mc/entity/components/ActorOwnerComponent.h>
 #include <mc/entity/components_json_legacy/SplashPotionEffectSubcomponent.h>
 #include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/actor/ActorDamageSource.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
-
 
 namespace ila::mc::inline world::inline actor
 {
@@ -40,7 +41,7 @@ optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() c
 float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
 SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
 
-static ll::DenseMap<Actor*, Actor*> mSplashPotionSources;
+static ll::DenseMap<Actor*, WeakRef<EntityContext>> mSplashPotionSources;
 
 LL_TYPE_INSTANCE_HOOK(
     SplashPotionEffectSubcomponentApplyMobEffectsHook,
@@ -60,7 +61,7 @@ LL_TYPE_INSTANCE_HOOK(
     BaseGameVersion const&               currVer
 )
 {
-    for (auto actor : actors) { mSplashPotionSources[actor] = &projectile; }
+    for (auto actor : actors) { mSplashPotionSources[actor] = projectile.getEntityContext().getWeakRef(); }
     origin(effectInst, actors, projectile, potion, splashRange, collisionMargin, effect, res, aux, currVer);
 }
 
@@ -78,6 +79,7 @@ LL_TYPE_INSTANCE_HOOK(
         || source.mCause == SharedTypes::Legacy::ActorDamageCause::Wither)
     {
         optional_ref<Actor> damageSource = std::nullopt;
+
         if (source.isEntitySource())
         {
             damageSource = ll::service::getLevel()->fetchEntity(
@@ -88,7 +90,7 @@ LL_TYPE_INSTANCE_HOOK(
         }
         else if (mSplashPotionSources.contains(this))
         {
-            damageSource = mSplashPotionSources[this];
+            damageSource = mSplashPotionSources[this].tryUnwrap();
             mSplashPotionSources.erase(this);
         }
         auto beforeEvent = MobHurtEffectBeforeEvent(

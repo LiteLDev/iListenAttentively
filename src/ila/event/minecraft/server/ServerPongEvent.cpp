@@ -113,13 +113,17 @@ LL_STATIC_HOOK(
     char const*                  pFile,
     uint                         pLine
 )
+try
 {
     if (pSendParameters->mUnk98c838.as<char*>()[0] == 28)
     {
         constexpr static int head_size = sizeof(char) + sizeof(std::uint64_t) + sizeof(std::uint64_t) + 16;
         const char*          data      = pSendParameters->mUnk98c838.as<char*>();
-        std::size_t          strlen    = data[head_size] << 8 | data[head_size + 1];
-        if (strlen == 0) { return origin(pRns2Socket, pSendParameters, pFile, pLine); }
+        size_t                 strlen    = data[head_size] << 8 | data[head_size + 1];
+        if (static_cast<int>(strlen) != pSendParameters->mUnke627d8.as<int>() - (head_size + 2))
+        {
+            return origin(pRns2Socket, pSendParameters, pFile, pLine);
+        }
         std::istringstream       iss(std::string({ data + head_size + 2, strlen }));
         std::string              tmp;
         std::vector<std::string> parts;
@@ -200,6 +204,10 @@ LL_STATIC_HOOK(
         ));
         return result;
     }
+    return origin(pRns2Socket, pSendParameters, pFile, pLine);
+}
+catch (...)
+{
     return origin(pRns2Socket, pSendParameters, pFile, pLine);
 }
 
