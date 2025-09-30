@@ -79,14 +79,14 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         ActorBlockSyncMessage { actor->getOrCreateUniqueID(), ActorBlockSyncMessage::MessageId::None };
     pRegion.setBlock(
         pPos,
-        BlockTypeRegistry::getDefaultBlockState(BedrockBlockNames::Air()),
+        BlockTypeRegistry::get().getDefaultBlockState(BedrockBlockNames::Air()),
         3,
         &syncMsg,
         nullptr
     );
-    static_cast<FallingBlock const&>(pOldBlock.getLegacyBlock())
+    static_cast<FallingBlock const&>(pOldBlock.getBlockType())
         ._tickBlocksAround2D(pRegion, pPos.add({ 0, 1, 0 }), pOldBlock);
-    static_cast<FallingBlock const&>(pOldBlock.getLegacyBlock())
+    static_cast<FallingBlock const&>(pOldBlock.getBlockType())
         ._tickBlocksAround2D(pRegion, pPos.add({ 0, -1, 0 }), pOldBlock);
     pRegion.getLevel().addEntity(pRegion, std::move(actorContext));
     LLEventBus.publish(BlockFallAfterEvent(actor, pPos));

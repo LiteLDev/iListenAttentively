@@ -1,7 +1,7 @@
 #include "ila/event/minecraft/world/RedstoneUpdateEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/Block.h>
-#include <mc/world/level/block/BlockLegacy.h>
+#include <mc/world/level/block/BlockType.h>
 #include <mc/world/level/block/ObserverBlock.h>
 #include <mc/world/redstone/circuit/ChunkCircuitComponentList.h>
 #include <mc/world/redstone/circuit/CircuitSceneGraph.h>
@@ -98,7 +98,7 @@ LL_TYPE_INSTANCE_HOOK(
                 );
                 LLEventBus.publish(beforeEvent);
                 if (beforeEvent.isCancelled()) { return; }
-                block.mLegacyBlock->onRedstoneUpdate(region, pos, strength, comp->mIsFirstTime);
+                block.mBlockType->onRedstoneUpdate(region, pos, strength, comp->mIsFirstTime);
                 LLEventBus.publish(RedstoneUpdateAfterEvent(region, pos, strength, comp->mIsFirstTime));
             }
             comp->mIsFirstTime = false;

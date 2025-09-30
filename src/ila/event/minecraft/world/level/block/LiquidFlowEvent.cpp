@@ -84,7 +84,7 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pRegion, pPos, pDepth, pPreserveExisting);
-    if (pRegion.getBlock(pPos).getLegacyBlock().mMaterial.mLiquid)
+    if (pRegion.getBlock(pPos).mBlockType->mMaterial.mLiquid)
     {
         LLEventBus.publish(LiquidFlowAfterEvent(pRegion, pPos, pDepth, pPreserveExisting, *mFlowFromPos));
     }

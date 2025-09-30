@@ -55,46 +55,45 @@ void ClientLoginAfterEvent::disConnectClient(std::string const& reason) const
     if (!reason.empty()) mKickReasons->emplace_back(reason);
 }
 
-Event_Listener_Factory(ClientLoginBefore)
+LL_TYPE_INSTANCE_HOOK(
+    ClientLoginEventHook,
+    HookPriority::Normal,
+    ServerNetworkHandler,
+    &ServerNetworkHandler::$handle,
+    void,
+    NetworkIdentifier const&     pSource,
+    std::shared_ptr<LoginPacket> pPacket
+)
 {
-    mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketBeforeEvent<LoginPacket>>(
-        [](ila::mc::ReceivePacketBeforeEvent<LoginPacket>& event) -> void {
-            auto beforeEvent =
-                ClientLoginBeforeEvent(*ll::service::getServerNetworkHandler(), event.networkIdentifier());
-            LLEventBus.publish(beforeEvent);
-            if (beforeEvent.isCancelled()) { event.cancel(); }
-        }
-    ));
+    auto beforeEvent = ClientLoginBeforeEvent(*thisFor<NetEventCallback>(), pSource);
+    LLEventBus.publish(beforeEvent);
+    if (beforeEvent.isCancelled()) { return; }
+    origin(pSource, pPacket);
+    auto&                                   cert = pPacket->mConnectionRequest->mLegacyMultiplayerToken;
+    std::optional<std::vector<std::string>> kickReasons;
+    auto                                    afterEvent = ClientLoginAfterEvent(
+        *this,
+        pSource,
+        cert->getIdentity(),
+        cert->getXuid(false),
+        cert->getXuid(true),
+        cert->getIdentityName(),
+        pSource.getIPAndPort(),
+        kickReasons
+    );
+    LLEventBus.publish(afterEvent);
+    if (kickReasons)
+    {
+        thisFor<NetEventCallback>()->disconnectClient(
+            afterEvent.networkIdentifier(),
+            Connection::DisconnectFailReason::Kicked,
+            fmt::to_string(fmt::join(*kickReasons, "§r\n")),
+            std::nullopt,
+            false
+        );
+    }
 }
 
-Event_Listener_Factory(ClientLoginAfter)
-{
-    mListeners.emplace_back(LLEventBus.emplaceListener<ila::mc::ReceivePacketAfterEvent<LoginPacket>>(
-        [](ila::mc::ReceivePacketAfterEvent<LoginPacket>& event) -> void {
-            auto& cert = event.packet().mConnectionRequest->mLegacyMultiplayerToken;
-            std::optional<std::vector<std::string>> kickReasons;
-            LLEventBus.publish(ClientLoginAfterEvent(
-                *ll::service::getServerNetworkHandler(),
-                event.networkIdentifier(),
-                cert->getIdentity(),
-                cert->getXuid(false),
-                cert->getXuid(true),
-                cert->getIdentityName(),
-                event.networkIdentifier().getIPAndPort(),
-                kickReasons
-            ));
-            if (kickReasons)
-            {
-                ll::service::getServerNetworkHandler()->disconnectClient(
-                    event.networkIdentifier(),
-                    Connection::DisconnectFailReason::Kicked,
-                    fmt::to_string(fmt::join(*kickReasons, "§r\n\n")),
-                    std::nullopt,
-                    false
-                );
-            }
-        }
-    ));
-}
+Event_Hook_Factory(ClientLogin, <ClientLoginEventHook>);
 
 } // namespace ila::mc::inline server

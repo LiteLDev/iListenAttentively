@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ila/base/Macro.h"
 #include <ll/api/event/Emitter.h>
 #include <ll/api/event/EventBus.h>

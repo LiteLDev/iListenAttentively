@@ -3,7 +3,7 @@ add_rules("mode.debug", "mode.release")
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.4.1")
+add_requires("levilamina 1.5.2")
 add_requires("levibuildscript 0.4.1")
 
 if not has_config("vs_runtime") then
@@ -125,10 +125,12 @@ target("iListenAttentively")
             )
         )
         cprint("${bright yellow}[Mod packed] ${bright green}library has copied to ${bright cyan}" .. library_directory)
- 
+
         -- iterate over all header files
         for _, headerfile in ipairs(target:headerfiles()) do
-            os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
+            if not headerfile:endswith(".hpp") then 
+                os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
+            end
         end 
         for _, headerfile in ipairs(target:configfiles()) do
             os.cp(

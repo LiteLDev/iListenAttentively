@@ -3,7 +3,7 @@
 #include <mc/world/item/ItemInstance.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
-#include <mc/world/level/block/BlockLegacy.h>
+#include <mc/world/level/block/BlockType.h>
 #include <mc/world/level/block/ItemFrameBlock.h>
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
 #include <mc/world/level/block/block_events/BlockPlaceEvent.h>

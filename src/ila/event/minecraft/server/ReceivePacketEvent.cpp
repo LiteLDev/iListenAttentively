@@ -13,7 +13,7 @@
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
-#include <mc/client/renderer/rendergraph/Packet.h>
+#include <mc/network/Packet.h>
 #include <mc/scripting/event_handlers/ScriptServerNetworkEventHandler.h>
 #include <mc/world/events/IncomingPacketEvent.h>
 

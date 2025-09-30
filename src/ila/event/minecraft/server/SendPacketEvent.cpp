@@ -4,7 +4,7 @@
 #include <ll/api/utils/StringUtils.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
-#include <mc/client/renderer/rendergraph/Packet.h>
+#include <mc/network/Packet.h>
 
 namespace ila::mc::inline server
 {

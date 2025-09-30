@@ -1,7 +1,8 @@
 #include "ila/event/leviAntiCheat/PlayerCheatEvent.h"
 #include "ila/base/Gloabl.h"
+#include "ila/event/leviAntiCheat/LeviAntiCheat.hpp"
 
-namespace lac::punish
+namespace ila::lac
 {
 void PlayerCheatEvent::serialize(CompoundTag& nbt) const
 {
@@ -19,4 +20,24 @@ CheckType const&  PlayerCheatEvent::cheatType() const { return mCheatType; }
 ExtraInfo const&  PlayerCheatEvent::extraData() const { return mExtraData; }
 int const&        PlayerCheatEvent::duration() const { return mDuration; }
 PunishType const& PlayerCheatEvent::type() const { return mType; }
-} // namespace lac::punish
+
+Event_Listener_Factory(PlayerCheat)
+{
+    mListeners.emplace_back(LLEventBus.emplaceListener<::lac::punish::PlayerCheatEvent>(
+        [](::lac::punish::PlayerCheatEvent& event) -> void {
+            // clang-format off
+            auto ilaEvent = PlayerCheatEvent {
+                event.self(),
+                *std::bit_cast<CheckType const*>(event.mCheatType),
+                *event.mExtraData,
+                *event.mDuration,
+                *std::bit_cast<PunishType const*>(event.mType)
+            };
+            LLEventBus.publish(ilaEvent);
+            event.setCancelled(ilaEvent.isCancelled());
+            // clang-format on
+        }
+    ));
+}
+
+} // namespace ila::lac

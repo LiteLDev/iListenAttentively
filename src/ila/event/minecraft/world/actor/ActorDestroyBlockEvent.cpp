@@ -1,3 +1,4 @@
+#pragma include_alias("mc/world/events/ActorGriefingBlockEvent.h", "ila/patch/ActorGriefingBlockEvent.hpp")
 #include "ila/event/minecraft/world/actor/ActorDestroyBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
@@ -30,7 +31,7 @@ try
         {
             ActorGriefingBlockEvent const& griefingEvent = arg.value();
             auto                           beforeEvent =
-                ActorDestroyBlockEvent(griefingEvent.mActorContext->tryUnwrap(), griefingEvent.mPos);
+                ActorDestroyBlockEvent(griefingEvent.mActorContext.tryUnwrap(), griefingEvent.mPos);
             LLEventBus.publish(beforeEvent);
             if (beforeEvent.isCancelled())
             {

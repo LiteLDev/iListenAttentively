@@ -9,7 +9,7 @@ void VillageFeatureConstructionEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
     std::vector<CompoundTagVariant> vctv = {};
-    for (auto& ab : mAllowedBiomes) { vctv.push_back(ab); }
+    for (auto& ab : mAllowedBiomes) { vctv.push_back(ab.mValue); }
     nbt["allowedBiomes"]     = vctv;
     nbt["seed"]              = seed();
     nbt["townSpacing"]       = townSpacing();
@@ -19,15 +19,18 @@ void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt)
 {
     Event::deserialize(nbt);
     mAllowedBiomes.clear();
-    for (auto& ab : nbt["allowedBiomes"].get<ListTag>()) { mAllowedBiomes.push_back(ab); }
+    for (auto& ab : nbt["allowedBiomes"].get<ListTag>())
+    {
+        mAllowedBiomes.push_back(BiomeIdType { static_cast<ushort>(ab.get<ShortTag>().data) });
+    }
     seed()              = nbt["seed"];
     townSpacing()       = nbt["townSpacing"];
     minTownSeparation() = nbt["minTownSeparation"];
 }
-std::vector<uint64>& VillageFeatureConstructionEvent::allowedBiomes() const { return mAllowedBiomes; }
-uint&                VillageFeatureConstructionEvent::seed() const { return mSeed; }
-int&                 VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
-int&                 VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
+std::vector<BiomeIdType>& VillageFeatureConstructionEvent::allowedBiomes() const { return mAllowedBiomes; }
+uint&                     VillageFeatureConstructionEvent::seed() const { return mSeed; }
+int&                      VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
+int& VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
 
 LL_TYPE_INSTANCE_HOOK(
     VillageFeatureConstructorHook,

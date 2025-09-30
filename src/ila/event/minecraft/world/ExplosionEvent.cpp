@@ -135,10 +135,10 @@ LL_TYPE_INSTANCE_HOOK(
     BlockEventCoordinator,
     &BlockEventCoordinator::sendEvent,
     CoordinatorResult,
-    EventRef<::MutableBlockGameplayEvent<::CoordinatorResult>> event
+    EventRef<::MutableBlockGameplayEvent<::CoordinatorResult>> pEvent
 )
 {
-    return event.get().visit([&]<typename T>(T& ev) {
+    return pEvent.get().visit([&]<typename T>(T& ev) {
         if constexpr (std::is_same_v<
                           std::remove_cvref_t<decltype(std::declval<T>().value())>,
                           ExplosionStartedEvent>)
@@ -148,7 +148,7 @@ LL_TYPE_INSTANCE_HOOK(
             std::swap(beforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
             if (beforeEvent->isCancelled()) return CoordinatorResult::Cancel;
         }
-        return origin(event);
+        return origin(pEvent);
     });
 }
 

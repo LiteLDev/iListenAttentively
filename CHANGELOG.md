@@ -7,14 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2025-10-01
+
 ### Added
 
 - Added BiomeDecorationSystemEvent, DecorateEvent, DecorateBiomeEvent, DecorateLargeFeature1Event, DecorateLargeFeature2Event @Lovelylavender4
-- Adapted to LeviLamina 1.4.1 @Lovelylavender4
+- Adapted to LeviLamina 1.5.1 @zimyua4153
 
 ### Changed
 
+- Removed the PLand mod event @zimuya4153
+
 ### Fixed
+
+- Fixed the strange crash [#28] @zimuya4153
+- Fixed the suspended reference of the MobHurtEffectBeforeEvent event [#29] @zimuya4153
+- Fixed the issue of the ClientLoginAfterEvent event being kicked out of output [#34] @zimuya4153
 
 ## [0.7.0] - 2025-07-15
 
@@ -201,8 +209,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#17]: https://github.com/MiracleForest/iListenAttentively-Release/issues/17
 [#18]: https://github.com/MiracleForest/iListenAttentively-Release/issues/18
 [#19]: https://github.com/MiracleForest/iListenAttentively-Release/issues/19
+[#28]: https://github.com/MiracleForest/iListenAttentively-Release/issues/28
+[#29]: https://github.com/MiracleForest/iListenAttentively-Release/issues/29
+[#34]: https://github.com/MiracleForest/iListenAttentively-Release/issues/34
 
-[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.5.0-rc.1...v0.5.0
