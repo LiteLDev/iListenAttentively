@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the strange crash [#28] @zimuya4153
 - Fixed the suspended reference of the MobHurtEffectBeforeEvent event [#29] @zimuya4153
 - Fixed the issue of the ClientLoginAfterEvent event being kicked out of output [#34] @zimuya4153
+- Fixed the interception of the LiquidFlowBeforeEvent event [#35] @zimuya4153
 
 ## [0.7.0] - 2025-07-15
 
@@ -212,6 +213,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#28]: https://github.com/MiracleForest/iListenAttentively-Release/issues/28
 [#29]: https://github.com/MiracleForest/iListenAttentively-Release/issues/29
 [#34]: https://github.com/MiracleForest/iListenAttentively-Release/issues/34
+[#35]: https://github.com/MiracleForest/iListenAttentively-Release/issues/35
 
 [Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.8.0...HEAD
 [0.8.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.7.0...v0.8.0

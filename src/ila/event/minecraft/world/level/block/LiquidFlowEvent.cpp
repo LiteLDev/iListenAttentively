@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/LiquidBlock.h>
 #include <mc/world/level/material/Material.h>
@@ -15,7 +16,6 @@ void LiquidFlowBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["pos"]               = ListTag { pos().x, pos().y, pos().z };
     nbt["dimId"]             = getDimensionName(blockSource());
     nbt["depth"]             = depth();
-    nbt["preserveExisting"]  = preserveExisting();
     nbt["flowFromPos"]       = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
 }
 void LiquidFlowBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -25,11 +25,9 @@ void LiquidFlowBeforeEvent::deserialize(CompoundTag const& nbt)
     pos().y            = nbt["pos"][1];
     pos().z            = nbt["pos"][2];
     depth()            = nbt["depth"];
-    preserveExisting() = nbt["preserveExisting"];
 }
 BlockPos&       LiquidFlowBeforeEvent::pos() const { return mPos; }
 int&            LiquidFlowBeforeEvent::depth() const { return mDepth; }
-bool&           LiquidFlowBeforeEvent::preserveExisting() const { return mPreserveExisting; }
 BlockPos const& LiquidFlowBeforeEvent::flowFromPos() const { return mFlowFromPos; }
 
 void LiquidFlowAfterEvent::serialize(CompoundTag& nbt) const
@@ -38,58 +36,51 @@ void LiquidFlowAfterEvent::serialize(CompoundTag& nbt) const
     nbt["pos"]              = ListTag { pos().x, pos().y, pos().z };
     nbt["dimId"]            = getDimensionName(blockSource());
     nbt["depth"]            = depth();
-    nbt["preserveExisting"] = preserveExisting();
     nbt["flowFromPos"]      = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
 }
 BlockPos const& LiquidFlowAfterEvent::pos() const { return mPos; }
 int const&      LiquidFlowAfterEvent::depth() const { return mDepth; }
-bool const&     LiquidFlowAfterEvent::preserveExisting() const { return mPreserveExisting; }
 BlockPos const& LiquidFlowAfterEvent::flowFromPos() const { return mFlowFromPos; }
 
-static BlockPos* mFlowFromPos = nullptr;
+bool operator==(Material const& lhs, Material const& rhs)
+{
+    return lhs.mType == rhs.mType && lhs.mNeverBuildable == rhs.mNeverBuildable && lhs.mLiquid == rhs.mLiquid
+           && lhs.mBlocksMotion == rhs.mBlocksMotion && lhs.mBlocksPrecipitation == rhs.mBlocksPrecipitation
+           && lhs.mSolid == rhs.mSolid && lhs.mSuperHot == rhs.mSuperHot;
+}
 
 LL_TYPE_INSTANCE_HOOK(
-    LiquidFlowEventHook1,
+    LiquidFlowEventHook,
     HookPriority::Normal,
     LiquidBlock,
     &LiquidBlock::_trySpreadTo,
     void,
-    BlockSource&    region,
-    BlockPos const& pos,
-    int             neighbor,
-    BlockPos const& flowFromPos,
-    uchar           flowFromDirection
-)
-{
-    mFlowFromPos = const_cast<BlockPos*>(&flowFromPos);
-    origin(region, pos, neighbor, flowFromPos, flowFromDirection);
-    mFlowFromPos = nullptr;
-}
-
-LL_TYPE_INSTANCE_HOOK(
-    LiquidFlowEventHook2,
-    HookPriority::Normal,
-    LiquidBlock,
-    &LiquidBlock::_spread,
-    void,
     BlockSource&    pRegion,
     BlockPos const& pPos,
-    int             pDepth,
-    bool            pPreserveExisting
+    int             pNeighbor,
+    BlockPos const& pFlowFromPos,
+    uchar           pFlowFromDirection
 )
 {
-    if (!mFlowFromPos) { return origin(pRegion, pPos, pDepth, pPreserveExisting); }
-    auto beforeEvent =
-        LiquidFlowBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), pDepth, pPreserveExisting, *mFlowFromPos);
+    if (pPos.y < pRegion.getMinHeight() || !pRegion.hasBlock(pPos)) { return; }
+    if (auto& block = pRegion.getLiquidBlock(pPos).mBlockType;
+        block->mMaterial == mMaterial || block->mMaterial.mType == MaterialType::Lava
+        || _isLiquidBlocking(pRegion, pPos, pFlowFromPos, pFlowFromDirection))
+    {
+        return;
+    }
+    auto& block = pRegion.getBlock(pPos);
+    if (*block.mBlockType->mNameInfo->mFullName == BedrockBlockNames::Air()) { return; }
+    auto beforeEvent = LiquidFlowBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), pNeighbor, pFlowFromPos);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
-    origin(pRegion, pPos, pDepth, pPreserveExisting);
+    origin(pRegion, pPos, pNeighbor, pFlowFromPos, pFlowFromDirection);
     if (pRegion.getBlock(pPos).mBlockType->mMaterial.mLiquid)
     {
-        LLEventBus.publish(LiquidFlowAfterEvent(pRegion, pPos, pDepth, pPreserveExisting, *mFlowFromPos));
+        LLEventBus.publish(LiquidFlowAfterEvent(pRegion, pPos, pNeighbor, pFlowFromPos));
     }
 }
 
-Event_Hook_Factory(LiquidFlow, <LiquidFlowEventHook1, LiquidFlowEventHook2>);
+Event_Hook_Factory(LiquidFlow, <LiquidFlowEventHook>);
 
 } // namespace ila::mc::inline world::inline level::inline block
