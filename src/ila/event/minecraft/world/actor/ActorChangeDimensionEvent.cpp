@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/level/ActorDimensionTransferManager.h>
+#include <mc/world/level/dimension/Dimension.h>
 
 namespace ila::mc::inline world::inline actor
 {
@@ -43,7 +44,7 @@ LL_TYPE_INSTANCE_HOOK(
 {
     auto result = origin(pActor, pToId);
     if (!result) { return false; }
-    auto const formId      = pActor.getDimensionId();
+    auto const formId      = pActor.mDimension->lock()->getDimensionId();
     auto       beforeEvent = ActorChangeDimensionBeforeEvent(const_cast<Actor&>(pActor), formId, pToId);
     LLEventBus.publish(beforeEvent);
     return !beforeEvent.isCancelled();
@@ -60,7 +61,7 @@ LL_TYPE_INSTANCE_HOOK(
     std::optional<Vec3> const& actorPosition
 )
 {
-    auto const fromId  = pActor.getDimensionId();
+    auto const fromId  = pActor.mDimension->lock()->getDimensionId();
     auto const fromPos = pActor.getPosition();
     origin(pActor, pToId, actorPosition);
     if (fromId == pToId) { return; }

@@ -53,7 +53,8 @@ ushort&                   ServerPongBeforeEvent::localPort() const { return mLoc
 ushort&                   ServerPongBeforeEvent::localPortV6() const { return mLocalPortV6; }
 std::vector<std::string>& ServerPongBeforeEvent::other() const { return mOther; }
 std::string const&        ServerPongBeforeEvent::ipAndPort() const { return mIpAndPort; }
-std::string ServerPongBeforeEvent::ip() const {
+std::string               ServerPongBeforeEvent::ip() const
+{
     auto address = ipAndPort();
     return address.substr(0, address.find('|'));
 }
@@ -115,12 +116,12 @@ LL_STATIC_HOOK(
 )
 try
 {
-    if (pSendParameters->mUnk98c838.as<char*>()[0] == 28)
+    if (pSendParameters->data[0] == 28)
     {
         constexpr static int head_size = sizeof(char) + sizeof(std::uint64_t) + sizeof(std::uint64_t) + 16;
-        const char*          data      = pSendParameters->mUnk98c838.as<char*>();
-        size_t                 strlen    = data[head_size] << 8 | data[head_size + 1];
-        if (static_cast<int>(strlen) != pSendParameters->mUnke627d8.as<int>() - (head_size + 2))
+        const char*          data      = pSendParameters->data;
+        size_t               strlen    = data[head_size] << 8 | data[head_size + 1];
+        if (static_cast<int>(strlen) != pSendParameters->length - (head_size + 2))
         {
             return origin(pRns2Socket, pSendParameters, pFile, pLine);
         }
@@ -143,7 +144,7 @@ try
         std::vector<std::string> others = { "LeviLamina" };
         for (size_t i = 13; i < parts.size(); i++) { others.push_back(parts[i]); }
 
-        auto ipAndPort = pSendParameters->mUnk5b5d67.as<RakNet::SystemAddress>().ToString(':');
+        auto ipAndPort = pSendParameters->systemAddress->ToString(':');
 
         auto beforeEvent = ServerPongBeforeEvent(
             motd,
@@ -184,8 +185,8 @@ try
         packet.push_back(static_cast<char>((strlen >> 8) & 0xFF));
         packet.push_back(static_cast<char>(strlen & 0xFF));
         packet.insert(packet.end(), text.begin(), text.end());
-        pSendParameters->mUnk98c838.as<char*>() = packet.data();
-        pSendParameters->mUnke627d8.as<int>()   = static_cast<int>(packet.size());
+        pSendParameters->data   = packet.data();
+        pSendParameters->length = static_cast<int>(packet.size());
 
         auto result = origin(pRns2Socket, pSendParameters, pFile, pLine);
         LLEventBus.publish(ServerPongAfterEvent(
