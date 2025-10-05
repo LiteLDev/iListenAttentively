@@ -69,8 +69,6 @@ LL_TYPE_INSTANCE_HOOK(
     {
         return;
     }
-    auto& block = pRegion.getBlock(pPos);
-    if (*block.mBlockType->mNameInfo->mFullName == BedrockBlockNames::Air()) { return; }
     auto beforeEvent = LiquidFlowBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), pNeighbor, pFlowFromPos);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
