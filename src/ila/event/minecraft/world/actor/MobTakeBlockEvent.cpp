@@ -1,24 +1,22 @@
 #pragma include_alias("mc/world/events/ActorGriefingBlockEvent.h", "ila/patch/ActorGriefingBlockEvent.hpp")
-#include "ila/event/minecraft/world/actor/MobTakeBlockEvent.h"
 #include "ila/base/Gloabl.h"
+#include "ila/event/minecraft/world/actor/MobTakeBlockEvent.h"
 #include "ila/patch/VariantParameterList.hpp"
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
-#include <mc/deps/vanilla_components/StateVectorComponent.h>
-#include <mc/util/Random.h>
-#include <mc/util/Randomize.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
 #include <mc/world/actor/ai/goal/TakeBlockGoal.h>
 #include <mc/world/events/ActorEventCoordinator.h>
 #include <mc/world/events/BlockSourceHandle.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
-#include <mc/world/item/ItemStack.h>
 #include <mc/world/level/Block/Block.h>
+#include <mc/util/Random.h>
+#include <mc/util/Randomize.h>
 #include <mc/world/level/BlockSource.h>
-#include <mc/world/level/Level.h>
-#include <mc/world/level/block/BedrockBlockNames.h>
-#include <mc/world/level/block/BlockDescriptor.h>
 #include <mc/world/level/dimension/Dimension.h>
-
+#include <mc/deps/vanilla_components/StateVectorComponent.h>
+#include <mc/world/item/ItemStack.h>
+#include <mc/world/level/Level.h>
+#include <mc/world/level/block/BlockDescriptor.h>
 
 template<>
 struct MutableActorGameplayEvent<void>
@@ -31,7 +29,7 @@ namespace ila::mc::inline world::inline actor
 void MobTakeBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
 }
 void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -45,7 +43,7 @@ BlockPos& MobTakeBlockBeforeEvent::pos() const { return mPos; }
 void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
 }
 BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
 
@@ -74,7 +72,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
     auto& region = mMob.mDimension->lock()->getBlockSourceFromMainChunkSource();
     if (
         auto& block = region.getBlock(targetPos);
-        !(block.getTypeName()==BedrockBlockNames::Air().getString()) && ( // 这个判断isAir是我自己加的，原版没有这个判断
+        !block.isAir() && ( // 这个判断isAir是我自己加的，原版没有这个判断
             mDefinition->mValidBlocks->empty()
             || reinterpret_cast<decltype(&BlockDescriptor::anyMatch)>(
                 "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 19 48 8B FA 48 8B 71"_sig.resolve()
@@ -98,7 +96,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
                 EventRef<ActorGameplayEvent<CoordinatorResult>> { griefEvent }
             ) == CoordinatorResult::Continue
         ) {
-            mMob.setCarriedItem(ItemStack{*block.mBlockType->mDefaultState, 1,nullptr});
+            mMob.setCarriedItem(ItemStack{*block.mBlockType, 1});
             region.removeBlock(targetPos);
             region.postGameEvent(&mMob, GameEventRegistry::blockDestroy(), targetPos, &block);
             ila::patch::VariantParameterList params{

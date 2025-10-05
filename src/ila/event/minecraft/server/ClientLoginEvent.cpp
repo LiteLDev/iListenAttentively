@@ -84,9 +84,8 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(afterEvent);
     if (kickReasons)
     {
-        thisFor<NetEventCallback>()->disconnectClientWithMessage(
+        thisFor<NetEventCallback>()->disconnectClient(
             afterEvent.networkIdentifier(),
-            pPacket->mSenderSubId,
             Connection::DisconnectFailReason::Kicked,
             fmt::to_string(fmt::join(*kickReasons, "§r\n")),
             std::nullopt,
