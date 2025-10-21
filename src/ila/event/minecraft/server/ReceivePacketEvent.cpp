@@ -12,8 +12,8 @@
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkSystem.h>
-#include <mc/network/ServerNetworkHandler.h>
 #include <mc/network/Packet.h>
+#include <mc/network/ServerNetworkHandler.h>
 #include <mc/scripting/event_handlers/ScriptServerNetworkEventHandler.h>
 #include <mc/world/events/IncomingPacketEvent.h>
 
@@ -73,7 +73,7 @@ LL_TYPE_INSTANCE_HOOK(
 )
 {
     mCurrentNetworkConnection = &connection;
-    auto result        = origin(connection, endTime);
+    auto result               = origin(connection, endTime);
     mCurrentNetworkConnection = nullptr;
     return result;
 }
@@ -103,7 +103,7 @@ LL_TYPE_INSTANCE_HOOK(
             { 1 },
             BedrockLog::LogRule::DefaultRules,
             LogAreaID::LogAreaNetwork,
-            static_cast<uint>(Bedrock::LogLevel::Error),
+            static_cast<uint>(Bedrock::LogLevel::Error().mType),
             __FUNCTION__,
             __LINE__,
             header.error().mError.message().c_str(),
@@ -116,9 +116,9 @@ LL_TYPE_INSTANCE_HOOK(
     {
         return { HandlerResult::NotifyListeners, CoordinatorResult::Continue };
     }
-    auto now                            = std::chrono::steady_clock::now();
+    auto now                                   = std::chrono::steady_clock::now();
     mCurrentNetworkConnection->mLastPacketTime = now;
-    packet->mReceiveTimepoint           = now;
+    packet->mReceiveTimepoint                  = now;
     if (auto result = packet->checkSize(stream.mView.size() - stream.mReadPointer, true); !result.has_value())
     {
         return { HandlerResult::BypassListeners, CoordinatorResult::Cancel };

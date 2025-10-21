@@ -6,9 +6,12 @@
 #include <mc/world/events/gameevents/GameEventRegistry.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/block/BedrockBlockNames.h>
+#include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/VanillaBlockTypeIds.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
+
 
 namespace ila::mc::inline world::inline level::inline block
 {
@@ -69,7 +72,7 @@ LL_STATIC_HOOK(
         targetPos.z = (randomGenerator->mObject._genRandInt32() & 0xF) + pPos.z - (randomGenerator->mObject._genRandInt32() & 0xF);
         targetPos.y = (verticalOffset > pRegion.getMaxHeight() ? 0 : verticalOffset) + pPos.y;
 
-        if (pRegion.isEmptyBlock(targetPos.x, targetPos.y, targetPos.z)){ break;}
+        if (pRegion.getBlock({targetPos.x, targetPos.y, targetPos.z}).getTypeName()==BedrockBlockNames::Air().getString()){ break;}
         if (++attemptCount >= 1000){ return;}
     }
     // clang-format on

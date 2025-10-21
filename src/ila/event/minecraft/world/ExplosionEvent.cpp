@@ -121,10 +121,17 @@ void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
 }
 Explosion const&                      ExplosionAfterEvent::explosion() const { return mExplosion; }
 std::unique_ptr<ExplosionBeforeEvent> beforeEvent { nullptr };
-LL_TYPE_INSTANCE_HOOK(ExplosionEventHook1, HookPriority::Normal, Explosion, &Explosion::explode, bool)
+LL_TYPE_INSTANCE_HOOK(
+    ExplosionEventHook1,
+    HookPriority::Normal,
+    Explosion,
+    &Explosion::explode,
+    bool,
+    IRandom& random
+)
 {
     beforeEvent = std::make_unique<ExplosionBeforeEvent>(mRegion, *this);
-    auto result = origin();
+    auto result = origin(random);
     if (result) { LLEventBus.publish(ExplosionAfterEvent(mRegion, *this)); }
     return result;
 }

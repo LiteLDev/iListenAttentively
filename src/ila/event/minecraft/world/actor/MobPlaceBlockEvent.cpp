@@ -10,6 +10,7 @@
 #include <mc/world/level/Block/Block.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/dimension/Dimension.h>
 
 namespace ila::mc::inline world::inline actor
@@ -18,7 +19,7 @@ namespace ila::mc::inline world::inline actor
 void MobPlaceBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["block"] = serializePtrObj(block());
 }
 void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt)
@@ -28,17 +29,17 @@ void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt)
     pos().y = nbt["pos"][1];
     pos().z = nbt["pos"][2];
 }
-BlockPos& MobPlaceBlockBeforeEvent::pos() const { return mPos; }
+BlockPos&    MobPlaceBlockBeforeEvent::pos() const { return mPos; }
 Block const* MobPlaceBlockBeforeEvent::block() const { return mBlock; }
 
 void MobPlaceBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
     nbt["block"] = serializePtrObj(block());
 }
 BlockPos const& MobPlaceBlockAfterEvent::pos() const { return mPos; }
-Block const* MobPlaceBlockAfterEvent::block() const { return mBlock; }
+Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 
 LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void)
 {
@@ -55,9 +56,10 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
     ramdonPos(random, targetPos.z, mDefinition->mXZRange);
 
     auto& region = mMob.mDimension->lock()->getBlockSourceFromMainChunkSource();
-    if (!region.getBlock(targetPos).isAir()) { return; }
+    if (!(region.getBlock(targetPos).getTypeName() == BedrockBlockNames::Air().getString())) { return; }
     if (auto& block = region.getBlock(targetPos.add({ 0, -1, 0 }));
-        block.isAir() || !block.mCachedComponentData->mIsSolid)
+        (block.getTypeName() == BedrockBlockNames::Air().getString())
+        || !block.mCachedComponentData->mIsSolid)
     {
         return;
     }
@@ -127,14 +129,14 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     Randomize randomize;
 //     ILevel* level = this->mMob->mLevel;
 //     Random* random = nullptr;
-    
+
 //     if (level) {
 //         random = level->getThreadRandom();
 //     } else {
 //         // Fallback to thread-local random
 //         random = getThreadLocalRandom();
 //     }
-    
+
 //     randomize.mRandom.mPointer = random;
 
 //     // Get mob's current position and convert to block coordinates
@@ -146,13 +148,13 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     Vec3 mobPos = stateVec->mPos;
 //     BlockPos currentBlockPos(
 //         static_cast<int>(std::floor(mobPos.x)),
-//         static_cast<int>(std::floor(mobPos.y)), 
+//         static_cast<int>(std::floor(mobPos.y)),
 //         static_cast<int>(std::floor(mobPos.z))
 //     );
 
 //     // Calculate target position with random offsets within defined ranges
 //     BlockPos targetPos = currentBlockPos;
-    
+
 //     // Apply X range randomization
 //     int xzRangeMin = this->mDefinition.mXZRange.rangeMin;
 //     int xzRangeMax = this->mDefinition.mXZRange.rangeMax;
@@ -162,7 +164,7 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //         targetPos.x += xzRangeMin;
 //     }
 
-//     // Apply Y range randomization  
+//     // Apply Y range randomization
 //     int yRangeMin = this->mDefinition.mYRange.rangeMin;
 //     int yRangeMax = this->mDefinition.mYRange.rangeMax;
 //     if (yRangeMin < yRangeMax && random) {
@@ -181,7 +183,7 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     // Get dimension and block source
 //     auto dimension = this->mMob->mDimension.mHandle._Ptr;
 //     BlockSource* blockSource = dimension->getBlockSourceFromMainChunkSource();
-    
+
 //     // Check if target position is air (can place block here)
 //     const Block* targetBlock = blockSource->getBlock(&targetPos);
 //     if (!targetBlock || targetBlock->mBlockType.ptr_->mStrHash != BedrockBlockNames::Air.mStrHash) {
@@ -192,8 +194,9 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     // Check if the block below target position is solid (provides support)
 //     BlockPos belowPos(targetPos.x, targetPos.y - 1, targetPos.z);
 //     const Block* belowBlock = blockSource->getBlock(&belowPos);
-    
-//     if (!belowBlock || belowBlock->mBlockType.ptr_->mStrHash == BedrockBlockNames::Air.mStrHash || !belowBlock->isSolid()) {
+
+//     if (!belowBlock || belowBlock->mBlockType.ptr_->mStrHash == BedrockBlockNames::Air.mStrHash ||
+//     !belowBlock->isSolid()) {
 //         // Block below is air or not solid, cannot place block here
 //         goto cleanup;
 //     }
@@ -205,7 +208,7 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     params.mPlayer = nullptr;
 //     params.mDamager = nullptr;
 //     params.mHolder = nullptr;
-    
+
 //     // Try to get target entity if exists
 //     Actor* target = nullptr;
 //     if (this->mMob->mLevel && this->mMob->mTargetId.rawID != -1) {
@@ -222,23 +225,23 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //         // Get random block from defined list
 //         VariantParameterListConst paramsConst(params);
 //         const Block* randomBlock = PlaceBlockGoal::_tryGetRandomPlaceBlock(this, &paramsConst, random);
-        
+
 //         if (randomBlock) {
 //             // Place the randomly selected block
 //             blockSource->setBlock(&targetPos, randomBlock, 3, 0, 0);
-            
+
 //             // Post block place game event
-//             blockSource->postGameEvent(blockSource, this->mMob, 
-//                                      &GameEventRegistry::blockPlace, 
+//             blockSource->postGameEvent(blockSource, this->mMob,
+//                                      &GameEventRegistry::blockPlace,
 //                                      &targetPos, randomBlock);
-            
+
 //             // Execute onPlace trigger
 //             std::vector<std::pair<const std::string, const std::string>> eventStack;
-//             ActorDefinitionDescriptor::_executeTrigger(this->mMob, 
-//                                                      &this->mDefinition.mOnPlace, 
-//                                                      &eventStack, 
+//             ActorDefinitionDescriptor::_executeTrigger(this->mMob,
+//                                                      &this->mDefinition.mOnPlace,
+//                                                      &eventStack,
 //                                                      &params);
-            
+
 //             // Clean up event stack
 //             if (!eventStack.empty()) {
 //                 // Destroy and deallocate event stack
@@ -248,7 +251,7 @@ Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 //     }
 
 // cleanup:
-//     // Clean up random resources  
+//     // Clean up random resources
 //     if (randomize.mRandom.mControlBlock._Rep) {
 //         // Reference counting cleanup
 //         if (InterlockedDecrement(&randomize.mRandom.mControlBlock._Rep->_Uses) == 0) {
