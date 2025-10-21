@@ -44,7 +44,7 @@ LL_TYPE_INSTANCE_HOOK(
 {
     auto result = origin(pActor, pToId);
     if (!result) { return false; }
-    auto const formId      = pActor.mDimension->lock()->getDimensionId();
+    auto const formId      = *pActor.mDimension->lock()->mId;
     auto       beforeEvent = ActorChangeDimensionBeforeEvent(const_cast<Actor&>(pActor), formId, pToId);
     LLEventBus.publish(beforeEvent);
     return !beforeEvent.isCancelled();
@@ -61,7 +61,7 @@ LL_TYPE_INSTANCE_HOOK(
     std::optional<Vec3> const& actorPosition
 )
 {
-    auto const fromId  = pActor.mDimension->lock()->getDimensionId();
+    auto const fromId  = *pActor.mDimension->lock()->mId;
     auto const fromPos = pActor.getPosition();
     origin(pActor, pToId, actorPosition);
     if (fromId == pToId) { return; }

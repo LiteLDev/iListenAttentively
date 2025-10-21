@@ -72,8 +72,8 @@ LL_STATIC_HOOK(
         targetPos.z = (randomGenerator->mObject._genRandInt32() & 0xF) + pPos.z - (randomGenerator->mObject._genRandInt32() & 0xF);
         targetPos.y = (verticalOffset > pRegion.getMaxHeight() ? 0 : verticalOffset) + pPos.y;
 
-        if (pRegion.getBlock({targetPos.x, targetPos.y, targetPos.z}).getTypeName()==BedrockBlockNames::Air().getString()){ break;}
-        if (++attemptCount >= 1000){ return;}
+        if (pRegion.getBlock({targetPos.x, targetPos.y, targetPos.z}).isAir()) { break; }
+        if (++attemptCount >= 1000) { return; }
     }
     // clang-format on
 

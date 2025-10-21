@@ -6,8 +6,8 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Explosion.h>
 
-
-using namespace ila::mc;
+namespace ila::mc::inline world
+{
 
 void ExplosionBeforeEvent::serialize(CompoundTag& nbt) const
 {
@@ -65,25 +65,19 @@ void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
     explosion().mParticleType =
         magic_enum::enum_cast<SharedTypes::Legacy::LevelEvent>(nbt["particleType"].get<StringTag>())
             .value_or(explosion().mParticleType);
-    explosion().mSoundExplosionType = magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(
-                                          nbt["soundExplosionType"].get<StringTag>()
-    )
-                                          .value_or(explosion().mSoundExplosionType);
+    explosion().mSoundExplosionType =
+        magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(nbt["soundExplosionType"].get<StringTag>()
+        )
+            .value_or(explosion().mSoundExplosionType);
     explosion().mSourceID->rawID = nbt["sourceId"];
     explosion().mMaxResistance   = nbt["maxResistance"];
     if (nbt.contains("inWaterOverride")) { explosion().mInWaterOverride = nbt["inWaterOverride"]; }
-    else
-    {
-        explosion().mInWaterOverride->reset();
-    }
+    else { explosion().mInWaterOverride->reset(); }
     if (nbt.contains("totalDamageOverride"))
     {
         explosion().mTotalDamageOverride = nbt["totalDamageOverride"];
     }
-    else
-    {
-        explosion().mTotalDamageOverride->reset();
-    }
+    else { explosion().mTotalDamageOverride->reset(); }
     explosion().mKnockbackScaling = nbt["knockbackScaling"];
 }
 Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
@@ -119,19 +113,21 @@ void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
     nbt["knockbackScaling"] = explosion().mKnockbackScaling;
     nbt["dimId"]            = getDimensionName(blockSource());
 }
-Explosion const&                      ExplosionAfterEvent::explosion() const { return mExplosion; }
-std::unique_ptr<ExplosionBeforeEvent> beforeEvent { nullptr };
+Explosion const& ExplosionAfterEvent::explosion() const { return mExplosion; }
+
+std::unique_ptr<ExplosionBeforeEvent> mBeforeEvent { nullptr };
+
 LL_TYPE_INSTANCE_HOOK(
     ExplosionEventHook1,
     HookPriority::Normal,
     Explosion,
     &Explosion::explode,
     bool,
-    IRandom& random
+    IRandom& pRandom
 )
 {
-    beforeEvent = std::make_unique<ExplosionBeforeEvent>(mRegion, *this);
-    auto result = origin(random);
+    mBeforeEvent = std::make_unique<ExplosionBeforeEvent>(mRegion, *this);
+    auto result  = origin(pRandom);
     if (result) { LLEventBus.publish(ExplosionAfterEvent(mRegion, *this)); }
     return result;
 }
@@ -142,7 +138,7 @@ LL_TYPE_INSTANCE_HOOK(
     BlockEventCoordinator,
     &BlockEventCoordinator::sendEvent,
     CoordinatorResult,
-    EventRef<::MutableBlockGameplayEvent<::CoordinatorResult>> pEvent
+    EventRef<MutableBlockGameplayEvent<::CoordinatorResult>> pEvent
 )
 {
     return pEvent.get().visit([&]<typename T>(T& ev) {
@@ -150,14 +146,15 @@ LL_TYPE_INSTANCE_HOOK(
                           std::remove_cvref_t<decltype(std::declval<T>().value())>,
                           ExplosionStartedEvent>)
         {
-            std::swap(beforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
-            LLEventBus.publish(*beforeEvent);
-            std::swap(beforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
-            if (beforeEvent->isCancelled()) return CoordinatorResult::Cancel;
+            std::swap(mBeforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
+            LLEventBus.publish(*mBeforeEvent);
+            std::swap(mBeforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
+            if (mBeforeEvent->isCancelled()) return CoordinatorResult::Cancel;
         }
         return origin(pEvent);
     });
 }
 
-
 Event_Hook_Factory(Explosion, <ExplosionEventHook1, ExplosionEventHook2>);
+
+} // namespace ila::mc::inline world

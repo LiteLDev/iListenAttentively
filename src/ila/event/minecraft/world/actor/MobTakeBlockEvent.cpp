@@ -74,7 +74,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
     auto& region = mMob.mDimension->lock()->getBlockSourceFromMainChunkSource();
     if (
         auto& block = region.getBlock(targetPos);
-        !(block.getTypeName()==BedrockBlockNames::Air().getString()) && ( // 这个判断isAir是我自己加的，原版没有这个判断
+        !block.isAir() && ( // 这个判断isAir是我自己加的，原版没有这个判断
             mDefinition->mValidBlocks->empty()
             || reinterpret_cast<decltype(&BlockDescriptor::anyMatch)>(
                 "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 19 48 8B FA 48 8B 71"_sig.resolve()
