@@ -53,7 +53,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
 {
     using namespace ll::memory_literals;
     constexpr static auto ramdonPos = [](Randomize& random, int& value, IntRange& ranage) -> void {
-        auto min = ranage.mUnk8edd10.as<int>(), max = ranage.mUnkac0553.as<int>();
+        auto min = ranage.rangeMin, max = ranage.rangeMax;
         value += min < max && *random.mRandom ? random.mRandom->mPointer->nextInt(max + 1 - min) : min;
     };
     constexpr static auto makeBlockSourceHandle = [](BlockSource& region) {
@@ -76,9 +76,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
         auto& block = region.getBlock(targetPos);
         !block.isAir() && ( // 这个判断isAir是我自己加的，原版没有这个判断
             mDefinition->mValidBlocks->empty()
-            || reinterpret_cast<decltype(&BlockDescriptor::anyMatch)>(
-                "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 19 48 8B FA 48 8B 71"_sig.resolve()
-            )(mDefinition->mValidBlocks, block)
+            || BlockDescriptor::anyMatch(mDefinition->mValidBlocks, block)
         ) && (
             !mDefinition->mRequiresLineOfSight
             || mMob.canSee(targetPos, ShapeType::Collision))
@@ -106,9 +104,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
                 .mTarget = mMob.mTargetId->rawID == -1 ? nullptr : mMob.mLevel->fetchEntity(mMob.mTargetId, false),
                 .mBlock = &targetPos
             };
-            reinterpret_cast<decltype(&ActorDefinitionDescriptor::executeTrigger)>(
-                reinterpret_cast<uintptr_t>(ll::sys_utils::getImageRange().data())  + 0x2d66620
-            )(mMob, mDefinition->mOnTake, reinterpret_cast<::VariantParameterList&>(params));
+            ActorDefinitionDescriptor::executeTrigger(mMob, mDefinition->mOnTake, reinterpret_cast<::VariantParameterList&>(params));
             LLEventBus.publish(MobTakeBlockAfterEvent(mMob, targetPos));
         }
     }

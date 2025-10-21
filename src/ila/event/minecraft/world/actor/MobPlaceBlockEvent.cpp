@@ -44,7 +44,7 @@ Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void)
 {
     constexpr static auto ramdonPos = [](Randomize& random, int& value, IntRange& ranage) -> void {
-        auto min = ranage.mUnk8edd10.as<int>(), max = ranage.mUnkac0553.as<int>();
+        auto min = ranage.rangeMin, max = ranage.rangeMax;
         value += min < max && *random.mRandom ? random.mRandom->mPointer->nextInt(max + 1 - min) : min;
     };
 
@@ -103,9 +103,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
         if (beforeEvent.isCancelled()) { return; }
         region.setBlock(targetPos, *randomBlock, 3, nullptr, nullptr);
         std::vector<std::pair<std::string const, std::string const>> eventStack;
-        reinterpret_cast<decltype(&ActorDefinitionDescriptor::_executeTrigger)>(
-            "40 53 55 56 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 49 8B 01"_sig.resolve()
-        )(
+        ActorDefinitionDescriptor::_executeTrigger(
             mMob,
             mDefinition->mOnPlace,
             eventStack,
