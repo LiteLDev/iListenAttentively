@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adapted to LeviLamina 1.7.x and bds 1.21.120 @zimuya4153
 
+### Fixed
+
+- Fixed the ServerPong event [#38] @zimuya4153
+
 ## [0.9.0] - 2025-10-21
 
 ### Changed
@@ -233,6 +237,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#34]: https://github.com/MiracleForest/iListenAttentively-Release/issues/34
 [#35]: https://github.com/MiracleForest/iListenAttentively-Release/issues/35
 [#36]: https://github.com/MiracleForest/iListenAttentively-Release/issues/36
+[#38]: https://github.com/MiracleForest/iListenAttentively-Release/issues/38
 
 [Unreleased]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.10.0...HEAD
 [0.10.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.9.0...v0.10.0
