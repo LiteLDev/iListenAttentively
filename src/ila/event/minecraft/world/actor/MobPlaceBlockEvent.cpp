@@ -11,6 +11,7 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
+#include <mc/world/level/block/BlockChangeContext.h>
 #include <mc/world/level/dimension/Dimension.h>
 
 namespace ila::mc::inline world::inline actor
@@ -101,7 +102,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
         };
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) { return; }
-        region.setBlock(targetPos, *randomBlock, 3, nullptr, nullptr);
+        region.setBlock(targetPos, *randomBlock, 3, nullptr, nullptr, {});
         std::vector<std::pair<std::string const, std::string const>> eventStack;
         ActorDefinitionDescriptor::_executeTrigger(
             mMob,

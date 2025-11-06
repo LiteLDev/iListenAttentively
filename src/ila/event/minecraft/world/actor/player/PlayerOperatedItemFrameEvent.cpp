@@ -1,3 +1,4 @@
+#pragma include_alias("mc/world/level/block/states/BlockStateVariant.h", "ila/patch/BlockStateVariant.hpp")
 #include "ila/event/minecraft/world/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/item/ItemInstance.h>

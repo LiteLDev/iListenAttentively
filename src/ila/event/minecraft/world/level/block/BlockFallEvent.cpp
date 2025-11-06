@@ -13,6 +13,7 @@
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/Block.h>
+#include <mc/world/level/block/BlockChangeContext.h>
 #include <mc/world/level/block/FallingBlock.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
@@ -82,7 +83,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         BlockTypeRegistry::get().getDefaultBlockState(BedrockBlockNames::Air()),
         3,
         &syncMsg,
-        nullptr
+        { { ActorChangeContext { actor } } }
     );
     static_cast<FallingBlock const&>(pOldBlock.getBlockType())
         ._tickBlocksAround2D(pRegion, pPos.add({ 0, 1, 0 }), pOldBlock);

@@ -3,7 +3,7 @@ add_rules("mode.debug", "mode.release")
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
 -- Dependencies from liteldev-repo.
-add_requires("levilamina 1.6.1")
+add_requires("levilamina 1.7.0")
 add_requires("levibuildscript 0.4.1")
 
 if not has_config("vs_runtime") then
@@ -45,7 +45,7 @@ target("iListenAttentively")
     add_includedirs("src", "$(builddir)/config")
     add_packages(
 		"levilamina",
- 		"fmt",
+        "fmt",
         "magic_enum",
         "nlohmann_json"
     )

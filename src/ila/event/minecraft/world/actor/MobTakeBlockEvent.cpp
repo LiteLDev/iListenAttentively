@@ -16,9 +16,10 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
+#include <mc/world/level/block/BlockChangeContext.h>
 #include <mc/world/level/block/BlockDescriptor.h>
+#include <mc/world/level/block/block_events/BlockRandomTickEvent.h>
 #include <mc/world/level/dimension/Dimension.h>
-
 
 template<>
 struct MutableActorGameplayEvent<void>
@@ -56,12 +57,6 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
         auto min = ranage.rangeMin, max = ranage.rangeMax;
         value += min < max && *random.mRandom ? random.mRandom->mPointer->nextInt(max + 1 - min) : min;
     };
-    constexpr static auto makeBlockSourceHandle = [](BlockSource& region) {
-        auto blockSourceHandle     = std::make_shared<BlockSourceHandle>();
-        blockSourceHandle->mSource = &region;
-        return blockSourceHandle;
-    };
-
 
     Randomize random { mMob.mLevel->getThreadRandom() };
     auto      targetPos = BlockPos { mMob.mBuiltInComponents->mStateVectorComponent->mPos };
@@ -89,7 +84,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             mMob.mEntityContext->getWeakRef(),
             &block,
             targetPos,
-            makeBlockSourceHandle(region)
+            std::make_shared<BlockSourceHandle>(region)
         };
         if (
             mMob.mLevel->getActorEventCoordinator().sendEvent(
@@ -97,7 +92,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             ) == CoordinatorResult::Continue
         ) {
             mMob.setCarriedItem(ItemStack{*block.mBlockType->mDefaultState, 1,nullptr});
-            region.removeBlock(targetPos);
+            region.removeBlock(targetPos, {ActorChangeContext{&mMob}});
             region.postGameEvent(&mMob, GameEventRegistry::blockDestroy(), targetPos, &block);
             ila::patch::VariantParameterList params{
                 .mSelf = &mMob,
