@@ -1,4 +1,5 @@
 #include "ila/iListenAttentively.h"
+#include "ila/RandomColorLogFormatter.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/mod/RegisterHelper.h>
 #include <ll/api/service/Bedrock.h>
@@ -19,11 +20,36 @@ iListenAttentively& iListenAttentively::getInstance()
     return instance;
 }
 
-bool iListenAttentively::load() { return true; }
+bool iListenAttentively::load()
+{
+    getSelf().getLogger().setFormatter(ll::makePolymorphic<RandomColorLogFormatter>(
+        "{3:.3%T.} {2} {1} {0}",
+        ll::io::Formatter::supportColorLog(),
+        0b0010
+    ));
+    printLogo();
+    return true;
+}
 
 bool iListenAttentively::enable() { return true; }
 
 bool iListenAttentively::disable() { return true; }
+
+void iListenAttentively::printLogo()
+{
+    std::vector<std::string> output = {
+        R"(    ___   _          _       )",
+        R"(   |_ _| | |        / \      )",
+        R"(    | |  | |       / _ \     )",
+        R"(    | |  | |___   / ___ \    )",
+        R"(   |___| |_____| /_/   \_\   )",
+        R"(                             )",
+        fmt::format("iListenAttentively v{0}", getSelf().getManifest().version->to_string()),
+        fmt::format("Author: {0}", "MiracleForest")
+    };
+    auto center = std::ranges::max_element(output, {}, &std::string::size)->size();
+    for (auto& line : output) { getSelf().getLogger().info(fmt::format("{0:^{1}}", line, center)); }
+}
 
 void nextTick(std::function<void()> const& func)
 {
