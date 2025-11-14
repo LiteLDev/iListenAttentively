@@ -56,6 +56,7 @@
 #include "ila/event/minecraft/world/level/block/SculkCatalystAbsorbExperienceEvent.h"
 #include "ila/event/minecraft/world/level/block/SculkSpreadEvent.h"
 #include "ila/event/minecraft/world/level/levelgen/structure/StructureEvent.h"
+#include "ila/event/minecraft/world/level/levelgen/structure/StructureFeatureChunkEvent.h"
 #include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include "ila/event/minecraft/world/level/levelgen/system/BiomeDecorationSystemEvent.h"
 #include "ila/event/minecraft/world/level/LevelTickEvent.h"

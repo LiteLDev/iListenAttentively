@@ -1,4 +1,5 @@
 add_rules("mode.debug", "mode.release")
+add_rules("plugin.vsxmake.autoupdate")
 
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
