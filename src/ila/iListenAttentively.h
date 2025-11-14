@@ -22,7 +22,7 @@ public:
 
     bool disable();
 
-    void printLogo();
+    void printLogo() const;
 
 #if defined(ILA_TESTS) || defined(ILA_DEBUG)
     bool unload() { return true; }
