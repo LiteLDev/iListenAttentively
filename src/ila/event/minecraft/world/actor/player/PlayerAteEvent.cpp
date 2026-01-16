@@ -1,5 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerAteEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/service/Bedrock.h>
+#include <mc/server/ServerInstance.h>
 #include <mc/world/actor/player/Inventory.h>
 #include <mc/world/actor/player/PlayerInventory.h>
 #include <mc/world/item/BucketItem.h>
@@ -32,6 +34,10 @@ LL_TYPE_INSTANCE_HOOK(
     void
 )
 {
+    if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id())
+    {
+        return origin();
+    }
     static std::set<std::string> mItmemNames = { VanillaItemNames::Potion(),
                                                  VanillaItemNames::MilkBucket(),
                                                  VanillaItemNames::Medicine() };
