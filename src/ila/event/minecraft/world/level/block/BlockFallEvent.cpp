@@ -40,7 +40,7 @@ bool&           BlockFallBeforeEvent::creative() const { return mCreative; }
 void BlockFallAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
     nbt["self"] = serializeRefObj(self());
 }
 BlockPos const&    BlockFallAfterEvent::pos() const { return mPos; }
@@ -49,7 +49,7 @@ FallingBlockActor& BlockFallAfterEvent::self() const
     return static_cast<FallingBlockActor&>(ActorEvent::self());
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     BlockFallEventHook,
     HookPriority::Normal,
     FallingBlock,
@@ -78,12 +78,14 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     actor->mLevel = &pRegion.getLevel();
     auto syncMsg =
         ActorBlockSyncMessage { actor->getOrCreateUniqueID(), ActorBlockSyncMessage::MessageId::None };
+    BlockChangeContext context { false };
+    context.mContextSource = { ActorChangeContext { actor } };
     pRegion.setBlock(
         pPos,
         BlockTypeRegistry::get().getDefaultBlockState(BedrockBlockNames::Air()),
         3,
         &syncMsg,
-        { { ActorChangeContext { actor } } }
+        context
     );
     static_cast<FallingBlock const&>(pOldBlock.getBlockType())
         ._tickBlocksAround2D(pRegion, pPos.add({ 0, 1, 0 }), pOldBlock);

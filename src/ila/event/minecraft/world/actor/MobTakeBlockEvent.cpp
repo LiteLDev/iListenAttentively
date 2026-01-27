@@ -92,7 +92,9 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             ) == CoordinatorResult::Continue
         ) {
             mMob.setCarriedItem(ItemStack{*block.mBlockType->mDefaultState, 1,nullptr});
-            region.removeBlock(targetPos, {ActorChangeContext{&mMob}});
+            BlockChangeContext context{false};
+            context.mContextSource = {ActorChangeContext{&mMob}};
+            region.removeBlock(targetPos, context);
             region.postGameEvent(&mMob, GameEventRegistry::blockDestroy(), targetPos, &block);
             ila::patch::VariantParameterList params{
                 .mSelf = &mMob,

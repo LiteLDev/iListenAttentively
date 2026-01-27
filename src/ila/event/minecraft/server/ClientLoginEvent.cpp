@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/server/ReceivePacketEvent.h"
 #include <ll/api/service/Bedrock.h>
+#include <mc/certificates/UnverifiedCertificate.h>
 #include <mc/certificates/identity/GameServerToken.h>
 #include <mc/network/ConnectionRequest.h>
 #include <mc/network/NetworkIdentifier.h>
@@ -69,15 +70,19 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pSource, pPacket);
-    auto&                                   cert = pPacket->mConnectionRequest->mLegacyMultiplayerToken;
+    auto& data = pPacket->mConnectionRequest->mCertificateData->mRawToken.mDataInfo;
+    if (!data.isMember("extraData") || !data["extraData"].isObject()) { return; }
+    auto&                                   extraData = data["extraData"];
     std::optional<std::vector<std::string>> kickReasons;
+    // TODO: 这里的XUID获取其实有问题，需要判断一个条件
     auto                                    afterEvent = ClientLoginAfterEvent(
         *this,
         pSource,
-        cert->getIdentity(),
-        cert->getXuid(false),
-        cert->getXuid(true),
-        cert->getIdentityName(),
+        extraData.isMember("identity") ? mce::UUID::fromString(extraData["identity"].asString(""))
+                                                                          : mce::UUID::EMPTY(),
+        extraData.isMember("XUID") ? extraData["XUID"].asString("") : "",
+        extraData.isMember("XUID") ? extraData["XUID"].asString("") : "",
+        extraData.isMember("displayName") ? extraData["displayName"].asString("") : "",
         pSource.getIPAndPort(),
         kickReasons
     );

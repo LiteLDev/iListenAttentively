@@ -97,9 +97,9 @@ LL_STATIC_HOOK(
         BlockTypeRegistry::get().getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
         3 /* BlockUpdateFlag::All */,
         nullptr,
-        {}
+        BlockChangeContext{false}
     );
-    pRegion.removeBlock(pPos, {});
+    pRegion.removeBlock(pPos, BlockChangeContext{false});
     LLEventBus.publish(DragonEggBlockTeleportAfterEvent(pRegion, pPos, pRandom, targetPos));
 }
 

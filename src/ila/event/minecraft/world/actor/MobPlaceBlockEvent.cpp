@@ -2,10 +2,12 @@
 #include "ila/base/Gloabl.h"
 #include "ila/patch/VariantParameterList.hpp"
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
+#include <mc/network/packet/MobEquipmentPacket.h>
 #include <mc/util/Random.h>
 #include <mc/util/Randomize.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
 #include <mc/world/actor/ai/goal/PlaceBlockGoal.h>
+#include <mc/world/events/gameevents/GameEventRegistry.h>
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/level/Block/Block.h>
 #include <mc/world/level/BlockSource.h>
@@ -76,19 +78,36 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
     if (mDefinition->mRandomlyPlaceableBlocks->empty())
     {
         auto& block = mMob.getCarriedItem().mBlock;
-        auto beforeEvent = MobPlaceBlockBeforeEvent {
-            mMob,
-            targetPos,
-            block
-        };
-        LLEventBus.publish(beforeEvent);
-        if (beforeEvent.isCancelled()) { return; }
-        _tryPlaceCarriedBlock(region, targetPos, reinterpret_cast<::VariantParameterList&>(params));
-        LLEventBus.publish(MobPlaceBlockAfterEvent {
-            mMob,
-            targetPos,
-            block
-        });
+        if (block->mBlockType->mayPlace(region, targetPos)) {
+            auto beforeEvent = MobPlaceBlockBeforeEvent {
+                mMob,
+                targetPos,
+                block
+            };
+            LLEventBus.publish(beforeEvent);
+            if (beforeEvent.isCancelled()) { return; }
+            if (block->mBlockType->mayPlace(region, targetPos)) {
+                mMob.setCarriedItem(ItemStack::EMPTY_ITEM());
+                MobEquipmentPacket{
+                    mMob.getRuntimeID(),
+                    ItemStack::EMPTY_ITEM(),
+                    0,
+                    0,
+                    ContainerID::Inventory
+                }.sendTo(mMob);
+                BlockChangeContext context{false};
+                context.mContextSource = ActorChangeContext{&mMob};
+                region.setBlock(targetPos, *block, 3, nullptr, context);
+                region.postGameEvent(&mMob, GameEventRegistry::blockPlace(), targetPos,block);
+                std::vector<std::pair<std::string const, std::string const>> stack;
+                ActorDefinitionDescriptor::_executeTrigger(mMob, mDefinition->mOnPlace, stack, reinterpret_cast<::VariantParameterList&>(params));
+                LLEventBus.publish(MobPlaceBlockAfterEvent {
+                    mMob,
+                    targetPos,
+                    block
+                });
+            }
+        }
     } else if (
         auto* randomBlock = _tryGetRandomPlaceBlock(
             reinterpret_cast<VariantParameterListConst&>(params),
@@ -102,7 +121,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
         };
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) { return; }
-        region.setBlock(targetPos, *randomBlock, 3, nullptr, nullptr, {});
+        region.setBlock(targetPos, *randomBlock, 3, nullptr, nullptr, BlockChangeContext{false});
         std::vector<std::pair<std::string const, std::string const>> eventStack;
         ActorDefinitionDescriptor::_executeTrigger(
             mMob,

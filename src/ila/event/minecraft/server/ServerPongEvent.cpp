@@ -140,11 +140,13 @@ try
     auto levelName       = parts[7];
     auto gameType        = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
     auto localPort       = static_cast<ushort>(std::stoi(parts[10]));
-    auto localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
+    auto                     localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
     std::vector<std::string> others;
     for (size_t i = 13; i < parts.size(); i++) { others.push_back(parts[i]); }
 
-    auto ipAndPort = pSendParameters->systemAddress->ToString(':');
+    std::string ipAndPort;
+    ipAndPort.resize(56);
+    pSendParameters->systemAddress->ToString(true, ipAndPort.data(), ':');
 
     auto beforeEvent = ServerPongBeforeEvent(
         motd,
