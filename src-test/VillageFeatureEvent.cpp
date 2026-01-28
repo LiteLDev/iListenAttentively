@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
+#include "ila/event/minecraft/worldgen/structure/VillageFeatureEvent.h"
 #include "ll/api/base/FixedString.h"
 #include "ll/api/event/Cancellable.h"
 #include "ll/api/event/DynamicListener.h"
