@@ -16,7 +16,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerRequestItemActionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
-protected:
+public:
     ItemStackRequestActionType& mActionType;
     bool&                       mIsDstSerialized;
     bool&                       mIsAmountSerialized;
@@ -47,17 +47,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ItemStackRequestActionType& actionType() const;
-    ILNDAPI bool&                       isDstSerialized() const;
-    ILNDAPI bool&                       isAmountSerialized() const;
-    ILNDAPI uchar&                      amount() const;
-    ILNDAPI ItemStackRequestSlotInfo&   src() const;
-    ILNDAPI ItemStackRequestSlotInfo&   dst() const;
 };
 
 class PlayerRequestItemActionAfterEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     ItemStackRequestActionType const& mActionType;
     bool const&                       mIsDstSerialized;
     bool const&                       mIsAmountSerialized;
@@ -91,12 +85,5 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ItemStackRequestActionType const& actionType() const;
-    ILNDAPI bool const&                       isDstSerialized() const;
-    ILNDAPI bool const&                       isAmountSerialized() const;
-    ILNDAPI uchar const&                      amount() const;
-    ILNDAPI ItemStackRequestSlotInfo const&   src() const;
-    ILNDAPI ItemStackRequestSlotInfo const&   dst() const;
-    ILNDAPI ItemStackNetResult&               result() const;
 };
 } // namespace ila::mc::inline actor::inline player

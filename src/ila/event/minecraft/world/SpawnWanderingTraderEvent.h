@@ -11,7 +11,7 @@ namespace ila::mc::inline world
 {
 class SpawnWanderingTraderBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPos;
 
 public:
@@ -24,6 +24,5 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
 };
 } // namespace ila::mc::inline world

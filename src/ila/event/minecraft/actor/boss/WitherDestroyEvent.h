@@ -8,11 +8,11 @@ class Level;
 class AABB;
 // clang-format on
 
-namespace ila::mc::inline world
+namespace ila::mc::inline actor::inline boss
 {
 class WitherDestroyBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     Level& mLevel;
     AABB&  mBox;
     int&   mRadius;
@@ -34,14 +34,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI Level& level() const;
-    ILNDAPI AABB&  box() const;
-    ILNDAPI int&   radius() const;
 };
 
 class WitherDestroyAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     Level&      mLevel;
     AABB const& mBox;
     int const&  mRadius;
@@ -62,8 +59,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Level&      level() const;
-    ILNDAPI AABB const& box() const;
-    ILNDAPI int const&  radius() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline actor::inline boss

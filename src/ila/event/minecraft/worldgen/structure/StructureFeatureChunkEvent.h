@@ -21,7 +21,7 @@ namespace ila::mc::inline worldgen::inline structure
 
 class StructureFeatureChunkEvent final : public ll::event::Cancellable<StructureEvent>
 {
-protected:
+public:
     StructureFeature&                  mFeature;
     HashedString const&                mFeatureIdentifier;
     IPreliminarySurfaceProvider const& mPreliminarySurfaceLevel;
@@ -45,14 +45,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI StructureFeature&                  structureFeature() const;
-    ILNDAPI HashedString const&                featureIdentifier() const;
-    ILNDAPI IPreliminarySurfaceProvider const& preliminarySurfaceLevel() const;
-    ILNDAPI BiomeSource const&                 biomeSource() const;
-    ILNDAPI Dimension const&                   dimension() const;
-    ILNDAPI ChunkPos const&                    chunkPos() const;
-    ILNDAPI Random&                            random() const;
-    ILNDAPI uint&                              levelSeed() const;
 };
 
 } // namespace ila::mc::inline worldgen::inline structure

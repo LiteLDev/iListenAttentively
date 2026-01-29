@@ -14,7 +14,7 @@ namespace ila::mc::inline block
 {
 class BlockTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPos;
     Random&   mRandom;
 
@@ -29,13 +29,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
-    ILNDAPI Random&   random() const;
 };
 
 class BlockTickAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
     Random const&   mRandom;
 
@@ -53,7 +51,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Random const&   random() const;
 };
 } // namespace ila::mc::inline block

@@ -23,20 +23,16 @@ namespace ila::mc::inline actor::inline player
 void PlayerOperatedItemFrameBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { blockPos().x, blockPos().y, blockPos().z };
-    nbt["type"] = magic_enum::enum_name(type());
+    nbt["pos"]  = ListTag { mBlockPos.x, mBlockPos.y, mBlockPos.z };
+    nbt["type"] = magic_enum::enum_name(mType);
 }
-BlockPos const& PlayerOperatedItemFrameBeforeEvent::blockPos() const { return mBlockPos; }
-PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameBeforeEvent::type() const { return mType; }
 
 void PlayerOperatedItemFrameAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { blockPos().x, blockPos().y, blockPos().z };
-    nbt["type"] = magic_enum::enum_name(type());
+    nbt["pos"]  = ListTag { mBlockPos.x, mBlockPos.y, mBlockPos.z };
+    nbt["type"] = magic_enum::enum_name(mType);
 }
-BlockPos const& PlayerOperatedItemFrameAfterEvent::blockPos() const { return mBlockPos; }
-PlayerOperatedItemFrameEvent::Type const& PlayerOperatedItemFrameAfterEvent::type() const { return mType; }
 
 using Type = PlayerOperatedItemFrameEvent::Type;
 

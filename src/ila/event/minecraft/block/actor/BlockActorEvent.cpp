@@ -11,9 +11,7 @@ namespace ila::mc::inline block::inline actor
 void BlockActorEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["self"] = serializeRefObj(self());
+    nbt["self"] = serializeRefObj(mSelf);
 }
-
-BlockActor& BlockActorEvent::self() const { return mSelf; }
 
 } // namespace ila::mc::inline block::inline actor

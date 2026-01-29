@@ -13,16 +13,14 @@ namespace ila::mc::inline actor
 void ActorRideBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["target"] = serializeRefObj(target());
+    nbt["target"] = serializeRefObj(mTarget);
 }
-Actor& ActorRideBeforeEvent::target() const { return mTarget; }
 
 void ActorRideAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["target"] = serializeRefObj(target());
+    nbt["target"] = serializeRefObj(mTarget);
 }
-Actor const& ActorRideAfterEvent::target() const { return mTarget; }
 
 LL_TYPE_INSTANCE_HOOK(
     ActorRideEventHook,

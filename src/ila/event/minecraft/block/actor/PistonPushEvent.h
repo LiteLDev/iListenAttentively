@@ -7,11 +7,11 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block::inline actor
 {
 class PistonPushBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPistonPos;
     BlockPos& mPushPos;
     uchar&    mBranchFacing;
@@ -36,15 +36,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pistonPos() const;
-    ILNDAPI BlockPos& pushPos() const;
-    ILNDAPI uchar&    branchFacing() const;
-    ILNDAPI uchar&    pistonMoveFacing() const;
 };
 
 class PistonPushAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPistonPos;
     BlockPos const& mPushPos;
     uchar const&    mBranchFacing;
@@ -68,9 +64,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pistonPos() const;
-    ILNDAPI BlockPos const& pushPos() const;
-    ILNDAPI uchar const&    branchFacing() const;
-    ILNDAPI uchar const&    pistonMoveFacing() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block::inline actor

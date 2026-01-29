@@ -32,31 +32,25 @@ namespace ila::mc::inline actor::inline mob
 void MobHurtEffectBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["source"] = serializePtrObj(source().as_ptr());
-    nbt["value"]  = value();
-    nbt["cause"]  = magic_enum::enum_name(cause());
+    nbt["source"] = serializePtrObj(mSource.as_ptr());
+    nbt["value"]  = mValue;
+    nbt["cause"]  = magic_enum::enum_name(mCause);
 }
 void MobHurtEffectBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    value() = nbt["value"];
-    cause() = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
-                  .value_or(cause());
+    mValue = nbt["value"];
+    mCause = magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
+                  .value_or(mCause);
 }
-optional_ref<Actor>                    MobHurtEffectBeforeEvent::source() const { return mSource; }
-float&                                 MobHurtEffectBeforeEvent::value() const { return mValue; }
-SharedTypes::Legacy::ActorDamageCause& MobHurtEffectBeforeEvent::cause() const { return mCause; }
 
 void MobHurtEffectAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["source"] = serializePtrObj(source().as_ptr());
-    nbt["value"]  = value();
-    nbt["cause"]  = magic_enum::enum_name(cause());
+    nbt["source"] = serializePtrObj(mSource.as_ptr());
+    nbt["value"]  = mValue;
+    nbt["cause"]  = magic_enum::enum_name(mCause);
 }
-optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() const { return mSource; }
-float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
-SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
 
 static ll::DenseMap<Actor*, WeakRef<EntityContext>> mSplashPotionSources;
 

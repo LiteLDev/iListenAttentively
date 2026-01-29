@@ -14,7 +14,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerStartSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
-protected:
+public:
     BlockPos& mPos;
 
 public:
@@ -27,12 +27,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
 };
 
 class PlayerStartSleepAfterEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     BlockPos const&    mPos;
     BedSleepingResult& mResult;
 
@@ -51,7 +50,5 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos const&    pos() const;
-    ILNDAPI BedSleepingResult& result() const;
 };
 } // namespace ila::mc::inline actor::inline player

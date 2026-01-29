@@ -14,7 +14,7 @@ namespace ila::mc::inline actor
 {
 class ActorChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
-protected:
+public:
     DimensionType const& mFromDimensionId;
     DimensionType&       mToDimensionId;
 
@@ -33,13 +33,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI DimensionType const& fromDimensionId() const;
-    ILNDAPI DimensionType&       toDimensionId() const;
 };
 
 class ActorChangeDimensionAfterEvent final : public ll::event::entity::ActorEvent
 {
-protected:
+public:
     DimensionType const& mFromDimensionId;
     Vec3 const&          mFromPos;
     DimensionType const& mToDimensionId;
@@ -60,8 +58,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI DimensionType const& fromDimensionId() const;
-    ILNDAPI Vec3 const&          getFromPos() const;
-    ILNDAPI DimensionType const& toDimensionId() const;
 };
 } // namespace ila::mc::inline actor

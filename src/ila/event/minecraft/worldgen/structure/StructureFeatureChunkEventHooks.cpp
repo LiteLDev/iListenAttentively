@@ -80,12 +80,12 @@ namespace
         );
         auto& eventBus = LLEventBus;
         eventBus.publish(event);
-        registerIdentifier(event.featureIdentifier().c_str());
+        registerIdentifier(event.mFeatureIdentifier.c_str());
         eventBus.publish(event, [&]() -> ll::event::EventId {
             return ll::event::EventId { fmt::format(
                 "{0}<class {1}>",
                 ll::reflection::type_name_v<StructureFeatureChunkEvent>,
-                event.featureIdentifier().c_str()
+                event.mFeatureIdentifier.c_str()
             ) };
         }());
         if (event.isCancelled()) { return false; }
@@ -94,7 +94,7 @@ namespace
             biomeSource,
             random,
             chunkPos,
-            event.levelSeed(),
+            event.mLevelSeed,
             preliminarySurfaceLevel,
             dimension
         );

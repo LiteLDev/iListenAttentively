@@ -13,7 +13,7 @@ namespace ila::mc::inline actor
 {
 class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
-protected:
+public:
     ItemActor& mItemActor;
 
 public:
@@ -25,12 +25,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemActor& itemActor() const;
 };
 
 class ActorPickupItemAfterEvent final : public ll::event::entity::MobEvent
 {
-protected:
+public:
     ItemActor const& mItemActor;
 
 public:
@@ -42,6 +41,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemActor const& itemActor() const;
 };
 } // namespace ila::mc::inline actor

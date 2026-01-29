@@ -26,32 +26,26 @@ namespace ila::mc::inline actor::inline player
 void PlayerEditSignBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
-    nbt["side"] = magic_enum::enum_name(textSide());
-    nbt["text"] = text();
+    nbt["pos"]  = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["side"] = magic_enum::enum_name(mTextSide);
+    nbt["text"] = mText;
 }
 void PlayerEditSignBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
-    text()  = nbt["text"];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
+    mText  = nbt["text"];
 }
-BlockPos&           PlayerEditSignBeforeEvent::pos() const { return mPos; }
-SignTextSide const& PlayerEditSignBeforeEvent::textSide() const { return mTextSide; }
-std::string&        PlayerEditSignBeforeEvent::text() const { return mText; }
 
 void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
-    nbt["side"] = magic_enum::enum_name(textSide());
-    nbt["text"] = text();
+    nbt["pos"]  = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["side"] = magic_enum::enum_name(mTextSide);
+    nbt["text"] = mText;
 }
-BlockPos const&     PlayerEditSignAfterEvent::pos() const { return mPos; }
-SignTextSide const& PlayerEditSignAfterEvent::textSide() const { return mTextSide; }
-std::string const&  PlayerEditSignAfterEvent::text() const { return mText; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerEditSignEventHook,

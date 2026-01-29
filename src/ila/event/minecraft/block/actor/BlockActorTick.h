@@ -10,7 +10,7 @@ namespace ila::mc::inline block::inline actor
 {
 class BlockActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockActor& mBlockActor;
 
 public:
@@ -22,12 +22,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockActor& blockActor() const;
 };
 
 class BlockActorTickAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockActor& mBlockActor;
 
 public:
@@ -39,6 +38,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockActor& blockActor() const;
 };
 } // namespace ila::mc::inline block::inline actor

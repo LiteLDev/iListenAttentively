@@ -15,7 +15,7 @@ namespace ila::mc::inline server
 
 class ClientLoginBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
 {
-protected:
+public:
     ServerNetworkHandler&    mServerNetworkHandler;
     NetworkIdentifier const& mNetworkIdentifier;
 
@@ -32,13 +32,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ServerNetworkHandler&    serverNetworkHandler() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
 };
 
 class ClientLoginAfterEvent final : public ll::event::Event
 {
-protected:
+public:
     ServerNetworkHandler&                    mServerNetworkHandler;
     NetworkIdentifier const&                 mNetworkIdentifier;
     mce::UUID const&                         mUuid;
@@ -72,13 +70,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ServerNetworkHandler&    serverNetworkHandler() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
-    ILNDAPI mce::UUID const& uuid() const;
-    ILNDAPI std::string const& serverAuthXuid() const;
-    ILNDAPI std::string const& clientAuthXuid() const;
-    ILNDAPI std::string const& realName() const;
-    ILNDAPI std::string const& ipAndPort() const;
     ILNDAPI std::string ip() const;
     ILNDAPI std::string port() const;
     ILAPI void          disConnectClient(std::string const& reason = {}) const;

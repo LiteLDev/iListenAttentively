@@ -12,7 +12,7 @@ namespace ila::mc::inline actor::inline mob
 {
 class MobHurtEffectBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
-protected:
+public:
     optional_ref<Actor>                    mSource;
     float&                                 mValue;
     SharedTypes::Legacy::ActorDamageCause& mCause;
@@ -34,14 +34,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI optional_ref<Actor> source() const;
-    ILNDAPI float&              value() const;
-    ILNDAPI SharedTypes::Legacy::ActorDamageCause& cause() const;
 };
 
 class MobHurtEffectAfterEvent final : public ll::event::entity::MobEvent
 {
-protected:
+public:
     optional_ref<Actor const>                    mSource;
     float const&                                 mValue;
     SharedTypes::Legacy::ActorDamageCause const& mCause;
@@ -62,8 +59,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI optional_ref<Actor const> source() const;
-    ILNDAPI float const&              value() const;
-    ILNDAPI SharedTypes::Legacy::ActorDamageCause const& cause() const;
 };
 } // namespace ila::mc::inline actor::inline mob

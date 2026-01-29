@@ -20,6 +20,7 @@ namespace ila::mc::inline worldgen::inline system
 {
 class BiomeDecorationSystemEvent : public ::ll::event::Event
 {
+public:
     LevelChunk&        mLevelChunk;
     std::string const& mPass;
     Random&            mRandom;
@@ -34,9 +35,6 @@ public:
     }
 
 public:
-    ILAPI LevelChunk& levelChunk() const;
-    ILAPI std::string const& pass() const;
-    ILAPI Random&            random() const;
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const;
@@ -44,6 +42,7 @@ public:
 
 class DecorateEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
 {
+public:
     BlockSource&                       mBlockSource;
     std::vector<::Biome const*>&       mUniqueBiomes;
     IPreliminarySurfaceProvider const& mPreliminarySurfaceProvider;
@@ -65,9 +64,6 @@ public:
     }
 
 public:
-    ILAPI BlockSource& blockSource() const;
-    ILAPI std::vector<::Biome const*>&       uniqueBiomes() const;
-    ILAPI IPreliminarySurfaceProvider const& preliminarySurfaceProvider() const;
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const;
@@ -75,6 +71,7 @@ public:
 
 class DecorateBiomeEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
 {
+public:
     ::gsl::span<::BiomeDecorationFeature const>& mFeatureList;
     ::Biome const*&                              mBiome;
     ::IPreliminarySurfaceProvider const&         mPreliminarySurfaceProvider;
@@ -99,10 +96,6 @@ public:
     }
 
 public:
-    ILAPI gsl::span<::BiomeDecorationFeature const>& featureList() const;
-    ILAPI Biome const*&                              biome() const;
-    ILAPI IPreliminarySurfaceProvider const&         preliminarySurfaceProvider() const;
-    ILAPI BlockSource&                               blockSource() const;
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const;
@@ -110,6 +103,7 @@ public:
 
 class DecorateLargeFeature1Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
 {
+public:
     ::GeneratorType&                             mGeneratorType;
     uint const&                                  mSeed;
     ::BlockVolumeTarget&                         mTarget;
@@ -136,11 +130,6 @@ public:
     }
 
 public:
-    ILAPI GeneratorType&     generatorType() const;
-    ILAPI uint const&        seed() const;
-    ILAPI BlockVolumeTarget& target() const;
-    ILAPI gsl::span<::BiomeDecorationFeature const>& featureList() const;
-    ILAPI ChunkPos const&                            chunkPos() const;
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const;
@@ -148,6 +137,7 @@ public:
 
 class DecorateLargeFeature2Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
 {
+public:
     ::Biome const&       mBiome;
     ::BlockVolumeTarget& mTarget;
     ::ChunkPos const&    mChunkPos;
@@ -169,9 +159,6 @@ public:
     }
 
 public:
-    ILAPI Biome const&       biome() const;
-    ILAPI BlockVolumeTarget& target() const;
-    ILAPI ChunkPos const&    chunkPos() const;
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const;

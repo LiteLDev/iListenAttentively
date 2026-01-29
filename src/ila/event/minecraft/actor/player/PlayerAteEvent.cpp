@@ -25,16 +25,14 @@ namespace ila::mc::inline actor::inline player
 void PlayerAteBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["item"] = serializeRefObj(item());
+    nbt["item"] = serializeRefObj(mItem);
 }
-ItemStack& PlayerAteBeforeEvent::item() const { return mItem; }
 
 void PlayerAteAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["slot"] = slot();
+    nbt["slot"] = mSlot;
 }
-int PlayerAteAfterEvent::slot() const { return mSlot; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerCompleteUsingItemHook,

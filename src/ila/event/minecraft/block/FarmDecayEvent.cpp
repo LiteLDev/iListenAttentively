@@ -17,34 +17,28 @@ namespace ila::mc::inline block
 void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]          = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]        = getDimensionName(blockSource());
-    nbt["actor"]        = serializeRefObj(actor());
-    nbt["fallDistance"] = fallDistance();
+    nbt["actor"]        = serializeRefObj(mActor);
+    nbt["fallDistance"] = mFallDistance;
 }
 void FarmDecayBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x        = nbt["pos"][0];
-    pos().y        = nbt["pos"][1];
-    pos().z        = nbt["pos"][2];
-    fallDistance() = nbt["fallDistance"];
+    mPos.x        = nbt["pos"][0];
+    mPos.y        = nbt["pos"][1];
+    mPos.z        = nbt["pos"][2];
+    mFallDistance = nbt["fallDistance"];
 }
-BlockPos& FarmDecayBeforeEvent::pos() const { return mPos; }
-Actor*&   FarmDecayBeforeEvent::actor() const { return mActor; }
-float&    FarmDecayBeforeEvent::fallDistance() const { return mFallDistance; }
 
 void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]          = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]        = getDimensionName(blockSource());
-    nbt["actor"]        = serializeRefObj(actor());
-    nbt["fallDistance"] = fallDistance();
+    nbt["actor"]        = serializeRefObj(mActor);
+    nbt["fallDistance"] = mFallDistance;
 }
-BlockPos const& FarmDecayAfterEvent::pos() const { return mPos; }
-Actor* const&   FarmDecayAfterEvent::actor() const { return mActor; }
-float const&    FarmDecayAfterEvent::fallDistance() const { return mFallDistance; }
 
 LL_TYPE_INSTANCE_HOOK(
     FarmDecayEventHook,

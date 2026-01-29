@@ -7,11 +7,11 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block
 {
 class FireTryBurnBlockBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -23,12 +23,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
 
 class FireTryBurnBlockAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -40,6 +39,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block

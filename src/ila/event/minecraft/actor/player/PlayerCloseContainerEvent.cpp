@@ -17,39 +17,27 @@ namespace ila::mc::inline actor::inline player
 void PlayerCloseContainerBeforeEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["containerId"]          = static_cast<schar>(containerId());
-    nbt["containerType"]        = magic_enum::enum_name(containerType());
-    nbt["serverInitiatedClose"] = serverInitiatedClose();
+    nbt["containerId"]          = static_cast<schar>(mContainerId);
+    nbt["containerType"]        = magic_enum::enum_name(mContainerType);
+    nbt["serverInitiatedClose"] = mServerInitiatedClose;
 }
 void PlayerCloseContainerBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     ServerPlayerEvent::deserialize(nbt);
-    containerId() = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
-    containerType() =
+    mContainerId = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
+    mContainerType =
         magic_enum::enum_cast<SharedTypes::Legacy::ContainerType>(nbt["containerType"].get<StringTag>())
-            .value_or(containerType());
-    serverInitiatedClose() = nbt["serverInitiatedClose"];
+            .value_or(mContainerType);
+    mServerInitiatedClose = nbt["serverInitiatedClose"];
 }
-ContainerID& PlayerCloseContainerBeforeEvent::containerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType& PlayerCloseContainerBeforeEvent::containerType() const
-{
-    return mContainerType;
-}
-bool& PlayerCloseContainerBeforeEvent::serverInitiatedClose() const { return mServerInitiatedClose; }
 
 void PlayerCloseContainerAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["containerId"]          = static_cast<schar>(containerId());
-    nbt["containerType"]        = magic_enum::enum_name(containerType());
-    nbt["serverInitiatedClose"] = serverInitiatedClose();
+    nbt["containerId"]          = static_cast<schar>(mContainerId);
+    nbt["containerType"]        = magic_enum::enum_name(mContainerType);
+    nbt["serverInitiatedClose"] = mServerInitiatedClose;
 }
-ContainerID const& PlayerCloseContainerAfterEvent::containerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType const& PlayerCloseContainerAfterEvent::containerType() const
-{
-    return mContainerType;
-}
-bool const& PlayerCloseContainerAfterEvent::serverInitiatedClose() const { return mServerInitiatedClose; }
 
 Event_Listener_Factory(PlayerCloseContainerBefore)
 {
@@ -61,7 +49,7 @@ Event_Listener_Factory(PlayerCloseContainerBefore)
                     {
                         auto& packet = event.packet();
                         LLEventBus.publish(PlayerCloseContainerBeforeEvent(
-                            *event.player(),
+                            *player,
                             packet.mContainerId,
                             packet.mContainerType,
                             packet.mServerInitiatedClose
@@ -83,7 +71,7 @@ Event_Listener_Factory(PlayerCloseContainerAfter)
                     {
                         auto& packet = event.packet();
                         LLEventBus.publish(PlayerCloseContainerAfterEvent(
-                            *event.player(),
+                            *player,
                             packet.mContainerId,
                             packet.mContainerType,
                             packet.mServerInitiatedClose

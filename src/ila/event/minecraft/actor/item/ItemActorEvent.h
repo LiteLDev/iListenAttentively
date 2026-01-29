@@ -14,9 +14,8 @@ public:
     {
     }
 
-    void serialize(CompoundTag&) const override;
-
-    ILNDAPI ItemActor& self() const;
+    void       serialize(CompoundTag&) const override;
+    ItemActor& self() const;
 };
 
 } // namespace ila::mc::inline actor::inline item

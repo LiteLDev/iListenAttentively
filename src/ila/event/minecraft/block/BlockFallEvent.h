@@ -16,7 +16,7 @@ namespace ila::mc::inline block
 {
 class BlockFallBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos const& mPos;
     Block const&    mOldBlock;
     bool&           mCreative;
@@ -37,15 +37,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
-
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Block const&    oldBlock() const;
-    ILNDAPI bool&           creative() const;
 };
 
 class BlockFallAfterEvent final : public ll::event::ActorEvent
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -55,9 +51,7 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag& nbt) const override;
-
-    ILNDAPI BlockPos const&    pos() const;
-    ILNDAPI FallingBlockActor& self() const;
+    ILAPI void         serialize(CompoundTag& nbt) const override;
+    FallingBlockActor& self() const;
 };
 } // namespace ila::mc::inline block

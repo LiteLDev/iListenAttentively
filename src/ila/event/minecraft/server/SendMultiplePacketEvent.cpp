@@ -1,32 +1,42 @@
 #include "ila/event/minecraft/server/SendMultiplePacketEvent.h"
 #include "ila/base/Gloabl.h"
+#include <fmt/format.h>
+#include <ll/api/event/Emitter.h>
+#include <ll/api/event/EmitterBase.h>
+#include <ll/api/event/EventId.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/TypeName.h>
 #include <ll/api/service/Bedrock.h>
 #include <ll/api/utils/StringUtils.h>
+#include <magic_enum.hpp>
+#include <mc/deps/core/utility/optional_ref.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/network/MinecraftPacketIds.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
 #include <mc/network/NetworkSystem.h>
-#include <mc/network/ServerNetworkHandler.h>
 #include <mc/network/Packet.h>
+#include <mc/network/ServerNetworkHandler.h>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace ila::mc::inline server
 {
 
 void ISendMultiplePacketBeforeEvent::serialize(CompoundTag& nbt) const
 {
-    nbt["networkSystem"]      = serializeRefObj(networkSystem());
-    nbt["packet"]             = serializeRefObj(packet());
+    nbt["networkSystem"]      = serializeRefObj(mNetworkSystem);
+    nbt["packet"]             = serializeRefObj(mPacket);
     nbt["networkIdentifiers"] = ListTag {};
-    for (auto& networkIdentifier : networkIdentifiers())
+    for (auto& networkIdentifier : mNetworkIdentifiers)
     {
-        nbt["networkIdentifiers"].push_back({ { "id", ll::event::serializeRefObj(networkIdentifier.id) },
-                                              { "subId",
-                                                magic_enum::enum_name(networkIdentifier.subClientId) } });
+        nbt["networkIdentifiers"].push_back(
+            { { "id", ll::event::serializeRefObj(networkIdentifier.id) },
+              { "subId", magic_enum::enum_name(networkIdentifier.subClientId) } }
+        );
     }
-}
-NetworkSystem& ISendMultiplePacketBeforeEvent::networkSystem() const { return mNetworkSystem; }
-Packet&        ISendMultiplePacketBeforeEvent::packet() const { return mPacket; }
-std::vector<NetworkIdentifierWithSubId> const& ISendMultiplePacketBeforeEvent::networkIdentifiers() const
-{
-    return mNetworkIdentifiers;
 }
 optional_ref<ServerPlayer> ISendMultiplePacketBeforeEvent::player(
     NetworkIdentifierWithSubId const& networkIdentifier
@@ -40,21 +50,16 @@ optional_ref<ServerPlayer> ISendMultiplePacketBeforeEvent::player(
 
 void ISendMultiplePacketAfterEvent::serialize(CompoundTag& nbt) const
 {
-    nbt["networkSystem"]      = serializeRefObj(networkSystem());
-    nbt["packet"]             = serializeRefObj(packet());
+    nbt["networkSystem"]      = serializeRefObj(mNetworkSystem);
+    nbt["packet"]             = serializeRefObj(mPacket);
     nbt["networkIdentifiers"] = ListTag {};
-    for (auto& networkIdentifier : networkIdentifiers())
+    for (auto& networkIdentifier : mNetworkIdentifiers)
     {
-        nbt["networkIdentifiers"].push_back({ { "id", ll::event::serializeRefObj(networkIdentifier.id) },
-                                              { "subId",
-                                                magic_enum::enum_name(networkIdentifier.subClientId) } });
+        nbt["networkIdentifiers"].push_back(
+            { { "id", ll::event::serializeRefObj(networkIdentifier.id) },
+              { "subId", magic_enum::enum_name(networkIdentifier.subClientId) } }
+        );
     }
-}
-NetworkSystem& ISendMultiplePacketAfterEvent::networkSystem() const { return mNetworkSystem; }
-Packet const&  ISendMultiplePacketAfterEvent::packet() const { return mPacket; }
-std::vector<NetworkIdentifierWithSubId> const& ISendMultiplePacketAfterEvent::networkIdentifiers() const
-{
-    return mNetworkIdentifiers;
 }
 optional_ref<ServerPlayer> ISendMultiplePacketAfterEvent::player(
     NetworkIdentifierWithSubId const& networkIdentifier

@@ -9,7 +9,7 @@ namespace ila::mc::inline world
 {
 class WeatherUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent>
 {
-protected:
+public:
     float& mRainLevel;
     int&   mRainTime;
     float& mLightningLevel;
@@ -34,15 +34,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI float& rainLevel() const;
-    ILNDAPI int&   rainTime() const;
-    ILNDAPI float& lightningLevel() const;
-    ILNDAPI int&   lightningTime() const;
 };
 
 class WeatherUpdateAfterEvent final : public ll::event::LevelEvent
 {
-protected:
+public:
     float const& mRainLevel;
     int const&   mRainTime;
     float const& mLightningLevel;
@@ -66,9 +62,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI float const& rainLevel() const;
-    ILNDAPI int const&   rainTime() const;
-    ILNDAPI float const& lightningLevel() const;
-    ILNDAPI int const&   lightningTime() const;
 };
 } // namespace ila::mc::inline world

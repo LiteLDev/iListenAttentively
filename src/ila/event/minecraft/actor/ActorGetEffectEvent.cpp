@@ -14,21 +14,19 @@ namespace ila::mc::inline actor
 void ActorGetEffectBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["effect"] = *effect().save();
+    nbt["effect"] = *mEffect.save();
 }
 void ActorGetEffectBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    effect() = MobEffectInstance::load(nbt["effect"].get<CompoundTag>());
-}
-MobEffectInstance& ActorGetEffectBeforeEvent::effect() const { return mEffect; };
+    mEffect = MobEffectInstance::load(nbt["effect"].get<CompoundTag>());
+};
 
 void ActorGetEffectAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["effect"] = *effect().save();
-}
-MobEffectInstance const& ActorGetEffectAfterEvent::effect() const { return mEffect; };
+    nbt["effect"] = *mEffect.save();
+};
 
 LL_TYPE_INSTANCE_HOOK(
     ActorGetEffectEventHook,

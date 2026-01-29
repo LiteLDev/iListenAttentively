@@ -22,48 +22,32 @@ namespace ila::mc::inline actor::inline player
 void PlayerOpenContainerBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["containerBlockPos"] =
-        ListTag { containerBlockPos().x, containerBlockPos().y, containerBlockPos().z };
-    nbt["containerId"]      = static_cast<schar>(containerId());
-    nbt["containerType"]    = magic_enum::enum_name(containerType());
-    nbt["containerActorId"] = containerActorId().rawID;
+    nbt["containerBlockPos"] = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["containerId"]       = static_cast<schar>(mContainerId);
+    nbt["containerType"]     = magic_enum::enum_name(mContainerType);
+    nbt["containerActorId"]  = mContainerActorId.rawID;
 }
 void PlayerOpenContainerBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    containerBlockPos().x = nbt["containerBlockPos"][0];
-    containerBlockPos().y = nbt["containerBlockPos"][1];
-    containerBlockPos().z = nbt["containerBlockPos"][2];
-    containerId()         = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
-    containerType() =
+    mPos.x       = nbt["containerBlockPos"][0];
+    mPos.y       = nbt["containerBlockPos"][1];
+    mPos.z       = nbt["containerBlockPos"][2];
+    mContainerId = static_cast<ContainerID>(nbt["containerId"].get<ByteTag>().data);
+    mContainerType =
         magic_enum::enum_cast<SharedTypes::Legacy::ContainerType>(nbt["containerType"].get<StringTag>())
-            .value_or(containerType());
-    containerActorId().rawID = nbt["containerActorId"];
+            .value_or(mContainerType);
+    mContainerActorId.rawID = nbt["containerActorId"];
 }
-BlockPos&    PlayerOpenContainerBeforeEvent::containerBlockPos() const { return mPos; }
-ContainerID& PlayerOpenContainerBeforeEvent::containerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType& PlayerOpenContainerBeforeEvent::containerType() const
-{
-    return mContainerType;
-}
-ActorUniqueID& PlayerOpenContainerBeforeEvent::containerActorId() const { return mContainerActorId; }
 
 void PlayerOpenContainerAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["containerBlockPos"] =
-        ListTag { containerBlockPos().x, containerBlockPos().y, containerBlockPos().z };
-    nbt["containerId"]      = static_cast<schar>(containerId());
-    nbt["containerType"]    = magic_enum::enum_name(containerType());
-    nbt["containerActorId"] = containerActorId().rawID;
+    nbt["containerBlockPos"] = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["containerId"]       = static_cast<schar>(mContainerId);
+    nbt["containerType"]     = magic_enum::enum_name(mContainerType);
+    nbt["containerActorId"]  = mContainerActorId.rawID;
 }
-BlockPos const&    PlayerOpenContainerAfterEvent::containerBlockPos() const { return mPos; }
-ContainerID const& PlayerOpenContainerAfterEvent::containerId() const { return mContainerId; }
-SharedTypes::Legacy::ContainerType const& PlayerOpenContainerAfterEvent::containerType() const
-{
-    return mContainerType;
-}
-ActorUniqueID const& PlayerOpenContainerAfterEvent::containerActorId() const { return mContainerActorId; }
 
 Event_Listener_Factory(PlayerOpenContainerBefore)
 {
@@ -75,7 +59,7 @@ Event_Listener_Factory(PlayerOpenContainerBefore)
                     {
                         auto& packet      = event.packet();
                         auto  beforeEvent = PlayerOpenContainerBeforeEvent(
-                            *event.player(),
+                            *player,
                             *packet.mPos,
                             packet.mContainerId,
                             packet.mType,
@@ -85,7 +69,7 @@ Event_Listener_Factory(PlayerOpenContainerBefore)
                         if (beforeEvent.isCancelled())
                         {
                             event.cancel();
-                            event.player()->doDeleteContainerManager(false);
+                            player->doDeleteContainerManager(false);
                         }
                     }
                 }
@@ -104,7 +88,7 @@ Event_Listener_Factory(PlayerOpenContainerAfter)
                     {
                         auto& packet = event.packet();
                         LLEventBus.publish(PlayerOpenContainerAfterEvent(
-                            *event.player(),
+                            *player,
                             *packet.mPos,
                             packet.mContainerId,
                             packet.mType,

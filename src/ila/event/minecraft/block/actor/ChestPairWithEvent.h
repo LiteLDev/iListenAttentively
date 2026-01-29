@@ -14,7 +14,7 @@ namespace ila::mc::inline block::inline actor
 {
 class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     ChestBlockActor& mChest;
     BlockPos&        mPosition;
 
@@ -33,13 +33,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI ChestBlockActor& chest() const;
-    ILNDAPI BlockPos&        pos() const;
 };
 
 class ChestPairWithAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     ChestBlockActor& mChest;
     BlockPos const&  mPosition;
 
@@ -57,7 +55,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChestBlockActor& chest() const;
-    ILNDAPI BlockPos const&  pos() const;
 };
 } // namespace ila::mc::inline block::inline actor

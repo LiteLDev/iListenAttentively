@@ -26,8 +26,7 @@ class PlayerOperatedItemFrameBeforeEvent final : public ll::event::Cancellable<l
 {
 public:
     using Type = PlayerOperatedItemFrameEvent::Type;
-
-protected:
+public:
     BlockPos const&                          mBlockPos;
     PlayerOperatedItemFrameEvent::Type const mType;
 
@@ -45,16 +44,13 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& blockPos() const;
-    ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
 
 class PlayerOperatedItemFrameAfterEvent final : public ll::event::PlayerEvent
 {
 public:
     using Type = PlayerOperatedItemFrameEvent::Type;
-
-protected:
+public:
     BlockPos const&                           mBlockPos;
     PlayerOperatedItemFrameEvent::Type const& mType;
 
@@ -72,7 +68,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& blockPos() const;
-    ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
 } // namespace ila::mc::inline actor::inline player

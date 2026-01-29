@@ -10,40 +10,31 @@ namespace ila::mc::inline world
 void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]     = getDimensionName(blockSource());
-    nbt["item"]      = serializeRefObj(item());
-    nbt["spawner"]   = serializeRefObj(spawner());
-    nbt["throwTime"] = throwTime();
+    nbt["item"]      = serializeRefObj(mItem);
+    nbt["spawner"]   = serializeRefObj(mSpawner);
+    nbt["throwTime"] = mThrowTime;
 }
 void SpawnItemActorBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x     = nbt["pos"][0];
-    pos().y     = nbt["pos"][1];
-    pos().z     = nbt["pos"][2];
-    throwTime() = nbt["throwTime"];
+    mPos.x     = nbt["pos"][0];
+    mPos.y     = nbt["pos"][1];
+    mPos.z     = nbt["pos"][2];
+    mThrowTime = nbt["throwTime"];
 }
-Vec3&      SpawnItemActorBeforeEvent::pos() const { return mPos; }
-ItemStack& SpawnItemActorBeforeEvent::item() const { return mItem; }
-Actor*&    SpawnItemActorBeforeEvent::spawner() const { return mSpawner; }
-int&       SpawnItemActorBeforeEvent::throwTime() const { return mThrowTime; }
 
 void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]     = getDimensionName(blockSource());
-    nbt["item"]      = serializeRefObj(item());
-    nbt["spawner"]   = serializeRefObj(spawner());
-    nbt["throwTime"] = throwTime();
-    nbt["itemActor"] = serializeRefObj(itemActor());
+    nbt["item"]      = serializeRefObj(mItem);
+    nbt["spawner"]   = serializeRefObj(mSpawner);
+    nbt["throwTime"] = mThrowTime;
+    nbt["itemActor"] = serializeRefObj(mItemActor);
 }
-Vec3 const&      SpawnItemActorAfterEvent::pos() const { return mPos; }
-ItemStack const& SpawnItemActorAfterEvent::item() const { return mItem; }
-Actor* const&    SpawnItemActorAfterEvent::spawner() const { return mSpawner; }
-int const&       SpawnItemActorAfterEvent::throwTime() const { return mThrowTime; }
-ItemActor&       SpawnItemActorAfterEvent::itemActor() const { return mItemActor; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnItemActorEventHook,

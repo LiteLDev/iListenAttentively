@@ -13,7 +13,7 @@ namespace ila::mc::inline actor
 {
 class ActorGetEffectBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
-protected:
+public:
     MobEffectInstance& mEffect;
 
 public:
@@ -26,12 +26,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI MobEffectInstance& effect() const;
 };
 
 class ActorGetEffectAfterEvent final : public ll::event::entity::ActorEvent
 {
-protected:
+public:
     MobEffectInstance const& mEffect;
 
 public:
@@ -43,6 +42,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI MobEffectInstance const& effect() const;
 };
 } // namespace ila::mc::inline actor

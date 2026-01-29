@@ -10,7 +10,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerCloseContainerBeforeEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     ContainerID&                        mContainerId;
     SharedTypes::Legacy::ContainerType& mContainerType;
     bool&                               mServerInitiatedClose;
@@ -31,15 +31,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
-
-    ILNDAPI ContainerID& containerId() const;
-    ILNDAPI SharedTypes::Legacy::ContainerType& containerType() const;
-    ILNDAPI bool&                               serverInitiatedClose() const;
 };
 
 class PlayerCloseContainerAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     ContainerID const&                        mContainerId;
     SharedTypes::Legacy::ContainerType const& mContainerType;
     bool const&                               mServerInitiatedClose;
@@ -59,9 +55,5 @@ public:
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
-
-    ILNDAPI ContainerID const& containerId() const;
-    ILNDAPI SharedTypes::Legacy::ContainerType const& containerType() const;
-    ILNDAPI bool const&                               serverInitiatedClose() const;
 };
 } // namespace ila::mc::inline actor::inline player

@@ -16,26 +16,22 @@ namespace ila::mc::inline actor::inline player
 void PlayerChangeGameTypeBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["oldGameType"] = magic_enum::enum_name(oldGameType());
-    nbt["newGameType"] = magic_enum::enum_name(newGameType());
+    nbt["oldGameType"] = magic_enum::enum_name(mOldGameType);
+    nbt["newGameType"] = magic_enum::enum_name(mNewGameType);
 }
 void PlayerChangeGameTypeBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    newGameType() =
-        magic_enum::enum_cast<GameType>(nbt["newGameType"].get<StringTag>()).value_or(newGameType());
+    mNewGameType =
+        magic_enum::enum_cast<GameType>(nbt["newGameType"].get<StringTag>()).value_or(mNewGameType);
 }
-GameType const& PlayerChangeGameTypeBeforeEvent::oldGameType() const { return mOldGameType; }
-GameType&       PlayerChangeGameTypeBeforeEvent::newGameType() const { return mNewGameType; }
 
 void PlayerChangeGameTypeAfterEvent::serialize(CompoundTag& nbt) const
 {
     ServerPlayerEvent::serialize(nbt);
-    nbt["oldGameType"] = magic_enum::enum_name(oldGameType());
-    nbt["newGameType"] = magic_enum::enum_name(newGameType());
+    nbt["oldGameType"] = magic_enum::enum_name(mOldGameType);
+    nbt["newGameType"] = magic_enum::enum_name(mNewGameType);
 }
-GameType const& PlayerChangeGameTypeAfterEvent::oldGameType() const { return mOldGameType; }
-GameType const& PlayerChangeGameTypeAfterEvent::newGameType() const { return mNewGameType; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerChangeGameTypeEventHook,

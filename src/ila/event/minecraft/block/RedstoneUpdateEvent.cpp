@@ -8,41 +8,35 @@
 #include <mc/world/redstone/circuit/CircuitSystem.h>
 #include <mc/world/redstone/circuit/components/BaseCircuitComponent.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block
 {
 
 void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
-    nbt["strength"]    = strength();
-    nbt["isFirstTime"] = isFirstTime();
+    nbt["pos"]         = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["strength"]    = mStrength;
+    nbt["isFirstTime"] = mIsFirstTime;
     nbt["dimId"]       = getDimensionName(blockSource());
 }
 void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x       = nbt["pos"][0];
-    pos().y       = nbt["pos"][1];
-    pos().z       = nbt["pos"][2];
-    strength()    = nbt["strength"];
-    isFirstTime() = nbt["isFirstTime"];
+    mPos.x       = nbt["pos"][0];
+    mPos.y       = nbt["pos"][1];
+    mPos.z       = nbt["pos"][2];
+    mStrength    = nbt["strength"];
+    mIsFirstTime = nbt["isFirstTime"];
 }
-BlockPos& RedstoneUpdateBeforeEvent::pos() const { return mPos; }
-int&      RedstoneUpdateBeforeEvent::strength() const { return mStrength; }
-bool&     RedstoneUpdateBeforeEvent::isFirstTime() const { return mIsFirstTime; }
 
 void RedstoneUpdateAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
-    nbt["strength"]    = strength();
-    nbt["isFirstTime"] = isFirstTime();
+    nbt["pos"]         = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["strength"]    = mStrength;
+    nbt["isFirstTime"] = mIsFirstTime;
     nbt["dimId"]       = getDimensionName(blockSource());
 }
-BlockPos const& RedstoneUpdateAfterEvent::pos() const { return mPos; }
-int const&      RedstoneUpdateAfterEvent::strength() const { return mStrength; }
-bool const&     RedstoneUpdateAfterEvent::isFirstTime() const { return mIsFirstTime; }
 
 LL_TYPE_INSTANCE_HOOK(
     RedstoneUpdateEventHook1,
@@ -123,4 +117,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(RedstoneUpdate, <RedstoneUpdateEventHook1, RedstoneUpdateEventHook2>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block

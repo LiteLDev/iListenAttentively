@@ -14,7 +14,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerInteractEntityBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
-protected:
+public:
     Actor& mTarget;
     Vec3&  mPos;
 
@@ -29,13 +29,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILAPI Actor& target() const;
-    ILAPI Vec3&  pos() const;
 };
 
 class PlayerInteractEntityAfterEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     Actor const& mTarget;
     Vec3 const&  mPos;
 
@@ -49,7 +47,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILAPI Actor const& target() const;
-    ILAPI Vec3 const&  pos() const;
 };
 } // namespace ila::mc::inline actor::inline player

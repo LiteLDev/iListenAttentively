@@ -37,27 +37,23 @@ namespace ila::mc::inline actor::inline mob
 void MobPlaceBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["block"] = serializePtrObj(block());
+    nbt["pos"]   = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["block"] = serializePtrObj(mBlock);
 }
 void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
 }
-BlockPos&    MobPlaceBlockBeforeEvent::pos() const { return mPos; }
-Block const* MobPlaceBlockBeforeEvent::block() const { return mBlock; }
 
 void MobPlaceBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
-    nbt["block"] = serializePtrObj(block());
+    nbt["pos"]   = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["block"] = serializePtrObj(mBlock);
 }
-BlockPos const& MobPlaceBlockAfterEvent::pos() const { return mPos; }
-Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 
 LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void)
 {

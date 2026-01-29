@@ -15,9 +15,8 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag&) const override;
-
-    ILNDAPI FireworksRocketActor& self() const;
+    ILAPI void            serialize(CompoundTag&) const override;
+    FireworksRocketActor& self() const;
 };
 
 class FireworkRocketDealDamageAfterEvent final : public ll::event::entity::ActorEvent
@@ -28,8 +27,7 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag&) const override;
-
-    ILNDAPI FireworksRocketActor& self() const;
+    ILAPI void            serialize(CompoundTag&) const override;
+    FireworksRocketActor& self() const;
 };
 } // namespace ila::mc::inline actor

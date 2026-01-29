@@ -9,7 +9,7 @@ namespace ila::mc::inline block::inline actor
 
 class BlockActorEvent : public ll::event::Event
 {
-protected:
+public:
     BlockActor& mSelf;
 
 public:
@@ -20,7 +20,6 @@ public:
 
     ILAPI void serialize(CompoundTag&) const override;
 
-    ILNDAPI BlockActor& self() const;
 };
 
 } // namespace ila::mc::inline block::inline actor

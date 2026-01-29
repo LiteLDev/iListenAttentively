@@ -16,7 +16,7 @@ namespace ila::mc::inline actor::inline player
 class PlayerOpenContainerBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
-protected:
+public:
     BlockPos&                           mPos;
     ContainerID&                        mContainerId;
     SharedTypes::Legacy::ContainerType& mContainerType;
@@ -40,16 +40,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
-
-    ILNDAPI BlockPos&    containerBlockPos() const;
-    ILNDAPI ContainerID& containerId() const;
-    ILNDAPI SharedTypes::Legacy::ContainerType& containerType() const;
-    ILNDAPI ActorUniqueID&                      containerActorId() const;
 };
 
 class PlayerOpenContainerAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     BlockPos const&                           mPos;
     ContainerID const&                        mContainerId;
     SharedTypes::Legacy::ContainerType const& mContainerType;
@@ -72,10 +67,5 @@ public:
     }
 
     ILAPI void serialize(CompoundTag& nbt) const override;
-
-    ILNDAPI BlockPos const&    containerBlockPos() const;
-    ILNDAPI ContainerID const& containerId() const;
-    ILNDAPI SharedTypes::Legacy::ContainerType const& containerType() const;
-    ILNDAPI ActorUniqueID const&                      containerActorId() const;
 };
 } // namespace ila::mc::inline actor::inline player

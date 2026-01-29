@@ -13,7 +13,7 @@ namespace ila::mc::inline block
 {
 class LiquidFlowBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos&       mPos;
     int&            mDepth;
     BlockPos const& mFlowFromPos;
@@ -35,14 +35,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos&       pos() const;
-    ILNDAPI int&            depth() const;
-    ILNDAPI BlockPos const& flowFromPos() const;
 };
 
 class LiquidFlowAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
     int const&      mDepth;
     BlockPos const& mFlowFromPos;
@@ -63,8 +60,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI int const&      depth() const;
-    ILNDAPI BlockPos const& flowFromPos() const;
 };
 } // namespace ila::mc::inline block

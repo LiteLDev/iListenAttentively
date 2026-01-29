@@ -13,7 +13,7 @@ namespace ila::mc::inline server
 
 class IReceivePacketBeforeEvent : public ll::event::Cancellable<ll::event::Event>
 {
-protected:
+public:
     Packet&                  mPacket;
     NetworkIdentifier const& mNetworkIdentifier;
 
@@ -24,11 +24,9 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void                 serialize(CompoundTag& nbt) const override;
+    optional_ref<ServerPlayer> player() const;
 
-    ILNDAPI Packet&                  packet() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
-    ILNDAPI optional_ref<ServerPlayer> player() const;
 }; // class ReceivePacketEvent
 
 template<std::derived_from<Packet> PacketType = Packet>
@@ -43,12 +41,12 @@ public:
     {
     }
 
-    PacketType& packet() const { return static_cast<PacketType&>(IReceivePacketBeforeEvent::packet()); }
+    PacketType& packet() const { return static_cast<PacketType&>(mPacket); }
 };
 
 class IReceivePacketAfterEvent : public ll::event::Cancellable<ll::event::Event>
 {
-protected:
+public:
     Packet const&            mPacket;
     NetworkIdentifier const& mNetworkIdentifier;
 
@@ -62,11 +60,9 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void                 serialize(CompoundTag& nbt) const override;
+    optional_ref<ServerPlayer> player() const;
 
-    ILNDAPI Packet const&            packet() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
-    ILNDAPI optional_ref<ServerPlayer> player() const;
 }; // class ReceivePacketEvent
 
 template<std::derived_from<Packet> PacketType = Packet>
@@ -81,10 +77,7 @@ public:
     {
     }
 
-    PacketType const& packet() const
-    {
-        return static_cast<PacketType const&>(IReceivePacketAfterEvent::packet());
-    }
+    PacketType const& packet() const { return static_cast<PacketType const&>(mPacket); }
 };
 
 } // namespace ila::mc::inline server

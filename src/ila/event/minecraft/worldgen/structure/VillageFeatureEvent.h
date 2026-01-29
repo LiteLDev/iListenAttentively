@@ -20,7 +20,7 @@ namespace ila::mc::inline worldgen::inline structure
 
 class VillageFeatureConstructionEvent final : public ila::mc::StructureEvent
 {
-protected:
+public:
     std::vector<BiomeIdType>& mAllowedBiomes;
 
     uint& mSeed;
@@ -46,15 +46,11 @@ public:
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
 public:
-    ILNDAPI std::vector<BiomeIdType>& allowedBiomes() const;
-    ILNDAPI uint&                     seed() const;
-    ILNDAPI int&                      townSpacing() const;
-    ILNDAPI int&                      minTownSeparation() const;
 };
 
 class CheckIfItIsAVillageGenerationChunkEvent final : public ll::event::Cancellable<ila::mc::StructureEvent>
 {
-protected:
+public:
     IPreliminarySurfaceProvider const& mPreliminarySurfaceLevel;
     BiomeSource const&                 mBiomeSource;
     Dimension const&                   mDimension;
@@ -84,12 +80,6 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
 
 public:
-    ILNDAPI IPreliminarySurfaceProvider const& preliminarySurfaceLevel() const;
-    ILNDAPI BiomeSource const&                 biomeSource() const;
-    ILNDAPI Dimension const&                   dimension() const;
-    ILNDAPI ChunkPos const&                    chunkPos() const;
-    ILNDAPI Random&                            random() const;
-    ILNDAPI uint&                              levelSeed() const;
 };
 
 } // namespace ila::mc::inline worldgen::inline structure

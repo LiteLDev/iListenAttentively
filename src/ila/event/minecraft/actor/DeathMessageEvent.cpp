@@ -26,33 +26,29 @@ using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 void DeathMessageBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["sourceUniqueId"] = damageSource().getEntityUniqueID().rawID;
-    nbt["cause"]          = magic_enum::enum_name(damageSource().mCause);
-    nbt["result"]         = { { "key", result().first }, { "params", ListTag {} } };
-    for (auto& param : result().second) { nbt["result"]["params"].push_back(param); }
+    nbt["sourceUniqueId"] = mDamageSource.getEntityUniqueID().rawID;
+    nbt["cause"]          = magic_enum::enum_name(mDamageSource.mCause);
+    nbt["result"]         = { { "key", mResult.first }, { "params", ListTag {} } };
+    for (auto& param : mResult.second) { nbt["result"]["params"].push_back(param); }
 }
 void DeathMessageBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    result().first = nbt["result"]["key"];
-    damageSource().mCause =
+    mResult.first = nbt["result"]["key"];
+    mDamageSource.mCause =
         magic_enum::enum_cast<SharedTypes::Legacy::ActorDamageCause>(nbt["cause"].get<StringTag>())
-            .value_or(damageSource().mCause);
-    for (auto& param : nbt["result"]["params"].get<ListTag>()) { result().second.push_back(param); }
+            .value_or(mDamageSource.mCause);
+    for (auto& param : nbt["result"]["params"].get<ListTag>()) { mResult.second.push_back(param); }
 }
-ActorDamageSource& DeathMessageBeforeEvent::damageSource() const { return mDamageSource; }
-DEATH_MESSAGE&     DeathMessageBeforeEvent::result() const { return mResult; }
 
 void DeathMessageAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["sourceUniqueId"] = damageSource().getEntityUniqueID().rawID;
-    nbt["cause"]          = magic_enum::enum_name(damageSource().mCause);
-    nbt["result"]         = { { "key", result().first }, { "params", ListTag {} } };
-    for (auto& param : result().second) { nbt["result"]["params"].push_back(param); }
+    nbt["sourceUniqueId"] = mDamageSource.getEntityUniqueID().rawID;
+    nbt["cause"]          = magic_enum::enum_name(mDamageSource.mCause);
+    nbt["result"]         = { { "key", mResult.first }, { "params", ListTag {} } };
+    for (auto& param : mResult.second) { nbt["result"]["params"].push_back(param); }
 }
-ActorDamageSource const& DeathMessageAfterEvent::damageSource() const { return mDamageSource; }
-DEATH_MESSAGE const&     DeathMessageAfterEvent::result() const { return mResult; }
 
 #define DeathMessageHookMacro(name, type)                                                                    \
     LL_TYPE_INSTANCE_HOOK(                                                                                   \

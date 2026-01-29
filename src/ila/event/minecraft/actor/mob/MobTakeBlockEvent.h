@@ -13,7 +13,7 @@ namespace ila::mc::inline actor::inline mob
 {
 class MobTakeBlockBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
-protected:
+public:
     BlockPos& mPos;
 
 public:
@@ -26,12 +26,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
 };
 
 class MobTakeBlockAfterEvent final : public ll::event::entity::MobEvent
 {
-protected:
+public:
     BlockPos& mPos;
 
 public:
@@ -43,6 +42,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
 } // namespace ila::mc::inline actor::inline mob

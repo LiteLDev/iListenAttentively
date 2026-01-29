@@ -29,33 +29,27 @@ namespace ila::mc::inline block
 void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]     = getDimensionName(blockSource());
-    nbt["random"]    = serializeRefObj(random());
-    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["random"]    = serializeRefObj(mRandom);
+    nbt["targetPos"] = ListTag { mTargetPos.x, mTargetPos.y, mTargetPos.z };
 }
 void DragonEggBlockTeleportBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    targetPos().x = nbt["targetPos"][0];
-    targetPos().y = nbt["targetPos"][1];
-    targetPos().z = nbt["targetPos"][2];
+    mTargetPos.x = nbt["targetPos"][0];
+    mTargetPos.y = nbt["targetPos"][1];
+    mTargetPos.z = nbt["targetPos"][2];
 }
-BlockPos const& DragonEggBlockTeleportBeforeEvent::pos() const { return mPos; }
-Random&         DragonEggBlockTeleportBeforeEvent::random() const { return mRandom; }
-BlockPos&       DragonEggBlockTeleportBeforeEvent::targetPos() const { return mTargetPos; }
 
 void DragonEggBlockTeleportAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]     = getDimensionName(blockSource());
-    nbt["random"]    = serializeRefObj(random());
-    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["random"]    = serializeRefObj(mRandom);
+    nbt["targetPos"] = ListTag { mTargetPos.x, mTargetPos.y, mTargetPos.z };
 }
-BlockPos const& DragonEggBlockTeleportAfterEvent::pos() const { return mPos; }
-Random const&   DragonEggBlockTeleportAfterEvent::random() const { return mRandom; }
-BlockPos const& DragonEggBlockTeleportAfterEvent::targetPos() const { return mTargetPos; }
 
 LL_STATIC_HOOK(
     DragonEggBlockTeleportEventHook,

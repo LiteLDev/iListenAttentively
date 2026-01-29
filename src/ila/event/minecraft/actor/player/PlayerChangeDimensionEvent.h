@@ -13,7 +13,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerChangeDimensionBeforeEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     ChangeDimensionRequest const& mChangeDimensionRequest;
     Dimension const&              mDimension;
 
@@ -31,13 +31,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChangeDimensionRequest const& changeDimensionRequest() const;
-    ILNDAPI Dimension const&              dimension() const;
 };
 
 class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     ChangeDimensionRequest const& mChangeDimensionRequest;
     Dimension const&              mDimension;
 
@@ -55,7 +53,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ChangeDimensionRequest const& changeDimensionRequest() const;
-    ILNDAPI Dimension const&              dimension() const;
 };
 } // namespace ila::mc::inline actor::inline player

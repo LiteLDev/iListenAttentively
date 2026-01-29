@@ -12,7 +12,7 @@ namespace ila::mc::inline actor
 {
 class ArmorStandSwapItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
-protected:
+public:
     Player&                             mPlayer;
     SharedTypes::Legacy::EquipmentSlot& mSlot;
 
@@ -31,13 +31,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI Player& player() const;
-    ILNDAPI SharedTypes::Legacy::EquipmentSlot& slot() const;
 };
 
 class ArmorStandSwapItemAfterEvent final : public ll::event::entity::ActorEvent
 {
-protected:
+public:
     Player const&                             mPlayer;
     SharedTypes::Legacy::EquipmentSlot const& mSlot;
 
@@ -55,7 +53,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Player const& player() const;
-    ILNDAPI SharedTypes::Legacy::EquipmentSlot const& slot() const;
 };
 } // namespace ila::mc::inline actor

@@ -12,108 +12,106 @@ namespace ila::mc::inline world
 void ExplosionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]            = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
-    nbt["radius"]         = explosion().mRadius;
+    nbt["pos"]            = ListTag { mExplosion.mPos->x, mExplosion.mPos->y, mExplosion.mPos->z };
+    nbt["radius"]         = mExplosion.mRadius;
     nbt["affectedBlocks"] = ListTag {};
-    for (auto& blockPos : *explosion().mAffectedBlocks)
+    for (auto& blockPos : *mExplosion.mAffectedBlocks)
     {
         nbt["affectedBlocks"].push_back(ListTag { blockPos.x, blockPos.y, blockPos.z });
     }
-    nbt["fire"]                           = explosion().mFire;
-    nbt["breaking"]                       = explosion().mBreaking;
-    nbt["allowUnderwater"]                = explosion().mAllowUnderwater;
-    nbt["canToggleBlocks"]                = explosion().mCanToggleBlocks;
-    nbt["damageScaling"]                  = explosion().mDamageScaling;
-    nbt["ignoreBlockExplosionResistance"] = explosion().mIgnoreBlockExplosionResistance;
-    nbt["particleType"]                   = magic_enum::enum_name(explosion().mParticleType);
-    nbt["soundExplosionType"]             = magic_enum::enum_name(explosion().mSoundExplosionType);
-    nbt["sourceId"]                       = explosion().mSourceID->rawID;
-    nbt["maxResistance"]                  = explosion().mMaxResistance;
-    if (explosion().mInWaterOverride->has_value())
+    nbt["fire"]                           = mExplosion.mFire;
+    nbt["breaking"]                       = mExplosion.mBreaking;
+    nbt["allowUnderwater"]                = mExplosion.mAllowUnderwater;
+    nbt["canToggleBlocks"]                = mExplosion.mCanToggleBlocks;
+    nbt["damageScaling"]                  = mExplosion.mDamageScaling;
+    nbt["ignoreBlockExplosionResistance"] = mExplosion.mIgnoreBlockExplosionResistance;
+    nbt["particleType"]                   = magic_enum::enum_name(mExplosion.mParticleType);
+    nbt["soundExplosionType"]             = magic_enum::enum_name(mExplosion.mSoundExplosionType);
+    nbt["sourceId"]                       = mExplosion.mSourceID->rawID;
+    nbt["maxResistance"]                  = mExplosion.mMaxResistance;
+    if (mExplosion.mInWaterOverride->has_value())
     {
-        nbt["inWaterOverride"] = explosion().mInWaterOverride->value();
+        nbt["inWaterOverride"] = mExplosion.mInWaterOverride->value();
     }
-    if (explosion().mTotalDamageOverride->has_value())
+    if (mExplosion.mTotalDamageOverride->has_value())
     {
-        nbt["totalDamageOverride"] = explosion().mTotalDamageOverride->value();
+        nbt["totalDamageOverride"] = mExplosion.mTotalDamageOverride->value();
     }
-    nbt["knockbackScaling"] = explosion().mKnockbackScaling;
+    nbt["knockbackScaling"] = mExplosion.mKnockbackScaling;
     nbt["dimId"]            = getDimensionName(blockSource());
 }
 void ExplosionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    explosion().mPos->x = nbt["pos"][0];
-    explosion().mPos->y = nbt["pos"][1];
-    explosion().mPos->z = nbt["pos"][2];
-    explosion().mRadius = nbt["radius"];
-    explosion().mAffectedBlocks->clear();
+    mExplosion.mPos->x = nbt["pos"][0];
+    mExplosion.mPos->y = nbt["pos"][1];
+    mExplosion.mPos->z = nbt["pos"][2];
+    mExplosion.mRadius = nbt["radius"];
+    mExplosion.mAffectedBlocks->clear();
     for (auto& blockPos : nbt["affectedBlocks"].get<ListTag>())
     {
-        explosion().mAffectedBlocks->insert(BlockPos(
+        mExplosion.mAffectedBlocks->insert(BlockPos(
             blockPos[0].get<IntTag>().data,
             blockPos[1].get<IntTag>().data,
             blockPos[2].get<IntTag>().data
         ));
     }
-    explosion().mFire                           = nbt["fire"];
-    explosion().mBreaking                       = nbt["breaking"];
-    explosion().mAllowUnderwater                = nbt["allowUnderwater"];
-    explosion().mCanToggleBlocks                = nbt["canToggleBlocks"];
-    explosion().mDamageScaling                  = nbt["damageScaling"];
-    explosion().mIgnoreBlockExplosionResistance = nbt["ignoreBlockExplosionResistance"];
-    explosion().mParticleType =
+    mExplosion.mFire                           = nbt["fire"];
+    mExplosion.mBreaking                       = nbt["breaking"];
+    mExplosion.mAllowUnderwater                = nbt["allowUnderwater"];
+    mExplosion.mCanToggleBlocks                = nbt["canToggleBlocks"];
+    mExplosion.mDamageScaling                  = nbt["damageScaling"];
+    mExplosion.mIgnoreBlockExplosionResistance = nbt["ignoreBlockExplosionResistance"];
+    mExplosion.mParticleType =
         magic_enum::enum_cast<SharedTypes::Legacy::LevelEvent>(nbt["particleType"].get<StringTag>())
-            .value_or(explosion().mParticleType);
-    explosion().mSoundExplosionType =
+            .value_or(mExplosion.mParticleType);
+    mExplosion.mSoundExplosionType =
         magic_enum::enum_cast<SharedTypes::Legacy::LevelSoundEvent>(nbt["soundExplosionType"].get<StringTag>()
         )
-            .value_or(explosion().mSoundExplosionType);
-    explosion().mSourceID->rawID = nbt["sourceId"];
-    explosion().mMaxResistance   = nbt["maxResistance"];
-    if (nbt.contains("inWaterOverride")) { explosion().mInWaterOverride = nbt["inWaterOverride"]; }
-    else { explosion().mInWaterOverride->reset(); }
+            .value_or(mExplosion.mSoundExplosionType);
+    mExplosion.mSourceID->rawID = nbt["sourceId"];
+    mExplosion.mMaxResistance   = nbt["maxResistance"];
+    if (nbt.contains("inWaterOverride")) { mExplosion.mInWaterOverride = nbt["inWaterOverride"]; }
+    else { mExplosion.mInWaterOverride->reset(); }
     if (nbt.contains("totalDamageOverride"))
     {
-        explosion().mTotalDamageOverride = nbt["totalDamageOverride"];
+        mExplosion.mTotalDamageOverride = nbt["totalDamageOverride"];
     }
-    else { explosion().mTotalDamageOverride->reset(); }
-    explosion().mKnockbackScaling = nbt["knockbackScaling"];
+    else { mExplosion.mTotalDamageOverride->reset(); }
+    mExplosion.mKnockbackScaling = nbt["knockbackScaling"];
 }
-Explosion& ExplosionBeforeEvent::explosion() const { return mExplosion; }
 
 void ExplosionAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]            = ListTag { explosion().mPos->x, explosion().mPos->y, explosion().mPos->z };
-    nbt["radius"]         = explosion().mRadius;
+    nbt["pos"]            = ListTag { mExplosion.mPos->x, mExplosion.mPos->y, mExplosion.mPos->z };
+    nbt["radius"]         = mExplosion.mRadius;
     nbt["affectedBlocks"] = ListTag {};
-    for (auto& blockPos : *explosion().mAffectedBlocks)
+    for (auto& blockPos : *mExplosion.mAffectedBlocks)
     {
         nbt["affectedBlocks"].push_back(ListTag { blockPos.x, blockPos.y, blockPos.z });
     }
-    nbt["fire"]                           = explosion().mFire;
-    nbt["breaking"]                       = explosion().mBreaking;
-    nbt["allowUnderwater"]                = explosion().mAllowUnderwater;
-    nbt["canToggleBlocks"]                = explosion().mCanToggleBlocks;
-    nbt["damageScaling"]                  = explosion().mDamageScaling;
-    nbt["ignoreBlockExplosionResistance"] = explosion().mIgnoreBlockExplosionResistance;
-    nbt["particleType"]                   = magic_enum::enum_name(explosion().mParticleType);
-    nbt["soundExplosionType"]             = magic_enum::enum_name(explosion().mSoundExplosionType);
-    nbt["sourceId"]                       = explosion().mSourceID->rawID;
-    nbt["maxResistance"]                  = explosion().mMaxResistance;
-    if (explosion().mInWaterOverride->has_value())
+    nbt["fire"]                           = mExplosion.mFire;
+    nbt["breaking"]                       = mExplosion.mBreaking;
+    nbt["allowUnderwater"]                = mExplosion.mAllowUnderwater;
+    nbt["canToggleBlocks"]                = mExplosion.mCanToggleBlocks;
+    nbt["damageScaling"]                  = mExplosion.mDamageScaling;
+    nbt["ignoreBlockExplosionResistance"] = mExplosion.mIgnoreBlockExplosionResistance;
+    nbt["particleType"]                   = magic_enum::enum_name(mExplosion.mParticleType);
+    nbt["soundExplosionType"]             = magic_enum::enum_name(mExplosion.mSoundExplosionType);
+    nbt["sourceId"]                       = mExplosion.mSourceID->rawID;
+    nbt["maxResistance"]                  = mExplosion.mMaxResistance;
+    if (mExplosion.mInWaterOverride->has_value())
     {
-        nbt["inWaterOverride"] = explosion().mInWaterOverride->value();
+        nbt["inWaterOverride"] = mExplosion.mInWaterOverride->value();
     }
-    if (explosion().mTotalDamageOverride->has_value())
+    if (mExplosion.mTotalDamageOverride->has_value())
     {
-        nbt["totalDamageOverride"] = explosion().mTotalDamageOverride->value();
+        nbt["totalDamageOverride"] = mExplosion.mTotalDamageOverride->value();
     }
-    nbt["knockbackScaling"] = explosion().mKnockbackScaling;
+    nbt["knockbackScaling"] = mExplosion.mKnockbackScaling;
     nbt["dimId"]            = getDimensionName(blockSource());
 }
-Explosion const& ExplosionAfterEvent::explosion() const { return mExplosion; }
 
 std::unique_ptr<ExplosionBeforeEvent> mBeforeEvent { nullptr };
 
@@ -146,9 +144,9 @@ LL_TYPE_INSTANCE_HOOK(
                           std::remove_cvref_t<decltype(std::declval<T>().value())>,
                           ExplosionStartedEvent>)
         {
-            std::swap(mBeforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
+            std::swap(mBeforeEvent->mExplosion.mAffectedBlocks, ev.value().mBlocks);
             LLEventBus.publish(*mBeforeEvent);
-            std::swap(mBeforeEvent->explosion().mAffectedBlocks, ev.value().mBlocks);
+            std::swap(mBeforeEvent->mExplosion.mAffectedBlocks, ev.value().mBlocks);
             if (mBeforeEvent->isCancelled()) return CoordinatorResult::Cancel;
         }
         return origin(pEvent);

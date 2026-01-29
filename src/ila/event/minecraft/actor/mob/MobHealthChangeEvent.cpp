@@ -17,57 +17,51 @@ namespace ila::mc::inline actor::inline mob
 void MobHealthChangeBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["oldValue"] = oldValue();
-    nbt["newValue"] = newValue();
+    nbt["oldValue"] = mOlaValue;
+    nbt["newValue"] = mNewValue;
     nbt["buff"]     = {
-        { "amount", buff().mAmount },
-        { "type", magic_enum::enum_name(buff().mType) },
-        { "source", serializePtrObj(buff().mSource.get()) },
-        { "valueAmplifier", serializePtrObj(buff().mValueAmplifier.get()) },
-        { "durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get()) },
-        { "scale", buff().mScale },
-        { "amplification", buff().mAmplification },
-        { "id", buff().mId },
-        { "operand", buff().mOperand },
+        { "amount", mBuff.mAmount },
+        { "type", magic_enum::enum_name(mBuff.mType) },
+        { "source", serializePtrObj(mBuff.mSource.get()) },
+        { "valueAmplifier", serializePtrObj(mBuff.mValueAmplifier.get()) },
+        { "durationAmplifier", serializePtrObj(mBuff.mDurationAmplifier.get()) },
+        { "scale", mBuff.mScale },
+        { "amplification", mBuff.mAmplification },
+        { "id", mBuff.mId },
+        { "operand", mBuff.mOperand },
     };
 }
 void MobHealthChangeBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    oldValue()     = nbt["oldValue"];
-    newValue()     = nbt["newValue"];
-    buff().mAmount = nbt["buff"]["amount"];
-    buff().mType =
-        magic_enum::enum_cast<AttributeBuffType>(nbt["buff"]["type"].get<StringTag>()).value_or(buff().mType);
-    buff().mScale         = nbt["buff"]["scale"];
-    buff().mAmplification = nbt["buff"]["amplification"];
-    buff().mId            = nbt["buff"]["id"];
-    buff().mOperand       = nbt["buff"]["operand"];
+    mOlaValue    = nbt["oldValue"];
+    mNewValue    = nbt["newValue"];
+    mBuff.mAmount = nbt["buff"]["amount"];
+    mBuff.mType =
+        magic_enum::enum_cast<AttributeBuffType>(nbt["buff"]["type"].get<StringTag>()).value_or(mBuff.mType);
+    mBuff.mScale         = nbt["buff"]["scale"];
+    mBuff.mAmplification = nbt["buff"]["amplification"];
+    mBuff.mId            = nbt["buff"]["id"];
+    mBuff.mOperand       = nbt["buff"]["operand"];
 }
-float&         MobHealthChangeBeforeEvent::oldValue() const { return mOlaValue; }
-float&         MobHealthChangeBeforeEvent::newValue() const { return mNewValue; }
-AttributeBuff& MobHealthChangeBeforeEvent::buff() const { return mBuff; }
 
 void MobHealthChangeAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["oldValue"] = oldValue();
-    nbt["newValue"] = newValue();
+    nbt["oldValue"] = mOldValue;
+    nbt["newValue"] = mNewValue;
     nbt["buff"]     = {
-        { "amount", buff().mAmount },
-        { "type", magic_enum::enum_name(buff().mType) },
-        { "source", serializePtrObj(buff().mSource.get()) },
-        { "valueAmplifier", serializePtrObj(buff().mValueAmplifier.get()) },
-        { "durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get()) },
-        { "scale", buff().mScale },
-        { "amplification", buff().mAmplification },
-        { "id", buff().mId },
-        { "operand", buff().mOperand },
+        { "amount", mBuff.mAmount },
+        { "type", magic_enum::enum_name(mBuff.mType) },
+        { "source", serializePtrObj(mBuff.mSource.get()) },
+        { "valueAmplifier", serializePtrObj(mBuff.mValueAmplifier.get()) },
+        { "durationAmplifier", serializePtrObj(mBuff.mDurationAmplifier.get()) },
+        { "scale", mBuff.mScale },
+        { "amplification", mBuff.mAmplification },
+        { "id", mBuff.mId },
+        { "operand", mBuff.mOperand },
     };
 }
-float const&         MobHealthChangeAfterEvent::oldValue() const { return mOldValue; }
-float const&         MobHealthChangeAfterEvent::newValue() const { return mNewValue; }
-AttributeBuff const& MobHealthChangeAfterEvent::buff() const { return mBuff; }
 
 LL_TYPE_INSTANCE_HOOK(
     MobHealthChangeHook,

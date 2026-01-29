@@ -1,21 +1,43 @@
 #include "ila/event/minecraft/server/ReceivePacketEvent.h"
 #include "ila/base/Gloabl.h"
+#include <chrono>
+#include <cstdarg>
+#include <fmt/format.h>
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Emitter.h>
+#include <ll/api/event/EmitterBase.h>
+#include <ll/api/event/EventId.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/TypeName.h>
 #include <ll/api/service/Bedrock.h>
+#include <magic_enum.hpp>
 #include <mc/deps/core/debug/BedrockLog.h>
 #include <mc/deps/core/utility/ReadOnlyBinaryStream.h>
+#include <mc/deps/core/utility/optional_ref.h>
 #include <mc/deps/ecs/gamerefs_entity/EntityContext.h>
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
 #include <mc/deps/game_refs/WeakRef.h>
 #include <mc/entity/components/UserEntityIdentifierComponent.h>
+#include <mc/gameplayhandlers/CoordinatorResult.h>
 #include <mc/gameplayhandlers/HandlerResult.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/network/IPacketHandlerDispatcher.h>
+#include <mc/network/MinecraftPacketIds.h>
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/Packet.h>
 #include <mc/network/ServerNetworkHandler.h>
+#include <mc/platform/diagnostics/LogAreaID.h>
+#include <mc/platform/diagnostics/LogLevel.h>
+#include <mc/platform/diagnostics/bedrock_log/LogCategory.h>
+#include <mc/platform/diagnostics/bedrock_log/LogRule.h>
 #include <mc/scripting/event_handlers/ScriptServerNetworkEventHandler.h>
 #include <mc/world/events/IncomingPacketEvent.h>
+#include <memory>
+#include <string>
 
 
 template<>
@@ -31,33 +53,23 @@ namespace ila::mc::inline server
 void IReceivePacketBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["packet"]            = serializeRefObj(packet());
-    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
+    nbt["packet"]            = serializeRefObj(mPacket);
+    nbt["networkIdentifier"] = serializeRefObj(mNetworkIdentifier);
 }
-Packet&                    IReceivePacketBeforeEvent::packet() const { return mPacket; }
-NetworkIdentifier const&   IReceivePacketBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
 optional_ref<ServerPlayer> IReceivePacketBeforeEvent::player() const
 {
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(
-        networkIdentifier(),
-        packet().mSenderSubId
-    );
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(mNetworkIdentifier, mPacket.mSenderSubId);
 }
 
 void IReceivePacketAfterEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["packet"]            = serializeRefObj(packet());
-    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
+    nbt["packet"]            = serializeRefObj(mPacket);
+    nbt["networkIdentifier"] = serializeRefObj(mNetworkIdentifier);
 }
-Packet const&              IReceivePacketAfterEvent::packet() const { return mPacket; }
-NetworkIdentifier const&   IReceivePacketAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
 optional_ref<ServerPlayer> IReceivePacketAfterEvent::player() const
 {
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(
-        networkIdentifier(),
-        packet().mSenderSubId
-    );
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(mNetworkIdentifier, mPacket.mSenderSubId);
 }
 
 thread_local static NetworkConnection* mCurrentNetworkConnection = nullptr;

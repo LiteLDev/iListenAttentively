@@ -14,7 +14,7 @@ namespace ila::mc::inline block
 {
 class FarmDecayBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPos;
     Actor*&   mActor;
     float&    mFallDistance;
@@ -36,14 +36,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
-    ILNDAPI Actor*&   actor() const;
-    ILNDAPI float&    fallDistance() const;
 };
 
 class FarmDecayAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
     Actor* const&   mActor;
     float const&    mFallDistance;
@@ -64,8 +61,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Actor* const&   actor() const;
-    ILNDAPI float const&    fallDistance() const;
 };
 } // namespace ila::mc::inline block

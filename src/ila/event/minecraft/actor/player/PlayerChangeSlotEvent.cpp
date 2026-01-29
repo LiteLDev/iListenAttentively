@@ -13,18 +13,12 @@ namespace ila::mc::inline actor::inline player
 void PlayerChangeSlotEvent::serialize(CompoundTag& pNbt) const
 {
     Cancellable::serialize(pNbt);
-    pNbt["container"]     = serializeRefObj(container());
-    pNbt["slot"]          = slot();
-    pNbt["oldItem"]       = serializeRefObj(oldItem());
-    pNbt["newItem"]       = serializeRefObj(newItem());
-    pNbt["forceBalanced"] = forceBalanced();
+    pNbt["container"]     = serializeRefObj(mContainer);
+    pNbt["slot"]          = mSlot;
+    pNbt["oldItem"]       = serializeRefObj(mOldItem);
+    pNbt["newItem"]       = serializeRefObj(mNewItem);
+    pNbt["forceBalanced"] = mForceBalanced;
 }
-
-Container&       PlayerChangeSlotEvent::container() const { return mContainer; }
-int&             PlayerChangeSlotEvent::slot() const { return mSlot; }
-ItemStack const& PlayerChangeSlotEvent::oldItem() const { return mOldItem; }
-ItemStack const& PlayerChangeSlotEvent::newItem() const { return mNewItem; }
-bool&            PlayerChangeSlotEvent::forceBalanced() const { return mForceBalanced; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerChangeSlotHook,

@@ -18,7 +18,7 @@ namespace ila::mc::inline actor::inline player
 class PlayerChangeGameTypeBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
-protected:
+public:
     GameType const& mOldGameType;
     GameType&       mNewGameType;
 
@@ -37,8 +37,6 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI GameType const& oldGameType() const;
-    ILNDAPI GameType&       newGameType() const;
 };
 
 /**
@@ -49,7 +47,7 @@ public:
  **/
 class PlayerChangeGameTypeAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     GameType const& mOldGameType;
     GameType const& mNewGameType;
 
@@ -67,7 +65,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI GameType const& oldGameType() const;
-    ILNDAPI GameType const& newGameType() const;
 };
 } // namespace ila::mc::inline actor::inline player

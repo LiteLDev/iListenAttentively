@@ -9,17 +9,16 @@ namespace ila::mc::inline world
 void SpawnWanderingTraderBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"] = getDimensionName(blockSource());
 }
 void SpawnWanderingTraderBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
 }
-BlockPos& SpawnWanderingTraderBeforeEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnWanderingTraderEventHook,

@@ -1,49 +1,57 @@
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include "ila/base/Gloabl.h"
+#include <fmt/format.h>
+#include <ll/api/event/Emitter.h>
+#include <ll/api/event/EmitterBase.h>
+#include <ll/api/event/EventId.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/TypeName.h>
 #include <ll/api/service/Bedrock.h>
 #include <ll/api/utils/StringUtils.h>
+#include <magic_enum.hpp>
+#include <mc/common/SubClientId.h>
+#include <mc/deps/core/utility/optional_ref.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
+#include <mc/network/MinecraftPacketIds.h>
+#include <mc/network/NetworkIdentifier.h>
 #include <mc/network/NetworkSystem.h>
-#include <mc/network/ServerNetworkHandler.h>
 #include <mc/network/Packet.h>
+#include <mc/network/ServerNetworkHandler.h>
+#include <memory>
+#include <string>
 
 namespace ila::mc::inline server
 {
 
 void ISendPacketBeforeEvent::serialize(CompoundTag& nbt) const
 {
-    nbt["networkSystem"]     = serializeRefObj(networkSystem());
-    nbt["packet"]            = serializeRefObj(packet());
-    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
-    nbt["senderSubId"]       = magic_enum::enum_name(senderSubId());
+    nbt["networkSystem"]     = serializeRefObj(mNetworkSystem);
+    nbt["packet"]            = serializeRefObj(mPacket);
+    nbt["networkIdentifier"] = serializeRefObj(mNetworkIdentifier);
+    nbt["senderSubId"]       = magic_enum::enum_name(mSenderSubId);
 }
 void ISendPacketBeforeEvent::deserialize(CompoundTag const& nbt)
 {
-    senderSubId() =
-        magic_enum::enum_cast<SubClientId>(nbt["senderSubId"].get<StringTag>()).value_or(senderSubId());
+    mSenderSubId =
+        magic_enum::enum_cast<SubClientId>(nbt["senderSubId"].get<StringTag>()).value_or(mSenderSubId);
 }
-NetworkSystem&             ISendPacketBeforeEvent::networkSystem() const { return mNetworkSystem; }
-Packet&                    ISendPacketBeforeEvent::packet() const { return mPacket; }
-NetworkIdentifier const&   ISendPacketBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
-SubClientId&               ISendPacketBeforeEvent::senderSubId() const { return mSenderSubId; }
 optional_ref<ServerPlayer> ISendPacketBeforeEvent::player() const
 {
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), senderSubId());
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(mNetworkIdentifier, mSenderSubId);
 }
 
 void ISendPacketAfterEvent::serialize(CompoundTag& nbt) const
 {
-    nbt["networkSystem"]     = serializeRefObj(networkSystem());
-    nbt["packet"]            = serializeRefObj(packet());
-    nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
-    nbt["senderSubId"]       = magic_enum::enum_name(senderSubId());
+    nbt["networkSystem"]     = serializeRefObj(mNetworkSystem);
+    nbt["packet"]            = serializeRefObj(mPacket);
+    nbt["networkIdentifier"] = serializeRefObj(mNetworkIdentifier);
+    nbt["senderSubId"]       = magic_enum::enum_name(mSenderSubId);
 }
-NetworkSystem&             ISendPacketAfterEvent::networkSystem() const { return mNetworkSystem; }
-Packet const&              ISendPacketAfterEvent::packet() const { return mPacket; }
-NetworkIdentifier const&   ISendPacketAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
-SubClientId const&         ISendPacketAfterEvent::senderSubId() const { return mSenderSubId; }
 optional_ref<ServerPlayer> ISendPacketAfterEvent::player() const
 {
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), senderSubId());
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(mNetworkIdentifier, mSenderSubId);
 }
 
 LL_TYPE_INSTANCE_HOOK(

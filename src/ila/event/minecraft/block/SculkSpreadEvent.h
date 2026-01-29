@@ -15,7 +15,7 @@ namespace ila::mc::inline block
 {
 class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mSelfPos;
     Block&    mSelfBlock;
     uchar&    mSelfFace;
@@ -49,18 +49,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& selfPos() const;
-    ILNDAPI Block&    selfBlock() const;
-    ILNDAPI uchar&    selfFace() const;
-    ILNDAPI BlockPos& targetPos() const;
-    ILNDAPI Block&    targetBlock() const;
-    ILNDAPI uchar&    targetFace() const;
-    ILNDAPI uchar&    facing() const;
 };
 
 class SculkSpreadAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mSelfPos;
     Block const&    mSelfBlock;
     uchar const&    mSelfFace;
@@ -93,12 +86,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& selfPos() const;
-    ILNDAPI Block const&    selfBlock() const;
-    ILNDAPI uchar const&    selfFace() const;
-    ILNDAPI BlockPos const& targetPos() const;
-    ILNDAPI Block const&    targetBlock() const;
-    ILNDAPI uchar const&    targetFace() const;
-    ILNDAPI uchar const&    facing() const;
 };
 } // namespace ila::mc::inline block

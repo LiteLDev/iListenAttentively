@@ -14,16 +14,14 @@ namespace ila::mc::inline actor
 void ActorPickupItemBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["itemActor"] = serializeRefObj(itemActor());
-}
-ItemActor& ActorPickupItemBeforeEvent::itemActor() const { return mItemActor; };
+    nbt["itemActor"] = serializeRefObj(mItemActor);
+};
 
 void ActorPickupItemAfterEvent::serialize(CompoundTag& nbt) const
 {
     MobEvent::serialize(nbt);
-    nbt["itemActor"] = serializeRefObj(itemActor());
-}
-ItemActor const& ActorPickupItemAfterEvent::itemActor() const { return mItemActor; };
+    nbt["itemActor"] = serializeRefObj(mItemActor);
+};
 
 LL_TYPE_INSTANCE_HOOK(
     ActorPickupItemEventHook,

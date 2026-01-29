@@ -16,6 +16,7 @@ public:
 class ProjectileCreateAfterEvent final : public ll::event::entity::ActorEvent
 {
 
+
 public:
     constexpr explicit ProjectileCreateAfterEvent(Actor& actor)
         : ActorEvent(actor)

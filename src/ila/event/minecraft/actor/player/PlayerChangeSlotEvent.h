@@ -14,7 +14,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerChangeSlotEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
-protected:
+public:
     Container&       mContainer;
     int&             mSlot;
     ItemStack const& mOldItem;
@@ -43,10 +43,5 @@ public:
     ILAPI void serialize(CompoundTag& pNbt) const override;
 
 public:
-    ILNDAPI Container&       container() const;
-    ILNDAPI int&             slot() const;
-    ILNDAPI ItemStack const& oldItem() const;
-    ILNDAPI ItemStack const& newItem() const;
-    ILNDAPI bool&            forceBalanced() const;
 };
 } // namespace ila::mc::inline actor::inline player

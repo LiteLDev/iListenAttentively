@@ -13,7 +13,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerAteBeforeEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
 {
-protected:
+public:
     ItemStack& mItem;
 
 public:
@@ -25,12 +25,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemStack& item() const;
 };
 
 class PlayerAteAfterEvent final : public ll::event::PlayerEvent
 {
-protected:
+public:
     int mSlot;
 
 public:
@@ -42,6 +41,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI int slot() const;
 };
 } // namespace ila::mc::inline actor::inline player

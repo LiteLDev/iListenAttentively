@@ -14,7 +14,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerAttackBlockBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
-protected:
+public:
     BlockPos& mPos;
     FacingID& mFace;
 
@@ -29,13 +29,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
-    ILNDAPI FacingID& face() const;
 };
 
 class PlayerAttackBlockAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     BlockPos const& mPos;
     FacingID const& mFace;
 
@@ -53,7 +51,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI FacingID const& face() const;
 };
 } // namespace ila::mc::inline actor::inline player

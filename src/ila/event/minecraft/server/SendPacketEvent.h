@@ -1,8 +1,11 @@
 #pragma once
 #include "ila/base/Macro.h"
+#include <concepts>
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
 #include <mc/common/SubClientId.h>
 #include <mc/deps/core/utility/optional_ref.h>
+#include <mc/nbt/CompoundTag.h>
 
 // clang-format off
 class NetworkSystem;
@@ -15,7 +18,7 @@ namespace ila::mc::inline server
 {
 class ISendPacketBeforeEvent : public ll::event::Cancellable<ll::event::Event>
 {
-private:
+public:
     NetworkSystem&           mNetworkSystem;
     Packet&                  mPacket;
     NetworkIdentifier const& mNetworkIdentifier;
@@ -36,14 +39,9 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag& nbt) const override;
-    ILAPI void deserialize(CompoundTag const& nbt) override;
-
-    ILNDAPI NetworkSystem&           networkSystem() const;
-    ILNDAPI Packet&                  packet() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
-    ILNDAPI SubClientId&             senderSubId() const;
-    ILNDAPI optional_ref<ServerPlayer> player() const;
+    ILAPI void                 serialize(CompoundTag& nbt) const override;
+    ILAPI void                 deserialize(CompoundTag const& nbt) override;
+    optional_ref<ServerPlayer> player() const;
 };
 
 template<std::derived_from<Packet> PacketType = Packet>
@@ -60,12 +58,12 @@ public:
     {
     }
 
-    PacketType& packet() const { return static_cast<PacketType&>(ISendPacketBeforeEvent::packet()); }
+    PacketType& packet() const { return static_cast<PacketType&>(mPacket); }
 };
 
 class ISendPacketAfterEvent : public ll::event::Event
 {
-private:
+public:
     NetworkSystem&           mNetworkSystem;
     Packet const&            mPacket;
     NetworkIdentifier const& mNetworkIdentifier;
@@ -86,13 +84,8 @@ public:
     {
     }
 
-    ILAPI void serialize(CompoundTag& nbt) const override;
-
-    ILNDAPI NetworkSystem&           networkSystem() const;
-    ILNDAPI Packet const&            packet() const;
-    ILNDAPI NetworkIdentifier const& networkIdentifier() const;
-    ILNDAPI SubClientId const&       senderSubId() const;
-    ILNDAPI optional_ref<ServerPlayer> player() const;
+    ILAPI void                 serialize(CompoundTag& nbt) const override;
+    optional_ref<ServerPlayer> player() const;
 };
 
 template<std::derived_from<Packet> PacketType = Packet>
@@ -109,9 +102,6 @@ public:
     {
     }
 
-    PacketType const& packet() const
-    {
-        return static_cast<PacketType const&>(ISendPacketAfterEvent::packet());
-    }
+    PacketType const& packet() const { return static_cast<PacketType const&>(mPacket); }
 };
 } // namespace ila::mc::inline server

@@ -3,45 +3,37 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/actor/PistonBlockActor.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block::inline actor
 {
 
 void PistonPushBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pistonPos"]        = ListTag { pistonPos().x, pistonPos().y, pistonPos().z };
-    nbt["pushPos"]          = ListTag { pushPos().x, pushPos().y, pushPos().z };
-    nbt["branchFacing"]     = branchFacing();
-    nbt["pistonMoveFacing"] = pistonMoveFacing();
+    nbt["pistonPos"]        = ListTag { mPistonPos.x, mPistonPos.y, mPistonPos.z };
+    nbt["pushPos"]          = ListTag { mPushPos.x, mPushPos.y, mPushPos.z };
+    nbt["branchFacing"]     = mBranchFacing;
+    nbt["pistonMoveFacing"] = mPistonMoveFacing;
     nbt["dimId"]            = getDimensionName(blockSource());
 }
 void PistonPushBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pushPos().x        = nbt["pushPos"];
-    pushPos().y        = nbt["pushPos"];
-    pushPos().z        = nbt["pushPos"];
-    branchFacing()     = nbt["branchFacing"];
-    pistonMoveFacing() = nbt["pistonMoveFacing"];
+    mPushPos.x        = nbt["pushPos"];
+    mPushPos.y        = nbt["pushPos"];
+    mPushPos.z        = nbt["pushPos"];
+    mBranchFacing     = nbt["branchFacing"];
+    mPistonMoveFacing = nbt["pistonMoveFacing"];
 }
-BlockPos& PistonPushBeforeEvent::pistonPos() const { return mPistonPos; }
-BlockPos& PistonPushBeforeEvent::pushPos() const { return mPushPos; }
-uchar&    PistonPushBeforeEvent::branchFacing() const { return mBranchFacing; }
-uchar&    PistonPushBeforeEvent::pistonMoveFacing() const { return mPistonMoveFacing; }
 
 void PistonPushAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pistonPos"]        = ListTag { pistonPos().x, pistonPos().y, pistonPos().z };
-    nbt["pushPos"]          = ListTag { pushPos().x, pushPos().y, pushPos().z };
+    nbt["pistonPos"]        = ListTag { mPistonPos.x, mPistonPos.y, mPistonPos.z };
+    nbt["pushPos"]          = ListTag { mPushPos.x, mPushPos.y, mPushPos.z };
     nbt["dimId"]            = getDimensionName(blockSource());
-    nbt["branchFacing"]     = branchFacing();
-    nbt["pistonMoveFacing"] = pistonMoveFacing();
+    nbt["branchFacing"]     = mBranchFacing;
+    nbt["pistonMoveFacing"] = mPistonMoveFacing;
 }
-BlockPos const& PistonPushAfterEvent::pistonPos() const { return mPistonPos; }
-BlockPos const& PistonPushAfterEvent::pushPos() const { return mPushPos; }
-uchar const&    PistonPushAfterEvent::branchFacing() const { return mBranchFacing; }
-uchar const&    PistonPushAfterEvent::pistonMoveFacing() const { return mPistonMoveFacing; }
 
 LL_TYPE_INSTANCE_HOOK(
     PistonPushEventHook,
@@ -74,4 +66,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PistonPush, <PistonPushEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block::inline actor

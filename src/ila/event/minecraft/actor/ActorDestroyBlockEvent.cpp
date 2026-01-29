@@ -21,9 +21,8 @@ namespace ila::mc::inline actor
 void ActorDestroyBlockEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag { mPos.x, mPos.y, mPos.z };
 }
-Vec3 const& ActorDestroyBlockEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     ActorDestroyBlockEventHook,

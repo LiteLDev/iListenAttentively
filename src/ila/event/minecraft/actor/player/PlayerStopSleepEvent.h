@@ -21,7 +21,7 @@ namespace ila::mc::inline actor::inline player
 **/
 class PlayerStopSleepBeforeEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     bool& mForcefulWakeUp;
     bool& mUpdateLevelList;
 
@@ -36,8 +36,6 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI bool& forcefulWakeUp() const;
-    ILNDAPI bool& updateLevelList() const;
 };
 
 /**
@@ -48,7 +46,7 @@ public:
 **/
 class PlayerStopSleepAfterEvent final : public ll::event::player::PlayerEvent
 {
-protected:
+public:
     bool const& mForcefulWakeUp;
     bool const& mUpdateLevelList;
 
@@ -66,7 +64,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI bool const& forcefulWakeUp() const;
-    ILNDAPI bool const& updateLevelList() const;
 };
 } // namespace ila::mc::inline actor::inline player

@@ -12,96 +12,72 @@ namespace ila::mc::inline server
 void ServerPongBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["motd"]            = motd();
-    nbt["protocolVersion"] = protocolVersion();
-    nbt["networkVersion"]  = networkVersion();
-    nbt["playerCount"]     = playerCount();
-    nbt["maxPlayerCount"]  = maxPlayerCount();
-    nbt["guid"]            = guid();
-    nbt["levelName"]       = levelName();
-    nbt["gameMode"]        = magic_enum::enum_name(gameMode());
-    nbt["localPort"]       = localPort();
-    nbt["localPortV6"]     = localPortV6();
+    nbt["motd"]            = mMotd;
+    nbt["protocolVersion"] = mProtocolVersion;
+    nbt["networkVersion"]  = mNetworkVersion;
+    nbt["playerCount"]     = mPlayerCount;
+    nbt["maxPlayerCount"]  = mMaxPlayerCount;
+    nbt["guid"]            = mGuid;
+    nbt["levelName"]       = mLevelName;
+    nbt["gameMode"]        = magic_enum::enum_name(mGameMode);
+    nbt["localPort"]       = mLocalPort;
+    nbt["localPortV6"]     = mLocalPortV6;
     nbt["others"]          = ListTag {};
-    for (auto& item : other()) { nbt["others"].push_back(item); }
-    nbt["ipAndPort"] = ipAndPort();
+    for (auto& item : mOther) { nbt["others"].push_back(item); }
+    nbt["ipAndPort"] = mIpAndPort;
 }
 void ServerPongBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    motd()            = nbt["motd"];
-    protocolVersion() = nbt["protocolVersion"];
-    networkVersion()  = nbt["networkVersion"];
-    playerCount()     = nbt["playerCount"];
-    maxPlayerCount()  = nbt["maxPlayerCount"];
-    guid()            = nbt["guid"];
-    levelName()       = nbt["levelName"];
-    gameMode()    = magic_enum::enum_cast<GameType>(nbt["gameMode"].get<StringTag>()).value_or(gameMode());
-    localPort()   = nbt["localPort"];
-    localPortV6() = nbt["localPortV6"];
-    other().clear();
-    for (auto& item : nbt["others"].get<ListTag>()) { other().push_back(item); }
+    mMotd            = nbt["motd"];
+    mProtocolVersion = nbt["protocolVersion"];
+    mNetworkVersion  = nbt["networkVersion"];
+    mPlayerCount     = nbt["playerCount"];
+    mMaxPlayerCount  = nbt["maxPlayerCount"];
+    mGuid            = nbt["guid"];
+    mLevelName       = nbt["levelName"];
+    mGameMode    = magic_enum::enum_cast<GameType>(nbt["gameMode"].get<StringTag>()).value_or(mGameMode);
+    mLocalPort   = nbt["localPort"];
+    mLocalPortV6 = nbt["localPortV6"];
+    mOther.clear();
+    for (auto& item : nbt["others"].get<ListTag>()) { mOther.push_back(item); }
 }
-std::string&              ServerPongBeforeEvent::motd() const { return mMotd; }
-int&                      ServerPongBeforeEvent::protocolVersion() const { return mProtocolVersion; }
-std::string&              ServerPongBeforeEvent::networkVersion() const { return mNetworkVersion; }
-int&                      ServerPongBeforeEvent::playerCount() const { return mPlayerCount; }
-int&                      ServerPongBeforeEvent::maxPlayerCount() const { return mMaxPlayerCount; }
-std::string&              ServerPongBeforeEvent::guid() const { return mGuid; }
-std::string&              ServerPongBeforeEvent::levelName() const { return mLevelName; }
-GameType&                 ServerPongBeforeEvent::gameMode() const { return mGameMode; }
-ushort&                   ServerPongBeforeEvent::localPort() const { return mLocalPort; }
-ushort&                   ServerPongBeforeEvent::localPortV6() const { return mLocalPortV6; }
-std::vector<std::string>& ServerPongBeforeEvent::other() const { return mOther; }
-std::string const&        ServerPongBeforeEvent::ipAndPort() const { return mIpAndPort; }
 std::string               ServerPongBeforeEvent::ip() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return address.substr(0, address.find('|'));
 }
 ushort ServerPongBeforeEvent::port() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
 }
 
 void ServerPongAfterEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["motd"]            = motd();
-    nbt["protocolVersion"] = protocolVersion();
-    nbt["networkVersion"]  = networkVersion();
-    nbt["playerCount"]     = playerCount();
-    nbt["maxPlayerCount"]  = maxPlayerCount();
-    nbt["guid"]            = guid();
-    nbt["levelName"]       = levelName();
-    nbt["gameMode"]        = magic_enum::enum_name(gameMode());
-    nbt["localPort"]       = localPort();
-    nbt["localPortV6"]     = localPortV6();
+    nbt["motd"]            = mMotd;
+    nbt["protocolVersion"] = mProtocolVersion;
+    nbt["networkVersion"]  = mNetworkVersion;
+    nbt["playerCount"]     = mPlayerCount;
+    nbt["maxPlayerCount"]  = mMaxPlayerCount;
+    nbt["guid"]            = mGuid;
+    nbt["levelName"]       = mLevelName;
+    nbt["gameMode"]        = magic_enum::enum_name(mGameMode);
+    nbt["localPort"]       = mLocalPort;
+    nbt["localPortV6"]     = mLocalPortV6;
     nbt["others"]          = ListTag {};
-    for (auto& item : other()) { nbt["others"].push_back(item); }
-    nbt["ipAndPort"] = ipAndPort();
+    for (auto& item : mOther) { nbt["others"].push_back(item); }
+    nbt["ipAndPort"] = mIpAndPort;
 }
-std::string const&              ServerPongAfterEvent::motd() const { return mMotd; }
-int const&                      ServerPongAfterEvent::protocolVersion() const { return mProtocolVersion; }
-std::string const&              ServerPongAfterEvent::networkVersion() const { return mNetworkVersion; }
-int const&                      ServerPongAfterEvent::playerCount() const { return mPlayerCount; }
-int const&                      ServerPongAfterEvent::maxPlayerCount() const { return mMaxPlayerCount; }
-std::string const&              ServerPongAfterEvent::guid() const { return mGuid; }
-std::string const&              ServerPongAfterEvent::levelName() const { return mLevelName; }
-GameType const&                 ServerPongAfterEvent::gameMode() const { return mGameMode; }
-ushort const&                   ServerPongAfterEvent::localPort() const { return mLocalPort; }
-ushort const&                   ServerPongAfterEvent::localPortV6() const { return mLocalPortV6; }
-std::vector<std::string> const& ServerPongAfterEvent::other() const { return mOther; }
-std::string const&              ServerPongAfterEvent::ipAndPort() const { return mIpAndPort; }
 std::string                     ServerPongAfterEvent::ip() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return address.substr(0, address.find('|'));
 }
 ushort ServerPongAfterEvent::port() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
 }
 

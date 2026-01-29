@@ -16,27 +16,23 @@ namespace ila::mc::inline actor::inline player
 void PlayerInteractEntityBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["target"] = serializeRefObj(target());
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["target"] = serializeRefObj(mTarget);
+    nbt["pos"]    = ListTag { mPos.x, mPos.y, mPos.z };
 }
 void PlayerInteractEntityBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
 }
-Actor& PlayerInteractEntityBeforeEvent::target() const { return mTarget; }
-Vec3&  PlayerInteractEntityBeforeEvent::pos() const { return mPos; }
 
 void PlayerInteractEntityAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["target"] = serializeRefObj(target());
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["target"] = serializeRefObj(mTarget);
+    nbt["pos"]    = ListTag { mPos.x, mPos.y, mPos.z };
 }
-Actor const& PlayerInteractEntityAfterEvent::target() const { return mTarget; }
-Vec3 const&  PlayerInteractEntityAfterEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerInteractEntityEventHook,

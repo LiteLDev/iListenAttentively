@@ -11,26 +11,22 @@ namespace ila::mc::inline actor::inline player
 void PlayerStopSleepBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["forcefulWakeUp"]  = forcefulWakeUp();
-    nbt["updateLevelList"] = updateLevelList();
+    nbt["forcefulWakeUp"]  = mForcefulWakeUp;
+    nbt["updateLevelList"] = mUpdateLevelList;
 }
 void PlayerStopSleepBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     PlayerEvent::deserialize(nbt);
-    forcefulWakeUp()  = nbt["forcefulWakeUp"];
-    updateLevelList() = nbt["updateLevelList"];
+    mForcefulWakeUp  = nbt["forcefulWakeUp"];
+    mUpdateLevelList = nbt["updateLevelList"];
 }
-bool& PlayerStopSleepBeforeEvent::forcefulWakeUp() const { return mForcefulWakeUp; }
-bool& PlayerStopSleepBeforeEvent::updateLevelList() const { return mUpdateLevelList; }
 
 void PlayerStopSleepAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
-    nbt["forcefulWakeUp"]  = forcefulWakeUp();
-    nbt["updateLevelList"] = updateLevelList();
+    nbt["forcefulWakeUp"]  = mForcefulWakeUp;
+    nbt["updateLevelList"] = mUpdateLevelList;
 }
-bool const& PlayerStopSleepAfterEvent::forcefulWakeUp() const { return mForcefulWakeUp; }
-bool const& PlayerStopSleepAfterEvent::updateLevelList() const { return mUpdateLevelList; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerStopSleepEventHook,

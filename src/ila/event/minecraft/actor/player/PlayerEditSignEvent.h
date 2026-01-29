@@ -15,7 +15,7 @@ namespace ila::mc::inline actor::inline player
 {
 class PlayerEditSignBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
-protected:
+public:
     BlockPos&           mPos;
     std::string&        mText;
     SignTextSide const& mTextSide;
@@ -37,14 +37,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
-    ILNDAPI std::string&        text() const;
-    ILNDAPI SignTextSide const& textSide() const;
 };
 
 class PlayerEditSignAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
-protected:
+public:
     BlockPos const&     mPos;
     std::string const&  mText;
     SignTextSide const& mTextSide;
@@ -65,8 +62,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI std::string const&  text() const;
-    ILNDAPI SignTextSide const& textSide() const;
-    ILNDAPI BlockPos const&     pos() const;
 };
 } // namespace ila::mc::inline actor::inline player

@@ -38,33 +38,14 @@ StructureFeatureChunkEvent::StructureFeatureChunkEvent(
 void StructureFeatureChunkEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["structureFeature"]        = serializeRefObj(structureFeature());
-    nbt["featureIdentifier"]       = featureIdentifier().getString();
-    nbt["preliminarySurfaceLevel"] = serializeRefObj(preliminarySurfaceLevel());
-    nbt["biomeSource"]             = serializeRefObj(biomeSource());
-    nbt["dimension"]               = serializeRefObj(dimension());
-    nbt["chunkPos"]                = ListTag { chunkPos().x, chunkPos().y, chunkPos().z };
-    nbt["random"]                  = serializeRefObj(random());
-    nbt["levelSeed"]               = levelSeed();
+    nbt["structureFeature"]        = serializeRefObj(mFeature);
+    nbt["featureIdentifier"]       = mFeatureIdentifier.getString();
+    nbt["preliminarySurfaceLevel"] = serializeRefObj(mPreliminarySurfaceLevel);
+    nbt["biomeSource"]             = serializeRefObj(mBiomeSource);
+    nbt["dimension"]               = serializeRefObj(mDimension);
+    nbt["chunkPos"]                = ListTag { mChunkPos.x, mChunkPos.y, mChunkPos.z };
+    nbt["random"]                  = serializeRefObj(mRandom);
+    nbt["levelSeed"]               = mLevelSeed;
 }
-
-StructureFeature& StructureFeatureChunkEvent::structureFeature() const { return mFeature; }
-
-HashedString const& StructureFeatureChunkEvent::featureIdentifier() const { return mFeatureIdentifier; }
-
-IPreliminarySurfaceProvider const& StructureFeatureChunkEvent::preliminarySurfaceLevel() const
-{
-    return mPreliminarySurfaceLevel;
-}
-
-BiomeSource const& StructureFeatureChunkEvent::biomeSource() const { return mBiomeSource; }
-
-Dimension const& StructureFeatureChunkEvent::dimension() const { return mDimension; }
-
-ChunkPos const& StructureFeatureChunkEvent::chunkPos() const { return mChunkPos; }
-
-Random& StructureFeatureChunkEvent::random() const { return mRandom; }
-
-uint& StructureFeatureChunkEvent::levelSeed() const { return mLevelSeed; }
 
 } // namespace ila::mc::inline worldgen::inline structure

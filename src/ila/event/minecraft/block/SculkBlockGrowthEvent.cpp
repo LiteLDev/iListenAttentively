@@ -4,31 +4,29 @@
 #include <mc/world/level/WorldBlockTarget.h>
 #include <mc/world/level/block/SculkBlockBehavior.h>
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block
 {
 
 void SculkBlockGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"] = getDimensionName(blockSource());
 }
 void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
 }
-BlockPos& SculkBlockGrowthBeforeEvent::pos() const { return mPos; }
 
 void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"] = getDimensionName(blockSource());
 }
-BlockPos const& SculkBlockGrowthAfterEvent::pos() const { return mPos; }
 
 LL_STATIC_HOOK(
     SculkBlockGrowthEventHook,
@@ -52,4 +50,4 @@ LL_STATIC_HOOK(
 
 Event_Hook_Factory(SculkBlockGrowth, <SculkBlockGrowthEventHook>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block

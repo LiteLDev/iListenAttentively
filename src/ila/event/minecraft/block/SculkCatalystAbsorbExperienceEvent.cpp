@@ -15,20 +15,16 @@ namespace ila::mc::inline block
 void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(blockActor());
-    nbt["actor"]      = serializeRefObj(actor());
-}
-SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::blockActor() const { return mBlockActor; };
-Actor&                   SculkCatalystAbsorbExperienceBeforeEvent::actor() const { return mActor; };
+    nbt["blockActor"] = serializeRefObj(mBlockActor);
+    nbt["actor"]      = serializeRefObj(mActor);
+};;
 
 void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const
 {
     LevelEvent::serialize(nbt);
-    nbt["blockActor"] = serializeRefObj(blockActor());
-    nbt["actor"]      = serializeRefObj(actor());
-}
-SculkCatalystBlockActor& SculkCatalystAbsorbExperienceAfterEvent::blockActor() const { return mBlockActor; };
-Actor&                   SculkCatalystAbsorbExperienceAfterEvent::actor() const { return mActor; };
+    nbt["blockActor"] = serializeRefObj(mBlockActor);
+    nbt["actor"]      = serializeRefObj(mActor);
+};;
 
 LL_TYPE_INSTANCE_HOOK(
     SculkCatalystAbsorbExperienceEventHook,

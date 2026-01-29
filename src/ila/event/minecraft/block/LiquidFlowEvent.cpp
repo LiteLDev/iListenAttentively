@@ -23,34 +23,28 @@ namespace ila::mc::inline block
 void LiquidFlowBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]         = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]       = getDimensionName(blockSource());
-    nbt["depth"]       = depth();
-    nbt["flowFromPos"] = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
+    nbt["depth"]       = mDepth;
+    nbt["flowFromPos"] = ListTag { mFlowFromPos.x, mFlowFromPos.y, mFlowFromPos.z };
 }
 void LiquidFlowBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
-    depth() = nbt["depth"];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
+    mDepth = nbt["depth"];
 }
-BlockPos&       LiquidFlowBeforeEvent::pos() const { return mPos; }
-int&            LiquidFlowBeforeEvent::depth() const { return mDepth; }
-BlockPos const& LiquidFlowBeforeEvent::flowFromPos() const { return mFlowFromPos; }
 
 void LiquidFlowAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]         = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["dimId"]       = getDimensionName(blockSource());
-    nbt["depth"]       = depth();
-    nbt["flowFromPos"] = ListTag { flowFromPos().x, flowFromPos().y, flowFromPos().z };
+    nbt["depth"]       = mDepth;
+    nbt["flowFromPos"] = ListTag { mFlowFromPos.x, mFlowFromPos.y, mFlowFromPos.z };
 }
-BlockPos const& LiquidFlowAfterEvent::pos() const { return mPos; }
-int const&      LiquidFlowAfterEvent::depth() const { return mDepth; }
-BlockPos const& LiquidFlowAfterEvent::flowFromPos() const { return mFlowFromPos; }
 
 bool operator==(Material const& lhs, Material const& rhs)
 {

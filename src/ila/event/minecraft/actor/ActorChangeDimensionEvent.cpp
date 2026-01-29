@@ -18,27 +18,22 @@ namespace ila::mc::inline actor
 void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["fromDimensionId"] = getDimensionName(fromDimensionId());
-    nbt["toDimensionId"]   = getDimensionName(toDimensionId());
+    nbt["fromDimensionId"] = getDimensionName(mFromDimensionId);
+    nbt["toDimensionId"]   = getDimensionName(mToDimensionId);
 }
 void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    toDimensionId() = getDimensionId(nbt["toDimensionId"]);
-}
-DimensionType const& ActorChangeDimensionBeforeEvent::fromDimensionId() const { return mFromDimensionId; };
-DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { return mToDimensionId; };
+    mToDimensionId = getDimensionId(nbt["toDimensionId"]);
+};;
 
 void ActorChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["fromDimensionId"] = fromDimensionId().id;
-    nbt["fromPos"]         = ListTag { getFromPos().x, getFromPos().y, getFromPos().z };
-    nbt["toDimensionId"]   = toDimensionId().id;
-}
-DimensionType const& ActorChangeDimensionAfterEvent::fromDimensionId() const { return mFromDimensionId; };
-Vec3 const&          ActorChangeDimensionAfterEvent::getFromPos() const { return mFromPos; };
-DimensionType const& ActorChangeDimensionAfterEvent::toDimensionId() const { return mToDimensionId; };
+    nbt["fromDimensionId"] = mFromDimensionId.id;
+    nbt["fromPos"]         = ListTag { mFromPos.x, mFromPos.y, mFromPos.z };
+    nbt["toDimensionId"]   = mToDimensionId.id;
+};;;
 
 LL_TYPE_INSTANCE_HOOK(
     ActorChangeDimensionEventHook1,

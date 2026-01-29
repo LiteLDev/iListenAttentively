@@ -16,38 +16,29 @@ namespace ila::mc::inline server
 void ClientLoginBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
-    nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
+    nbt["serverNetworkHandler"] = serializeRefObj(mServerNetworkHandler);
+    nbt["networkIdentifier"]    = serializeRefObj(mNetworkIdentifier);
 }
-ServerNetworkHandler& ClientLoginBeforeEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const& ClientLoginBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
 
 void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const
 {
     Event::serialize(nbt);
-    nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
-    nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
-    nbt["uuid"]                 = uuid().asString();
-    nbt["serverAuthXuid"]       = serverAuthXuid();
-    nbt["clientAuthXuid"]       = clientAuthXuid();
-    nbt["realName"]             = realName();
-    nbt["ipAndPort"]            = ipAndPort();
+    nbt["serverNetworkHandler"] = serializeRefObj(mServerNetworkHandler);
+    nbt["networkIdentifier"]    = serializeRefObj(mNetworkIdentifier);
+    nbt["uuid"]                 = mUuid.asString();
+    nbt["serverAuthXuid"]       = mServerAuthXuid;
+    nbt["clientAuthXuid"]       = mClientAuthXuid;
+    nbt["realName"]             = mRealName;
+    nbt["ipAndPort"]            = mIpAndPort;
 }
-ServerNetworkHandler&    ClientLoginAfterEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const& ClientLoginAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
-mce::UUID const&         ClientLoginAfterEvent::uuid() const { return mUuid; }
-std::string const&       ClientLoginAfterEvent::serverAuthXuid() const { return mServerAuthXuid; }
-std::string const&       ClientLoginAfterEvent::clientAuthXuid() const { return mClientAuthXuid; }
-std::string const&       ClientLoginAfterEvent::realName() const { return mRealName; }
-std::string const&       ClientLoginAfterEvent::ipAndPort() const { return mIpAndPort; }
 std::string              ClientLoginAfterEvent::ip() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return address.substr(0, address.find("|"));
 }
 std::string ClientLoginAfterEvent::port() const
 {
-    auto address = ipAndPort();
+    auto address = mIpAndPort;
     return address.substr(address.find("|") + 1);
 }
 void ClientLoginAfterEvent::disConnectClient(std::string const& reason) const
@@ -90,7 +81,7 @@ LL_TYPE_INSTANCE_HOOK(
     if (kickReasons)
     {
         thisFor<NetEventCallback>()->disconnectClientWithMessage(
-            afterEvent.networkIdentifier(),
+            afterEvent.mNetworkIdentifier,
             pPacket->mSenderSubId,
             Connection::DisconnectFailReason::Kicked,
             fmt::to_string(fmt::join(*kickReasons, "§r\n")),

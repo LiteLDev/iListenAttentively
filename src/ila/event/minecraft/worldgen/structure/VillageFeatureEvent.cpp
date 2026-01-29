@@ -23,9 +23,9 @@ void VillageFeatureConstructionEvent::serialize(CompoundTag& nbt) const
     std::vector<CompoundTagVariant> vctv = {};
     for (auto& ab : mAllowedBiomes) { vctv.push_back(ab.mValue); }
     nbt["allowedBiomes"]     = vctv;
-    nbt["seed"]              = seed();
-    nbt["townSpacing"]       = townSpacing();
-    nbt["minTownSeparation"] = minTownSeparation();
+    nbt["seed"]              = mSeed;
+    nbt["townSpacing"]       = mTownSpacing;
+    nbt["minTownSeparation"] = mMinTownSeparation;
 }
 void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt)
 {
@@ -35,14 +35,10 @@ void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt)
     {
         mAllowedBiomes.push_back(BiomeIdType { static_cast<ushort>(ab.get<ShortTag>().data) });
     }
-    seed()              = nbt["seed"];
-    townSpacing()       = nbt["townSpacing"];
-    minTownSeparation() = nbt["minTownSeparation"];
+    mSeed              = nbt["seed"];
+    mTownSpacing       = nbt["townSpacing"];
+    mMinTownSeparation = nbt["minTownSeparation"];
 }
-std::vector<BiomeIdType>& VillageFeatureConstructionEvent::allowedBiomes() const { return mAllowedBiomes; }
-uint&                     VillageFeatureConstructionEvent::seed() const { return mSeed; }
-int&                      VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
-int& VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
 
 LL_TYPE_INSTANCE_HOOK(
     VillageFeatureConstructorHook,
@@ -66,23 +62,13 @@ Event_Hook_Factory_Base(VillageFeatureConstruction, <VillageFeatureConstructorHo
 void CheckIfItIsAVillageGenerationChunkEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["preliminarySurfaceLevel"] = serializeRefObj(preliminarySurfaceLevel());
-    nbt["biomeSource"]             = serializeRefObj(biomeSource());
-    nbt["dimension"]               = serializeRefObj(dimension());
-    nbt["chunkPos"]                = ListTag { chunkPos().x, chunkPos().y, chunkPos().z };
-    nbt["random"]                  = serializeRefObj(random());
-    nbt["levelSeed"]               = levelSeed();
+    nbt["preliminarySurfaceLevel"] = serializeRefObj(mPreliminarySurfaceLevel);
+    nbt["biomeSource"]             = serializeRefObj(mBiomeSource);
+    nbt["dimension"]               = serializeRefObj(mDimension);
+    nbt["chunkPos"]                = ListTag { mChunkPos.x, mChunkPos.y, mChunkPos.z };
+    nbt["random"]                  = serializeRefObj(mRandom);
+    nbt["levelSeed"]               = mLevelSeed;
 }
-
-IPreliminarySurfaceProvider const& CheckIfItIsAVillageGenerationChunkEvent::preliminarySurfaceLevel() const
-{
-    return mPreliminarySurfaceLevel;
-}
-BiomeSource const& CheckIfItIsAVillageGenerationChunkEvent::biomeSource() const { return mBiomeSource; }
-Dimension const&   CheckIfItIsAVillageGenerationChunkEvent::dimension() const { return mDimension; }
-ChunkPos const&    CheckIfItIsAVillageGenerationChunkEvent::chunkPos() const { return mChunkPos; }
-Random&            CheckIfItIsAVillageGenerationChunkEvent::random() const { return mRandom; }
-uint&              CheckIfItIsAVillageGenerationChunkEvent::levelSeed() const { return mLevelSeed; }
 
 LL_TYPE_INSTANCE_HOOK(
     CheckIfItIsAVillageGenerationChunkHook,

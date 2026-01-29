@@ -21,56 +21,42 @@ namespace ila::mc::inline block
 void SculkSpreadBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["selfPos"]     = ListTag { selfPos().x, selfPos().y, selfPos().z };
-    nbt["selfBlock"]   = serializeRefObj(selfBlock());
-    nbt["selfFace"]    = selfFace();
-    nbt["targetPos"]   = ListTag { targetPos().x, targetPos().y, targetPos().z };
-    nbt["targetBlock"] = serializeRefObj(targetBlock());
-    nbt["targetFace"]  = targetFace();
-    nbt["facing"]      = facing();
+    nbt["selfPos"]     = ListTag { mSelfPos.x, mSelfPos.y, mSelfPos.z };
+    nbt["selfBlock"]   = serializeRefObj(mSelfBlock);
+    nbt["selfFace"]    = mSelfFace;
+    nbt["targetPos"]   = ListTag { mTargetPos.x, mTargetPos.y, mTargetPos.z };
+    nbt["targetBlock"] = serializeRefObj(mTargetBlock);
+    nbt["targetFace"]  = mTargetFace;
+    nbt["facing"]      = mFacing;
     nbt["dimId"]       = getDimensionName(blockSource());
 }
 void SculkSpreadBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    selfPos().x   = nbt["selfPos"][0];
-    selfPos().y   = nbt["selfPos"][1];
-    selfPos().z   = nbt["selfPos"][2];
-    selfFace()    = nbt["selfFace"];
-    targetPos().x = nbt["targetPos"][0];
-    targetPos().y = nbt["targetPos"][1];
-    targetPos().z = nbt["targetPos"][2];
-    targetFace()  = nbt["targetFace"];
-    facing()      = nbt["facing"];
+    mSelfPos.x   = nbt["selfPos"][0];
+    mSelfPos.y   = nbt["selfPos"][1];
+    mSelfPos.z   = nbt["selfPos"][2];
+    mSelfFace    = nbt["selfFace"];
+    mTargetPos.x = nbt["targetPos"][0];
+    mTargetPos.y = nbt["targetPos"][1];
+    mTargetPos.z = nbt["targetPos"][2];
+    mTargetFace  = nbt["targetFace"];
+    mFacing      = nbt["facing"];
 }
-BlockPos& SculkSpreadBeforeEvent::selfPos() const { return mSelfPos; }
-Block&    SculkSpreadBeforeEvent::selfBlock() const { return mSelfBlock; }
-uchar&    SculkSpreadBeforeEvent::selfFace() const { return mSelfFace; }
-BlockPos& SculkSpreadBeforeEvent::targetPos() const { return mTargetPos; }
-Block&    SculkSpreadBeforeEvent::targetBlock() const { return mTargetBlock; }
-uchar&    SculkSpreadBeforeEvent::targetFace() const { return mTargetFace; }
-uchar&    SculkSpreadBeforeEvent::facing() const { return mFacing; }
 
 
 void SculkSpreadAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["selfPos"]     = ListTag { selfPos().x, selfPos().y, selfPos().z };
-    nbt["selfBlock"]   = serializeRefObj(selfBlock());
-    nbt["selfFace"]    = selfFace();
-    nbt["targetPos"]   = ListTag { targetPos().x, targetPos().y, targetPos().z };
-    nbt["targetBlock"] = serializeRefObj(targetBlock());
-    nbt["targetFace"]  = targetFace();
-    nbt["facing"]      = facing();
+    nbt["selfPos"]     = ListTag { mSelfPos.x, mSelfPos.y, mSelfPos.z };
+    nbt["selfBlock"]   = serializeRefObj(mSelfBlock);
+    nbt["selfFace"]    = mSelfFace;
+    nbt["targetPos"]   = ListTag { mTargetPos.x, mTargetPos.y, mTargetPos.z };
+    nbt["targetBlock"] = serializeRefObj(mTargetBlock);
+    nbt["targetFace"]  = mTargetFace;
+    nbt["facing"]      = mFacing;
     nbt["dimId"]       = getDimensionName(blockSource());
 }
-BlockPos const& SculkSpreadAfterEvent::selfPos() const { return mSelfPos; }
-Block const&    SculkSpreadAfterEvent::selfBlock() const { return mSelfBlock; }
-uchar const&    SculkSpreadAfterEvent::selfFace() const { return mSelfFace; }
-BlockPos const& SculkSpreadAfterEvent::targetPos() const { return mTargetPos; }
-Block const&    SculkSpreadAfterEvent::targetBlock() const { return mTargetBlock; }
-uchar const&    SculkSpreadAfterEvent::targetFace() const { return mTargetFace; }
-uchar const&    SculkSpreadAfterEvent::facing() const { return mFacing; }
 
 using ReturnType = std::optional<std::pair<BlockPos const, uchar const>>;
 

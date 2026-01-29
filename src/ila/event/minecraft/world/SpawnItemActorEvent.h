@@ -14,7 +14,7 @@ namespace ila::mc::inline world
 {
 class SpawnItemActorBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     Vec3&      mPos;
     ItemStack& mItem;
     Actor*&    mSpawner;
@@ -39,15 +39,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI Vec3&      pos() const;
-    ILNDAPI ItemStack& item() const;
-    ILNDAPI Actor*&    spawner() const;
-    ILNDAPI int&       throwTime() const;
 };
 
 class SpawnItemActorAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     Vec3 const&      mPos;
     ItemStack const& mItem;
     Actor* const&    mSpawner;
@@ -74,10 +70,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Vec3 const&      pos() const;
-    ILNDAPI ItemStack const& item() const;
-    ILNDAPI Actor* const&    spawner() const;
-    ILNDAPI int const&       throwTime() const;
-    ILNDAPI ItemActor&       itemActor() const;
 };
 } // namespace ila::mc::inline world

@@ -11,7 +11,7 @@ namespace ila::mc::inline world
 {
 class ExplosionBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     Explosion& mExplosion;
 
 public:
@@ -24,13 +24,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI Explosion& explosion() const;
 };
 
 class ExplosionAfterEvent final : public ll::event::WorldEvent
 {
-
-protected:
+public:
     Explosion& mExplosion;
 
 public:
@@ -42,6 +40,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Explosion const& explosion() const;
 };
 } // namespace ila::mc::inline world

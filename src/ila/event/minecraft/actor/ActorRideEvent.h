@@ -9,7 +9,7 @@ namespace ila::mc::inline actor
 {
 class ActorRideBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
-protected:
+public:
     Actor& mTarget;
 
 public:
@@ -21,12 +21,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI Actor& target() const;
 };
 
 class ActorRideAfterEvent final : public ll::event::entity::ActorEvent
 {
-protected:
+public:
     Actor const& mTarget;
 
 public:
@@ -38,6 +37,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILAPI Actor const& target() const;
 };
 } // namespace ila::mc::inline actor

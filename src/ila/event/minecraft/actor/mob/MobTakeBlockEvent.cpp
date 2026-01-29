@@ -46,23 +46,21 @@ namespace ila::mc::inline actor::inline mob
 void MobTakeBlockBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag { mPos.x, mPos.y, mPos.z };
 }
 void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x = nbt["pos"][0];
-    pos().y = nbt["pos"][1];
-    pos().z = nbt["pos"][2];
+    mPos.x = nbt["pos"][0];
+    mPos.y = nbt["pos"][1];
+    mPos.z = nbt["pos"][2];
 }
-BlockPos& MobTakeBlockBeforeEvent::pos() const { return mPos; }
 
 void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag { mPos.x, mPos.y, mPos.z };
 }
-BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
 
 LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void)
 {

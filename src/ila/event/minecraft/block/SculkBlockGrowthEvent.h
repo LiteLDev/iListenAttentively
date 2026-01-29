@@ -7,11 +7,11 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world
+namespace ila::mc::inline block
 {
 class SculkBlockGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPos;
 
 public:
@@ -24,12 +24,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
 };
 
 class SculkBlockGrowthAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -41,6 +40,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
-} // namespace ila::mc::inline world
+} // namespace ila::mc::inline block

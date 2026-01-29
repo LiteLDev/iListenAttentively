@@ -33,27 +33,23 @@ namespace ila::mc::inline block
 void BlockFallBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]      = ListTag { pos().x, pos().y, pos().z };
-    nbt["oldBlock"] = serializeRefObj(oldBlock());
-    nbt["creative"] = creative();
+    nbt["pos"]      = ListTag { mPos.x, mPos.y, mPos.z };
+    nbt["oldBlock"] = serializeRefObj(mOldBlock);
+    nbt["creative"] = mCreative;
     nbt["dimId"]    = getDimensionName(blockSource());
 }
 void BlockFallBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    creative() = nbt["creative"];
+    mCreative = nbt["creative"];
 }
-BlockPos const& BlockFallBeforeEvent::pos() const { return mPos; }
-Block const&    BlockFallBeforeEvent::oldBlock() const { return mOldBlock; }
-bool&           BlockFallBeforeEvent::creative() const { return mCreative; }
 
 void BlockFallAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["self"] = serializeRefObj(self());
 }
-BlockPos const&    BlockFallAfterEvent::pos() const { return mPos; }
 FallingBlockActor& BlockFallAfterEvent::self() const
 {
     return static_cast<FallingBlockActor&>(ActorEvent::self());

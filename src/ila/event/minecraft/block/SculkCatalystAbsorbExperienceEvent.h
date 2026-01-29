@@ -11,7 +11,7 @@ namespace ila::mc::inline block
 {
 class SculkCatalystAbsorbExperienceBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent>
 {
-protected:
+public:
     SculkCatalystBlockActor& mBlockActor;
     Actor&                   mActor;
 
@@ -29,13 +29,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI SculkCatalystBlockActor& blockActor() const;
-    ILNDAPI Actor&                   actor() const;
 };
 
 class SculkCatalystAbsorbExperienceAfterEvent final : public ll::event::LevelEvent
 {
-protected:
+public:
     SculkCatalystBlockActor& mBlockActor;
     Actor&                   mActor;
 
@@ -53,7 +51,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI SculkCatalystBlockActor& blockActor() const;
-    ILNDAPI Actor&                   actor() const;
 };
 } // namespace ila::mc::inline block

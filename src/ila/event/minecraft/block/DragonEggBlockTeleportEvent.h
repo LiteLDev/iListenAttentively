@@ -14,7 +14,7 @@ namespace ila::mc::inline block
 {
 class DragonEggBlockTeleportBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos const& mPos;
     Random&         mRandom;
     BlockPos&       mTargetPos;
@@ -36,14 +36,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Random&         random() const;
-    ILNDAPI BlockPos&       targetPos() const;
 };
 
 class DragonEggBlockTeleportAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const& mPos;
     Random const&   mRandom;
     BlockPos const& mTargetPos;
@@ -64,8 +61,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Random const&   random() const;
-    ILNDAPI BlockPos const& targetPos() const;
 };
 } // namespace ila::mc::inline block

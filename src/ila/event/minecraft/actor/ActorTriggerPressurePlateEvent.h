@@ -13,7 +13,7 @@ namespace ila::mc::inline actor
 {
 class ActorTriggerPressurePlateBeforeEvent final : public ll::event::Cancellable<ll::event::ActorEvent>
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -25,12 +25,11 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
 
 class ActorTriggerPressurePlateAfterEvent final : public ll::event::ActorEvent
 {
-protected:
+public:
     BlockPos const& mPos;
 
 public:
@@ -42,6 +41,5 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI BlockPos const& pos() const;
 };
 } // namespace ila::mc::inline actor

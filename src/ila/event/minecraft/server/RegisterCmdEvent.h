@@ -13,7 +13,7 @@ namespace ila::mc::inline server
 
 class RegisterCmdBeforeEvent final : public ll::event::Event
 {
-protected:
+public:
     CommandRegistry&        mRegistry;
     std::string const&      mName;
     std::string&            mDescription;
@@ -43,17 +43,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI CommandRegistry& registry() const;
-    ILNDAPI std::string const& commandName() const;
-    ILNDAPI std::string&            description() const;
-    ILNDAPI CommandPermissionLevel& requirement() const;
-    ILNDAPI CommandFlag&            flag1() const;
-    ILNDAPI CommandFlag&            flag2() const;
 };
 
 class RegisterCmdAfterEvent final : public ll::event::Event
 {
-protected:
+public:
     CommandRegistry&              mRegistry;
     std::string const&            mName;
     std::string const&            mDescription;
@@ -82,12 +76,6 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI CommandRegistry& registry() const;
-    ILNDAPI std::string const& commandName() const;
-    ILNDAPI std::string const&            description() const;
-    ILNDAPI CommandPermissionLevel const& requirement() const;
-    ILNDAPI CommandFlag const&            flag1() const;
-    ILNDAPI CommandFlag const&            flag2() const;
 };
 
 } // namespace ila::mc::inline server

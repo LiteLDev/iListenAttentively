@@ -15,7 +15,7 @@ namespace ila::mc::inline block
 {
 class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
-protected:
+public:
     BlockPos& mPos;
     Random&   mRandom;
     int&      mXRadius;
@@ -40,15 +40,11 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos& pos() const;
-    ILNDAPI Random&   random() const;
-    ILNDAPI int&      xRadius() const;
-    ILNDAPI int&      zRadius() const;
 };
 
 class MossGrowthAfterEvent final : public ll::event::WorldEvent
 {
-protected:
+public:
     BlockPos const&        mPos;
     Random const&          mRandom;
     int const&             mXRadius;
@@ -76,10 +72,5 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
 
-    ILNDAPI BlockPos const& pos() const;
-    ILNDAPI Random const&   random() const;
-    ILNDAPI int const&      xRadius() const;
-    ILNDAPI int const&      zRadius() const;
-    ILNDAPI std::vector<BlockPos>& getTargetPoss() const;
 };
 } // namespace ila::mc::inline block
