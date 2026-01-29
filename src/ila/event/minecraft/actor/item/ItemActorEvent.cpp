@@ -14,6 +14,4 @@ void ItemActorEvent::serialize(CompoundTag& nbt) const
     nbt["self"] = serializeRefObj(self());
 }
 
-ItemActor& ItemActorEvent::self() const { return static_cast<ItemActor&>(ActorEvent::self()); }
-
 } // namespace ila::mc::inline actor::inline item

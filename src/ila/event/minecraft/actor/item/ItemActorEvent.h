@@ -15,7 +15,7 @@ public:
     }
 
     void       serialize(CompoundTag&) const override;
-    ItemActor& self() const;
+    ItemActor& self() const { return static_cast<ItemActor&>(ActorEvent::self()); }
 };
 
 } // namespace ila::mc::inline actor::inline item

@@ -50,10 +50,6 @@ void BlockFallAfterEvent::serialize(CompoundTag& nbt) const
     nbt["pos"]  = ListTag { mPos.x, mPos.y, mPos.z };
     nbt["self"] = serializeRefObj(self());
 }
-FallingBlockActor& BlockFallAfterEvent::self() const
-{
-    return static_cast<FallingBlockActor&>(ActorEvent::self());
-}
 
 LL_TYPE_INSTANCE_HOOK(
     BlockFallEventHook,

@@ -52,6 +52,6 @@ public:
     }
 
     ILAPI void         serialize(CompoundTag& nbt) const override;
-    FallingBlockActor& self() const;
+    FallingBlockActor& self() const { return static_cast<FallingBlockActor&>(ActorEvent::self()); }
 };
 } // namespace ila::mc::inline block

@@ -14,19 +14,11 @@ void FireworkRocketDealDamageBeforeEvent::serialize(CompoundTag& nbt) const
     ActorEvent::serialize(nbt);
     nbt["self"] = serializeRefObj(self());
 }
-FireworksRocketActor& FireworkRocketDealDamageBeforeEvent::self() const
-{
-    return static_cast<FireworksRocketActor&>(ActorEvent::self());
-}
 
 void FireworkRocketDealDamageAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
     nbt["self"] = serializeRefObj(self());
-}
-FireworksRocketActor& FireworkRocketDealDamageAfterEvent::self() const
-{
-    return static_cast<FireworksRocketActor&>(ActorEvent::self());
 }
 
 LL_TYPE_INSTANCE_HOOK(
