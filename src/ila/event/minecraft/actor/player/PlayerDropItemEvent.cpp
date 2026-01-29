@@ -1,14 +1,23 @@
 #include "ila/event/minecraft/actor/player/PlayerDropItemEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/ContainerID.h>
 #include <mc/world/actor/player/Inventory.h>
+#include <mc/world/actor/player/Player.h>
 #include <mc/world/actor/player/PlayerInventory.h>
 #include <mc/world/inventory/transaction/ComplexInventoryTransaction.h>
 #include <mc/world/inventory/transaction/InventoryAction.h>
 #include <mc/world/inventory/transaction/InventorySource.h>
 #include <mc/world/inventory/transaction/InventorySourceType.h>
 #include <mc/world/inventory/transaction/InventoryTransaction.h>
+#include <mc/world/inventory/transaction/InventoryTransactionError.h>
+#include <mc/world/item/ItemStack.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -74,4 +83,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerDropItem, <PlayerDropItemEventHook1, PlayerDropItemEventHook2>);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -2,12 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/MobEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Mob.h>
+#include <mc/world/level/block/Block.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 class MobPlaceBlockBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
@@ -49,4 +52,4 @@ public:
     ILNDAPI BlockPos const& pos() const;
     ILNDAPI Block const*    block() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/Player.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 namespace PlayerOperatedItemFrameEvent
@@ -73,4 +75,4 @@ public:
     ILNDAPI BlockPos const& blockPos() const;
     ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

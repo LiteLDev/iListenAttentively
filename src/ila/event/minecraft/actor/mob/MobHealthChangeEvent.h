@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/MobEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Mob.h>
 
 // clang-format off
 class AttributeBuff;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 class MobHealthChangeBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
@@ -65,4 +67,4 @@ public:
     ILNDAPI float const&         newValue() const;
     ILNDAPI AttributeBuff const& buff() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

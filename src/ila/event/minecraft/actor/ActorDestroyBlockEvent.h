@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 
 // clang-format off
 class Vec3;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ActorDestroyBlockEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -25,4 +27,4 @@ public:
 
     ILNDAPI Vec3 const& pos() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

@@ -3,13 +3,16 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/actor/item/FallingBlockActor.h>
+#include <mc/world/level/BlockSource.h>
+#include <mc/world/level/block/Block.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class BlockFallBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -57,4 +60,4 @@ public:
     ILNDAPI BlockPos const&    pos() const;
     ILNDAPI FallingBlockActor& self() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

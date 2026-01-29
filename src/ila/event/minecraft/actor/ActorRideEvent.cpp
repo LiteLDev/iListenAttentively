@@ -1,7 +1,13 @@
 #include "ila/event/minecraft/actor/ActorRideEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorRideBeforeEvent::serialize(CompoundTag& nbt) const
@@ -37,4 +43,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorRide, <ActorRideEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

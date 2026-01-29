@@ -2,12 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
+#include <mc/world/level/IBlockSource.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class FarmDecayBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -65,4 +68,4 @@ public:
     ILNDAPI Actor* const&   actor() const;
     ILNDAPI float const&    fallDistance() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

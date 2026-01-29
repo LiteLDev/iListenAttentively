@@ -2,13 +2,16 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
+#include <vector>
 
 // clang-format off
 class BlockPos;
 class Random;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -79,4 +82,4 @@ public:
     ILNDAPI int const&      zRadius() const;
     ILNDAPI std::vector<BlockPos>& getTargetPoss() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

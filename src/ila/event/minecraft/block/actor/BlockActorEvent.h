@@ -1,9 +1,10 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/Event.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/level/block/actor/BlockActor.h>
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
+namespace ila::mc::inline block::inline actor
 {
 
 class BlockActorEvent : public ll::event::Event
@@ -22,4 +23,4 @@ public:
     ILNDAPI BlockActor& self() const;
 };
 
-} // namespace ila::mc::inline world::inline level::inline block::inline actor
+} // namespace ila::mc::inline block::inline actor

@@ -2,15 +2,19 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/server/ServerPlayer.h>
+#include <mc/world/level/GameType.h>
 
-// Warning:
-// When a player joins the server, if existing player data is found in the save file,
-// the server will load the player data and trigger this event.
-// However, member variables such as the player"s dimension are not yet initialized at this stage.
-// You need to implement custom checks accordingly.
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
+/**
+  When a player joins the server, if existing player data is found in the save file,
+  the server will load the player data and trigger this event.
+  However, member variables such as the player"s dimension are not yet initialized at this stage.
+  You need to implement custom checks accordingly.
+ **/
 class PlayerChangeGameTypeBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
@@ -37,6 +41,12 @@ public:
     ILNDAPI GameType&       newGameType() const;
 };
 
+/**
+  When a player joins the server, if existing player data is found in the save file,
+  the server will load the player data and trigger this event.
+  However, member variables such as the player"s dimension are not yet initialized at this stage.
+  You need to implement custom checks accordingly.
+ **/
 class PlayerChangeGameTypeAfterEvent final : public ll::event::player::ServerPlayerEvent
 {
 protected:
@@ -60,4 +70,4 @@ public:
     ILNDAPI GameType const& oldGameType() const;
     ILNDAPI GameType const& newGameType() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -1,9 +1,14 @@
 #include "ila/event/minecraft/actor/ActorGetEffectEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/effect/MobEffectInstance.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorGetEffectBeforeEvent::serialize(CompoundTag& nbt) const
@@ -43,4 +48,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorGetEffect, <ActorGetEffectEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

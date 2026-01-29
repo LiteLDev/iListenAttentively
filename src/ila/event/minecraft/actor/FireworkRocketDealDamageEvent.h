@@ -2,9 +2,10 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/actor/item/FireworksRocketActor.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class FireworkRocketDealDamageBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -31,4 +32,4 @@ public:
 
     ILNDAPI FireworksRocketActor& self() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

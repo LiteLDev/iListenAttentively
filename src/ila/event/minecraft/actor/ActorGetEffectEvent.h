@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 
 // clang-format off
 class MobEffectInstance;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ActorGetEffectBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -43,4 +45,4 @@ public:
 
     ILNDAPI MobEffectInstance const& effect() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

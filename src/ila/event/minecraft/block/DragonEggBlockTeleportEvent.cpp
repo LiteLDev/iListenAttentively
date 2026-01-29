@@ -1,20 +1,29 @@
 #include "ila/event/minecraft/block/DragonEggBlockTeleportEvent.h"
 #include "ila/base/Gloabl.h"
+#include <cmath>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/world/WorldEvent.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/deps/core/math/Random.h>
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/deps/shared_types/legacy/LevelEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
 #include <mc/util/Random.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
 #include <mc/world/level/BlockPos.h>
+#include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/Block.h>
-#include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/BlockChangeContext.h>
+#include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/VanillaBlockTypeIds.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 
 void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
@@ -97,12 +106,12 @@ LL_STATIC_HOOK(
         BlockTypeRegistry::get().getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
         3 /* BlockUpdateFlag::All */,
         nullptr,
-        BlockChangeContext{false}
+        BlockChangeContext { false }
     );
-    pRegion.removeBlock(pPos, BlockChangeContext{false});
+    pRegion.removeBlock(pPos, BlockChangeContext { false });
     LLEventBus.publish(DragonEggBlockTeleportAfterEvent(pRegion, pPos, pRandom, targetPos));
 }
 
 Event_Hook_Factory(DragonEggBlockTeleport, <DragonEggBlockTeleportEventHook>);
 
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

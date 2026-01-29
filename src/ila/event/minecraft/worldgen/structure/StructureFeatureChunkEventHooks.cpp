@@ -1,7 +1,14 @@
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/worldgen/structure/StructureFeatureChunkEvent.h"
 #include <fmt/format.h>
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Emitter.h>
 #include <ll/api/event/EmitterBase.h>
+#include <ll/api/event/EventId.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/TypeName.h>
+#include <mc/_HeaderOutputPredefine.h>
+#include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/AncientCityFeature.h>
 #include <mc/world/level/levelgen/structure/BastionFeature.h>
 #include <mc/world/level/levelgen/structure/BuriedTreasureFeature.h>
@@ -17,13 +24,14 @@
 #include <mc/world/level/levelgen/structure/StrongholdFeature.h>
 #include <mc/world/level/levelgen/structure/VillageFeature.h>
 #include <mc/world/level/levelgen/structure/WoodlandMansionFeature.h>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
 #include <unordered_set>
 #include <utility>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+namespace ila::mc::inline worldgen::inline structure
 {
 
 static std::unique_ptr<ll::event::EmitterBase> StructureFeatureChunkEventEmitterFactory();
@@ -215,4 +223,4 @@ static std::unique_ptr<ll::event::EmitterBase> StructureFeatureChunkEventEmitter
     return std::make_unique<StructureFeatureChunkEventEmitter>();
 }
 
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+} // namespace ila::mc::inline worldgen::inline structure

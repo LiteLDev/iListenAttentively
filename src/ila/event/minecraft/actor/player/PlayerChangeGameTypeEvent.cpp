@@ -1,8 +1,16 @@
 #include "ila/event/minecraft/actor/player/PlayerChangeGameTypeEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/player/ServerPlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <magic_enum.hpp>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/network/packet/SetPlayerGameTypePacket.h>
+#include <mc/server/ServerPlayer.h>
+#include <mc/world/level/GameType.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerChangeGameTypeBeforeEvent::serialize(CompoundTag& nbt) const
@@ -52,4 +60,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerChangeGameType, <PlayerChangeGameTypeEventHook>);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

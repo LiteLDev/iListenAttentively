@@ -1,14 +1,17 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/server/ServerPlayer.h>
 #include <mc/world/level/block/actor/SignTextSide.h>
+#include <string>
 
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerEditSignBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
@@ -66,4 +69,4 @@ public:
     ILNDAPI SignTextSide const& textSide() const;
     ILNDAPI BlockPos const&     pos() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

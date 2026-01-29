@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ActorTriggerPressurePlateBeforeEvent final : public ll::event::Cancellable<ll::event::ActorEvent>
 {
@@ -42,4 +44,4 @@ public:
 
     ILNDAPI BlockPos const& pos() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

@@ -1,8 +1,9 @@
 #pragma once
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/world/actor/Actor.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -21,4 +22,4 @@ public:
     {
     }
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

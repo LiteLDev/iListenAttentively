@@ -2,7 +2,23 @@
 #include "ll/api/memory/Hook.h"
 #include "ll/api/memory/Memory.h"
 #include "mc/world/level/ChunkPos.h"
+#include <gsl/span>
 #include <ila/base/Gloabl.h>
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/util/molang/ExpressionNode.h>
+#include <mc/world/level/BlockVolumeTarget.h>
+#include <mc/world/level/GeneratorType.h>
+#include <mc/world/level/IBlockWorldGenAPI.h>
+#include <mc/world/level/WorldGenContext.h>
+#include <mc/world/level/biome/components/BiomeDecorationFeature.h>
+#include <mc/world/level/biome/systems/BiomeDecorationSystem.h>
+#include <string>
+#include <vector>
 
 using namespace ila::mc;
 

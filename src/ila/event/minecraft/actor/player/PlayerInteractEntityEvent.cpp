@@ -1,8 +1,16 @@
 #include "ila/event/minecraft/actor/player/PlayerInteractEntityEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/player/Player.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerInteractEntityBeforeEvent::serialize(CompoundTag& nbt) const
@@ -50,4 +58,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerInteractEntity, <PlayerInteractEntityEventHook>);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

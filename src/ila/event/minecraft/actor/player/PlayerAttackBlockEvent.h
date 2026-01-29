@@ -3,12 +3,14 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
 #include <mc/common/FacingID.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/server/ServerPlayer.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerAttackBlockBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
 {
@@ -54,4 +56,4 @@ public:
     ILNDAPI BlockPos const& pos() const;
     ILNDAPI FacingID const& face() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

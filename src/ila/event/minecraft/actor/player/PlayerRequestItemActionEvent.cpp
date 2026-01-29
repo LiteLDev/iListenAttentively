@@ -1,11 +1,23 @@
 #include "ila/event/minecraft/actor/player/PlayerRequestItemActionEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/memory/Memory.h>
+#include <magic_enum.hpp>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
+#include <mc/world/containers/ContainerEnumName.h>
 #include <mc/world/containers/FullContainerName.h>
+#include <mc/world/inventory/network/ItemStackNetResult.h>
+#include <mc/world/inventory/network/ItemStackRequestAction.h>
 #include <mc/world/inventory/network/ItemStackRequestActionHandler.h>
 #include <mc/world/inventory/network/ItemStackRequestActionTransferBase.h>
+#include <mc/world/inventory/network/ItemStackRequestActionType.h>
 #include <mc/world/inventory/network/ItemStackRequestSlotInfo.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerRequestItemActionBeforeEvent::serialize(CompoundTag& nbt) const
@@ -157,4 +169,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerRequestItemAction, <PlayerRequestItemActionEventHook>);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

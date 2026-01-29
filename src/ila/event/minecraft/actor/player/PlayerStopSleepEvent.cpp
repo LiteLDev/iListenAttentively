@@ -1,7 +1,11 @@
 #include "ila/event/minecraft/actor/player/PlayerStopSleepEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/Player.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerStopSleepBeforeEvent::serialize(CompoundTag& nbt) const
@@ -45,4 +49,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(PlayerStopSleep, <PlayerStopSleepEventHook>);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

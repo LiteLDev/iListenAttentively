@@ -1,15 +1,32 @@
 #include "ila/event/minecraft/actor/mob/MobHurtEffectEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/base/Containers.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
 #include <ll/api/service/Bedrock.h>
+#include <magic_enum.hpp>
+#include <mc/deps/core/utility/optional_ref.h>
+#include <mc/deps/ecs/gamerefs_entity/EntityContext.h>
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
+#include <mc/deps/game_refs/WeakRef.h>
+#include <mc/deps/shared_types/legacy/actor/ActorDamageCause.h>
 #include <mc/entity/components/ActorOwnerComponent.h>
 #include <mc/entity/components_json_legacy/SplashPotionEffectSubcomponent.h>
 #include <mc/legacy/ActorUniqueID.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
+#include <mc/world/actor/Actor.h>
 #include <mc/world/actor/ActorDamageSource.h>
+#include <mc/world/actor/Mob.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
+#include <memory>
+#include <optional>
+#include <vector>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 
 void MobHurtEffectBeforeEvent::serialize(CompoundTag& nbt) const
@@ -108,4 +125,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook, SplashPotionEffectSubcomponentApplyMobEffectsHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

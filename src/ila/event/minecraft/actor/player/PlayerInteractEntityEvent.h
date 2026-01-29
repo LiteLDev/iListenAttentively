@@ -2,12 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/player/Player.h>
 
 // clang-format off
 class Vec3;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerInteractEntityBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -49,4 +52,4 @@ public:
     ILAPI Actor const& target() const;
     ILAPI Vec3 const&  pos() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

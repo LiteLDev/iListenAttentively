@@ -1,7 +1,12 @@
 #include "ila/event/minecraft/world/WeatherUpdateEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/world/LevelEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/Level.h>
 
-namespace ila::mc::inline world::inline level
+namespace ila::mc::inline world
 {
 
 void WeatherUpdateBeforeEvent::serialize(CompoundTag& nbt) const
@@ -55,10 +60,11 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pRainLevel, pRainTime, pLightningLevel, pLightningTime);
-    LLEventBus.publish(WeatherUpdateAfterEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime)
+    LLEventBus.publish(
+        WeatherUpdateAfterEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime)
     );
 }
 
 Event_Hook_Factory(WeatherUpdate, <WeatherUpdateEventHook>);
 
-} // namespace ila::mc::inline world::inline level
+} // namespace ila::mc::inline world

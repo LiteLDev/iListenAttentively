@@ -2,9 +2,12 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/LevelEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/IBlockSource.h>
+#include <mc/world/level/Level.h>
 #include <mc/world/level/block/actor/SculkCatalystBlockActor.h>
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class SculkCatalystAbsorbExperienceBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent>
 {
@@ -53,4 +56,4 @@ public:
     ILNDAPI SculkCatalystBlockActor& blockActor() const;
     ILNDAPI Actor&                   actor() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

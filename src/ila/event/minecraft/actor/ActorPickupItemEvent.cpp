@@ -1,8 +1,14 @@
 #include "ila/event/minecraft/actor/ActorPickupItemEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/MobEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
 #include <mc/world/actor/ai/goal/PickupItemsGoal.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorPickupItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -38,4 +44,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorPickupItem, <ActorPickupItemEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

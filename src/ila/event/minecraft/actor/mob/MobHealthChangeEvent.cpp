@@ -1,9 +1,17 @@
 #include "ila/event/minecraft/actor/mob/MobHealthChangeEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <magic_enum.hpp>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/world/attribute/AttributeBuff.h>
+#include <mc/world/attribute/AttributeBuffType.h>
 #include <mc/world/attribute/HealthAttributeDelegate.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 
 void MobHealthChangeBeforeEvent::serialize(CompoundTag& nbt) const
@@ -82,4 +90,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(MobHealthChange, <MobHealthChangeHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

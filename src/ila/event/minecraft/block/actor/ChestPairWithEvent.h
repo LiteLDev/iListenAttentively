@@ -2,13 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/actor/ChestBlockActor.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
+namespace ila::mc::inline block::inline actor
 {
 class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -58,4 +60,4 @@ public:
     ILNDAPI ChestBlockActor& chest() const;
     ILNDAPI BlockPos const&  pos() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block::inline actor
+} // namespace ila::mc::inline block::inline actor

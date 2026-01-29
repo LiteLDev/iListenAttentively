@@ -1,10 +1,18 @@
 #include "ila/event/minecraft/actor/ActorChangeDimensionEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/_HeaderOutputPredefine.h>
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/world/actor/Actor.h>
 #include <mc/world/level/ActorDimensionTransferManager.h>
 #include <mc/world/level/dimension/Dimension.h>
+#include <optional>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
@@ -70,4 +78,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorChangeDimension, <ActorChangeDimensionEventHook1, ActorChangeDimensionEventHook2>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

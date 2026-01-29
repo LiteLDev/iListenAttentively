@@ -1,8 +1,17 @@
 #include "ila/event/minecraft/actor/ArmorStandSwapItemEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <magic_enum.hpp>
+#include <mc/deps/shared_types/legacy/EquipmentSlot.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/world/actor/ArmorStand.h>
+#include <mc/world/actor/player/Player.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ArmorStandSwapItemBeforeEvent::serialize(CompoundTag& nbt) const
@@ -15,7 +24,7 @@ void ArmorStandSwapItemBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
     slot() = magic_enum::enum_cast<SharedTypes::Legacy::EquipmentSlot>(nbt["slot"].get<StringTag>())
-                    .value_or(slot());
+                 .value_or(slot());
 }
 Player&                             ArmorStandSwapItemBeforeEvent::player() const { return mPlayer; }
 SharedTypes::Legacy::EquipmentSlot& ArmorStandSwapItemBeforeEvent::slot() const { return mSlot; }
@@ -48,4 +57,4 @@ LL_TYPE_INSTANCE_HOOK(
 }
 
 Event_Hook_Factory(ArmorStandSwapItem, <ArmorStandSwapItemEventHook>);
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

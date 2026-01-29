@@ -2,19 +2,33 @@
 #include "ila/event/minecraft/actor/mob/MobTakeBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/patch/VariantParameterList.hpp"
+#include <ila/patch/ActorGriefingBlockEvent.hpp>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
+#include <mc/gameplayhandlers/CoordinatorResult.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/util/IntRange.h>
 #include <mc/util/Random.h>
 #include <mc/util/Randomize.h>
+#include <mc/util/VariantParameterList.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
 #include <mc/world/actor/ai/goal/TakeBlockGoal.h>
 #include <mc/world/events/ActorEventCoordinator.h>
+#include <mc/world/events/ActorGameplayEvent.h>
 #include <mc/world/events/BlockSourceHandle.h>
+#include <mc/world/events/EventRef.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/level/Block/Block.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/ShapeType.h>
+#include <mc/world/level/block/ActorChangeContext.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/BlockChangeContext.h>
 #include <mc/world/level/block/BlockDescriptor.h>
@@ -26,7 +40,7 @@ struct MutableActorGameplayEvent<void>
 {
 };
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 
 void MobTakeBlockBeforeEvent::serialize(CompoundTag& nbt) const
@@ -110,4 +124,4 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
 
 Event_Hook_Factory(MobTakeBlock, <MobTakeBlockHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

@@ -3,7 +3,7 @@
 #include <ll/api/event/Event.h>
 #include <ll/api/event/world/WorldEvent.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+namespace ila::mc::inline worldgen::inline structure
 {
 
 class StructureEvent : public ll::event::Event
@@ -15,4 +15,4 @@ public:
     }
 };
 
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+} // namespace ila::mc::inline worldgen::inline structure

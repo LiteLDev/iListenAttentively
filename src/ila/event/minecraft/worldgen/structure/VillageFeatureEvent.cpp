@@ -1,9 +1,21 @@
 #include "ila/event/minecraft/worldgen/structure/VillageFeatureEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/_HeaderOutputPredefine.h>
+#include <mc/common/BiomeIdType.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/CompoundTagVariant.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/nbt/ShortTag.h>
 #include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/VillageFeature.h>
+#include <vector>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+namespace ila::mc::inline worldgen::inline structure
 {
 void VillageFeatureConstructionEvent::serialize(CompoundTag& nbt) const
 {
@@ -100,4 +112,4 @@ LL_TYPE_INSTANCE_HOOK(
 }
 
 Event_Hook_Factory_Base(CheckIfItIsAVillageGenerationChunk, <CheckIfItIsAVillageGenerationChunkHook>);
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+} // namespace ila::mc::inline worldgen::inline structure

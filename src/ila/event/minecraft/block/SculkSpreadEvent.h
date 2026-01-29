@@ -1,14 +1,17 @@
 #pragma once
 #include "ila/base/Macro.h"
+#include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
 
 // clang-format off
 class Block;
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -98,4 +101,4 @@ public:
     ILNDAPI uchar const&    targetFace() const;
     ILNDAPI uchar const&    facing() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

@@ -1,9 +1,15 @@
 #include "ila/event/minecraft/actor/ActorTriggerPressurePlateEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/world/actor/Actor.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/BasePressurePlateBlock.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorTriggerPressurePlateBeforeEvent::serialize(CompoundTag& nbt) const
@@ -41,4 +47,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ActorTriggerPressurePlate, <ActorTriggerPressurePlateEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

@@ -1,8 +1,9 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/actor/item/ItemActor.h>
 
-namespace ila::mc::inline world::inline actor::inline item
+namespace ila::mc::inline actor::inline item
 {
 
 class ItemActorEvent : public ll::event::ActorEvent
@@ -18,4 +19,4 @@ public:
     ILNDAPI ItemActor& self() const;
 };
 
-} // namespace ila::mc::inline world::inline actor::inline item
+} // namespace ila::mc::inline actor::inline item

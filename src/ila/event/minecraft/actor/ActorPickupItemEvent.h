@@ -2,12 +2,14 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/MobEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Mob.h>
 
 // clang-format off
 class ItemActor;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
@@ -42,4 +44,4 @@ public:
 
     ILNDAPI ItemActor const& itemActor() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

@@ -1,8 +1,11 @@
 #include "ila/event/minecraft/actor/ProjectileCreateEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/memory/Hook.h>
+#include <mc/deps/core/math/Vec3.h>
 #include <mc/entity/components_json_legacy/ProjectileComponent.h>
+#include <mc/world/actor/Actor.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 LL_TYPE_INSTANCE_HOOK(
@@ -29,4 +32,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(ProjectileCreate, <ProjectileCreateEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

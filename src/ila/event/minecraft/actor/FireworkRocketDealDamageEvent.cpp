@@ -1,7 +1,12 @@
 #include "ila/event/minecraft/actor/FireworkRocketDealDamageEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/item/FireworksRocketActor.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void FireworkRocketDealDamageBeforeEvent::serialize(CompoundTag& nbt) const
@@ -41,4 +46,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(FireworkRocketDealDamage, <FireworkRocketDealDamageEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

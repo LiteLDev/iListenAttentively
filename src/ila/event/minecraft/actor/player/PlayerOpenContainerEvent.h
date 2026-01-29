@@ -1,13 +1,17 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
+#include <mc/deps/shared_types/legacy/ContainerType.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/server/ServerPlayer.h>
+#include <mc/world/ContainerID.h>
 
 // clang-format off
 class BlockPos;
 struct ActorUniqueID;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerOpenContainerBeforeEvent final
     : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
@@ -74,4 +78,4 @@ public:
     ILNDAPI SharedTypes::Legacy::ContainerType const& containerType() const;
     ILNDAPI ActorUniqueID const&                      containerActorId() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -1,12 +1,24 @@
 #include "ila/event/minecraft/actor/DeathMessageEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <magic_enum.hpp>
+#include <mc/deps/shared_types/legacy/actor/ActorDamageCause.h>
 #include <mc/legacy/ActorUniqueID.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/nbt/CompoundTagVariant.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/world/actor/ActorDamageByActorSource.h>
 #include <mc/world/actor/ActorDamageByBlockSource.h>
 #include <mc/world/actor/ActorDamageByChildActorSource.h>
+#include <mc/world/actor/ActorDamageSource.h>
+#include <string>
+#include <utility>
+#include <vector>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
@@ -70,6 +82,9 @@ DeathMessageHookMacro(DeathMessageEventHook3, ActorDamageByBlockSource);
 
 DeathMessageHookMacro(DeathMessageEventHook4, ActorDamageByChildActorSource);
 
-Event_Hook_Factory(DeathMessage, <DeathMessageEventHook1, DeathMessageEventHook2, DeathMessageEventHook3, DeathMessageEventHook4>);
+Event_Hook_Factory(
+    DeathMessage,
+    <DeathMessageEventHook1, DeathMessageEventHook2, DeathMessageEventHook3, DeathMessageEventHook4>
+);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

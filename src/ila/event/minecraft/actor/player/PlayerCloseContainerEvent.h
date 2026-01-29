@@ -1,8 +1,12 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
+#include <mc/deps/shared_types/legacy/ContainerType.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/server/ServerPlayer.h>
+#include <mc/world/ContainerID.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerCloseContainerBeforeEvent final : public ll::event::player::ServerPlayerEvent
 {
@@ -60,4 +64,4 @@ public:
     ILNDAPI SharedTypes::Legacy::ContainerType const& containerType() const;
     ILNDAPI bool const&                               serverInitiatedClose() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

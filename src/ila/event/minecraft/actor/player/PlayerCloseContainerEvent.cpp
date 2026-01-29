@@ -1,9 +1,17 @@
 #include "ila/event/minecraft/actor/player/PlayerCloseContainerEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/player/ServerPlayerEvent.h>
+#include <magic_enum.hpp>
+#include <mc/deps/shared_types/legacy/ContainerType.h>
+#include <mc/nbt/ByteTag.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/network/packet/ContainerClosePacket.h>
+#include <mc/world/ContainerID.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerCloseContainerBeforeEvent::serialize(CompoundTag& nbt) const
@@ -87,4 +95,4 @@ Event_Listener_Factory(PlayerCloseContainerAfter)
     });
 }
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

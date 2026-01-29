@@ -1,6 +1,13 @@
 #pragma include_alias("mc/world/level/block/states/BlockStateVariant.h", "ila/patch/BlockStateVariant.hpp")
 #include "ila/event/minecraft/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <magic_enum.hpp>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/world/actor/player/Player.h>
 #include <mc/world/item/ItemInstance.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
@@ -10,7 +17,7 @@
 #include <mc/world/level/block/block_events/BlockPlaceEvent.h>
 #include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerOperatedItemFrameBeforeEvent::serialize(CompoundTag& nbt) const
@@ -99,10 +106,14 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pRegion, pIsSurvival, pActor);
-    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(static_cast<Player&>(*pActor), mPosition, Type::Take)
+    LLEventBus.publish(
+        PlayerOperatedItemFrameAfterEvent(static_cast<Player&>(*pActor), mPosition, Type::Take)
     );
 }
 
-Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
+Event_Hook_Factory(
+    PlayerOperatedItemFrame,
+    <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>
+);
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

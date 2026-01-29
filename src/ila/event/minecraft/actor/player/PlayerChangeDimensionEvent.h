@@ -1,13 +1,15 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/player/PlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/Player.h>
 
 // clang-format off
 class ChangeDimensionRequest;
 class Dimension;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerChangeDimensionBeforeEvent final : public ll::event::player::PlayerEvent
 {
@@ -56,4 +58,4 @@ public:
     ILNDAPI ChangeDimensionRequest const& changeDimensionRequest() const;
     ILNDAPI Dimension const&              dimension() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -1,8 +1,11 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include "ila/event/minecraft/worldgen/structure/StructureEvent.h"
+#include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
 #include <mc/common/BiomeIdType.h>
+#include <mc/nbt/CompoundTag.h>
+#include <vector>
 
 // clang-format off
 class IPreliminarySurfaceProvider;
@@ -12,7 +15,7 @@ class ChunkPos;
 class Random;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+namespace ila::mc::inline worldgen::inline structure
 {
 
 class VillageFeatureConstructionEvent final : public ila::mc::StructureEvent
@@ -89,4 +92,4 @@ public:
     ILNDAPI uint&                              levelSeed() const;
 };
 
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+} // namespace ila::mc::inline worldgen::inline structure

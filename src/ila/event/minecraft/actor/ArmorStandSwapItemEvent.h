@@ -1,10 +1,14 @@
 #pragma once
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/entity/ActorEvent.h>
 #include <ll/api/event/player/PlayerEvent.h>
 #include <mc/deps/shared_types/legacy/EquipmentSlot.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/player/Player.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class ArmorStandSwapItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -54,4 +58,4 @@ public:
     ILNDAPI Player const& player() const;
     ILNDAPI SharedTypes::Legacy::EquipmentSlot const& slot() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

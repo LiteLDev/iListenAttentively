@@ -2,13 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/Player.h>
 
 // clang-format off
 class Container;
 class ItemStack;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerChangeSlotEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -47,4 +49,4 @@ public:
     ILNDAPI ItemStack const& newItem() const;
     ILNDAPI bool&            forceBalanced() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -1,7 +1,15 @@
 #include "ila/event/minecraft/block/SculkCatalystAbsorbExperienceEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/world/LevelEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/IBlockSource.h>
+#include <mc/world/level/Level.h>
+#include <mc/world/level/block/actor/SculkCatalystBlockActor.h>
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 
 void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
@@ -41,4 +49,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory(SculkCatalystAbsorbExperience, <SculkCatalystAbsorbExperienceEventHook>);
 
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

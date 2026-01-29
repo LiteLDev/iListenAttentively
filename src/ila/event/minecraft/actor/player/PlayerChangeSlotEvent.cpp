@@ -1,8 +1,14 @@
 #include "ila/event/minecraft/actor/player/PlayerChangeSlotEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/Container.h>
+#include <mc/world/actor/player/Player.h>
+#include <mc/world/item/ItemStack.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 void PlayerChangeSlotEvent::serialize(CompoundTag& pNbt) const
 {
@@ -38,4 +44,4 @@ LL_TYPE_INSTANCE_HOOK(
     if (pcse.isCancelled()) { return; }
     origin(pContainer, pSlot, pOldItem, pNewItem, pForceBalanced);
 }
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

@@ -1,15 +1,18 @@
 #pragma once
 #include "ila/base/Macro.h"
+#include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
-#include <mc/world/inventory/network/ItemStackRequestActionType.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/Player.h>
 #include <mc/world/inventory/network/ItemStackNetResult.h>
+#include <mc/world/inventory/network/ItemStackRequestActionType.h>
 
 // clang-format off
 struct ItemStackRequestSlotInfo;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerRequestItemActionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -96,4 +99,4 @@ public:
     ILNDAPI ItemStackRequestSlotInfo const&   dst() const;
     ILNDAPI ItemStackNetResult&               result() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

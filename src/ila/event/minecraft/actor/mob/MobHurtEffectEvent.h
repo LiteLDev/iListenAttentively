@@ -4,8 +4,11 @@
 #include <ll/api/event/entity/MobEvent.h>
 #include <mc/deps/core/utility/optional_ref.h>
 #include <mc/deps/shared_types/legacy/actor/ActorDamageCause.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/Mob.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 class MobHurtEffectBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
 {
@@ -63,4 +66,4 @@ public:
     ILNDAPI float const&              value() const;
     ILNDAPI SharedTypes::Legacy::ActorDamageCause const& cause() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

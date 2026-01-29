@@ -2,13 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/actor/player/BedSleepingResult.h>
+#include <mc/world/actor/player/Player.h>
 
 // clang-format off
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 class PlayerStartSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
 {
@@ -52,4 +54,4 @@ public:
     ILNDAPI BlockPos const&    pos() const;
     ILNDAPI BedSleepingResult& result() const;
 };
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

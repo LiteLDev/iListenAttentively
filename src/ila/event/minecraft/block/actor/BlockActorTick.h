@@ -2,8 +2,11 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
+#include <mc/world/level/block/actor/BlockActor.h>
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
+namespace ila::mc::inline block::inline actor
 {
 class BlockActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -38,4 +41,4 @@ public:
 
     ILNDAPI BlockActor& blockActor() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block::inline actor
+} // namespace ila::mc::inline block::inline actor

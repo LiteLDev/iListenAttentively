@@ -1,22 +1,37 @@
 #include "ila/event/minecraft/actor/mob/MobPlaceBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/patch/VariantParameterList.hpp"
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/entity/ActorEvent.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
 #include <mc/network/packet/MobEquipmentPacket.h>
+#include <mc/util/IntRange.h>
 #include <mc/util/Random.h>
 #include <mc/util/Randomize.h>
+#include <mc/util/VariantParameterList.h>
+#include <mc/world/ContainerID.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
+#include <mc/world/actor/ActorFilterGroup.h>
 #include <mc/world/actor/ai/goal/PlaceBlockGoal.h>
 #include <mc/world/events/gameevents/GameEventRegistry.h>
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/level/Block/Block.h>
+#include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/block/ActorChangeContext.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/BlockChangeContext.h>
 #include <mc/world/level/dimension/Dimension.h>
+#include <string>
+#include <utility>
+#include <vector>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline mob
 {
 
 void MobPlaceBlockBeforeEvent::serialize(CompoundTag& nbt) const
@@ -140,4 +155,4 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
 
 Event_Hook_Factory(MobPlaceBlock, <MobPlaceBlockHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline mob

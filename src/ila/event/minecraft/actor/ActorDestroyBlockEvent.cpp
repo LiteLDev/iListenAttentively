@@ -1,11 +1,21 @@
 #pragma include_alias("mc/world/events/ActorGriefingBlockEvent.h", "ila/patch/ActorGriefingBlockEvent.hpp")
 #include "ila/event/minecraft/actor/ActorDestroyBlockEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ila/patch/ActorGriefingBlockEvent.hpp>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
+#include <mc/gameplayhandlers/CoordinatorResult.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
 #include <mc/world/events/ActorEventCoordinator.h>
+#include <mc/world/events/ActorGameplayEvent.h>
+#include <mc/world/events/EventRef.h>
+#include <mc/world/events/details/ValueOrRef.h>
+#include <type_traits>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 
 void ActorDestroyBlockEvent::serialize(CompoundTag& nbt) const
@@ -49,4 +59,4 @@ catch (...)
 
 Event_Hook_Factory_Base(ActorDestroyBlock, <ActorDestroyBlockEventHook>);
 
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

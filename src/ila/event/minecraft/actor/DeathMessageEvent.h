@@ -2,12 +2,17 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <string>
+#include <utility>
+#include <vector>
 
 // clang-format off
 class ActorDamageSource;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor
 {
 class DeathMessageBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
@@ -57,4 +62,4 @@ public:
     ILNDAPI ActorDamageSource const& damageSource() const;
     ILNDAPI std::pair<std::string, std::vector<std::string>> const& result() const;
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor

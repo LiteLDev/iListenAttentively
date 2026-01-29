@@ -1,11 +1,22 @@
 #include "ila/event/minecraft/actor/player/PlayerOpenContainerEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/player/ServerPlayerEvent.h>
+#include <magic_enum.hpp>
+#include <mc/deps/shared_types/legacy/ContainerType.h>
 #include <mc/legacy/ActorUniqueID.h>
+#include <mc/nbt/ByteTag.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/nbt/StringTag.h>
 #include <mc/network/NetworkBlockPosition.h>
 #include <mc/network/packet/ContainerOpenPacket.h>
+#include <mc/world/ContainerID.h>
+#include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world::inline actor::inline player
+namespace ila::mc::inline actor::inline player
 {
 
 void PlayerOpenContainerBeforeEvent::serialize(CompoundTag& nbt) const
@@ -106,4 +117,4 @@ Event_Listener_Factory(PlayerOpenContainerAfter)
     });
 }
 
-} // namespace ila::mc::inline world::inline actor::inline player
+} // namespace ila::mc::inline actor::inline player

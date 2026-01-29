@@ -2,13 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
 
 // clang-format off
 class Random;
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
+namespace ila::mc::inline block
 {
 class BlockTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
 {
@@ -54,4 +56,4 @@ public:
     ILNDAPI BlockPos const& pos() const;
     ILNDAPI Random const&   random() const;
 };
-} // namespace ila::mc::inline world::inline level::inline block
+} // namespace ila::mc::inline block

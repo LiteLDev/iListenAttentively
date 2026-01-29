@@ -1,9 +1,16 @@
 #include "ila/event/minecraft/worldgen/structure/StructureFeatureChunkEvent.h"
 #include "ila/base/Gloabl.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <mc/_HeaderOutputPredefine.h>
+#include <mc/deps/core/string/HashedString.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
 #include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/StructureFeature.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+namespace ila::mc::inline worldgen::inline structure
 {
 
 StructureFeatureChunkEvent::StructureFeatureChunkEvent(
@@ -60,4 +67,4 @@ Random& StructureFeatureChunkEvent::random() const { return mRandom; }
 
 uint& StructureFeatureChunkEvent::levelSeed() const { return mLevelSeed; }
 
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline structure
+} // namespace ila::mc::inline worldgen::inline structure

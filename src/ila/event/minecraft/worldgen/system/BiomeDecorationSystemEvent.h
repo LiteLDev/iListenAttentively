@@ -1,11 +1,22 @@
 #pragma once
 #include "ila/base/Macro.h"
+#include <gsl/span>
+#include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/util/molang/ExpressionNode.h>
 #include <mc/world/level/BlockVolumeTarget.h>
+#include <mc/world/level/ChunkPos.h>
+#include <mc/world/level/GeneratorType.h>
+#include <mc/world/level/IBlockWorldGenAPI.h>
+#include <mc/world/level/WorldGenContext.h>
 #include <mc/world/level/biome/components/BiomeDecorationFeature.h>
 #include <mc/world/level/biome/systems/BiomeDecorationSystem.h>
+#include <string>
+#include <vector>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline system
+namespace ila::mc::inline worldgen::inline system
 {
 class BiomeDecorationSystemEvent : public ::ll::event::Event
 {
@@ -165,4 +176,4 @@ public:
 public:
     ILAPI void serialize(CompoundTag& nbt) const;
 };
-} // namespace ila::mc::inline world::inline level::inline levelgen::inline system
+} // namespace ila::mc::inline worldgen::inline system

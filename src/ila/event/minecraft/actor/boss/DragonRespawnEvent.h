@@ -1,10 +1,11 @@
 #pragma once
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
 #include <ll/api/event/entity/MobEvent.h>
 #include <mc/deps/core/utility/optional_ref.h>
 #include <mc/world/actor/monster/EnderDragon.h>
 
-namespace ila::mc::inline world::inline actor
+namespace ila::mc::inline actor::inline boss
 {
 class DragonRespawnBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
 {
@@ -23,4 +24,4 @@ public:
     {
     }
 };
-} // namespace ila::mc::inline world::inline actor
+} // namespace ila::mc::inline actor::inline boss
