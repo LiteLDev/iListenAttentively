@@ -1,6 +1,17 @@
 #include "ila/RandomColorLogFormatter.h"
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <fmt/format.h>
+#include <ll/api/io/LogLevel.h>
+#include <ll/api/io/LogMessage.h>
+#include <ll/api/io/PatternFormatter.h>
 #include <ll/api/utils/StringUtils.h>
 #include <ll/api/utils/SystemUtils.h>
+#include <mc/deps/core/math/Color.h>
+#include <random>
+#include <string>
+#include <string_view>
 
 namespace ila
 {

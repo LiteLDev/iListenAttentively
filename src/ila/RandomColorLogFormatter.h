@@ -1,6 +1,8 @@
 #pragma once
+#include <ll/api/io/LogMessage.h>
 #include <ll/api/io/PatternFormatter.h>
 #include <mc/deps/core/math/Color.h>
+#include <string>
 
 namespace ila
 {
@@ -14,8 +16,11 @@ public:
 
     mce::Color  hslToRgb(double h, double s, double l) const noexcept;
     mce::Color  generateRandomBrightColor() const noexcept;
-    std::string gradientText(std::string const& str, mce::Color const& start, mce::Color const& end)
-        const noexcept;
+    std::string gradientText(
+        std::string const& str,
+        mce::Color const&  start,
+        mce::Color const&  end
+    ) const noexcept;
 };
 
 } // namespace ila
