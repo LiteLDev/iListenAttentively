@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        target_type: [server, client]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,27 +29,27 @@ jobs:
         run: |
           xmake repo -u
           xmake c -a
-          xmake f -a x64 -m release -p windows -v -y
+          xmake f -a x64 -m release -p windows -v -y --target_type=${{ matrix.target_type }}
           xmake -v -y
 
       - name: Upload DLL
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
           path: |
             bin/DLL
       
       - name: Upload PDB
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-PDB
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
           path: |
             bin/PDB
 
       - name: Upload SDK
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-SDK
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
           path: |
             bin/SDK
 
@@ -75,6 +78,9 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_type: [server, client]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,19 +88,19 @@ jobs:
       - name: Download DLL
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
           path: artifact/DLL
 
       - name: Download PDB
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-PDB
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
           path: artifact/PDB
 
       - name: Download SDK
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-SDK
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
           path: artifact/SDK
 
       - name: Copy Files
@@ -103,23 +109,23 @@ jobs:
 
       - name: Zip DLL
         run: |
-          zip -r ../../${{ github.event.repository.name }}-windows-x64.zip *
+          zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64.zip *
         working-directory: artifact/DLL
       
       - name: Zip PDB
         run: |
-          zip -r ../../${{ github.event.repository.name }}-windows-x64-PDB.zip *
+          zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB.zip *
         working-directory: artifact/PDB
       
       - name: Zip SDK
         run: |
-          zip -r ../../${{ github.event.repository.name }}-SDK.zip *
+          zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK.zip *
         working-directory: artifact/SDK
       
       - name: Upload Files
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ github.event.repository.name }}-windows-x64.zip
-            ${{ github.event.repository.name }}-windows-x64-PDB.zip
-            ${{ github.event.repository.name }}-SDK.zip
+            ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64.zip
+            ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB.zip
+            ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK.zip

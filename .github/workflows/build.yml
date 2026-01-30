@@ -4,6 +4,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        target_type: [server, client]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,26 +27,26 @@ jobs:
         run: |
           xmake repo -u
           xmake c -a
-          xmake f -a x64 -m release -p windows -v -y
+          xmake f -a x64 -m release -p windows -v -y --target_type=${{ matrix.target_type }}
           xmake -v -y
 
       - name: Upload DLL
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
           path: |
             bin/DLL
       
       - name: Upload PDB
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-PDB
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
           path: |
             bin/PDB
 
       - name: Upload SDK
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-SDK
+          name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
           path: |
             bin/SDK
