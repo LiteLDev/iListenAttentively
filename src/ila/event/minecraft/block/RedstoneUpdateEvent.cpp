@@ -77,25 +77,22 @@ LL_TYPE_INSTANCE_HOOK(
     std::vector<ChunkCircuitComponentList::Item> secondaryPoweredList;
     secondaryPoweredList.reserve(components->second.mComponents->size());
 
-    constexpr static auto processComponent =
-        [](BaseCircuitComponent* comp, BlockSource& region, BlockPos const& pos) -> void {
+    auto processComponent = [&](BaseCircuitComponent* comp, BlockPos const& pos) -> void {
         if (auto strength = comp->getStrength(); strength != -1)
         {
-            auto& block = region.getBlock(pos);
             if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate)
             {
                 auto beforeEvent = RedstoneUpdateBeforeEvent(
-                    region,
+                    pRegion,
                     const_cast<BlockPos&>(pos),
                     strength,
                     comp->mIsFirstTime
                 );
                 LLEventBus.publish(beforeEvent);
                 if (beforeEvent.isCancelled()) { return; }
-                block.mBlockType->onRedstoneUpdate(region, pos, strength, comp->mIsFirstTime);
-                LLEventBus.publish(RedstoneUpdateAfterEvent(region, pos, strength, comp->mIsFirstTime));
+                updateIndividualBlock(comp, pChunkPos, pos, pRegion);
+                LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pos, strength, comp->mIsFirstTime));
             }
-            comp->mIsFirstTime = false;
         }
     };
 
@@ -105,13 +102,16 @@ LL_TYPE_INSTANCE_HOOK(
         {
             comp->mNeedsUpdate = false;
             if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
-            else { processComponent(comp, pRegion, item.mPos); }
+            else
+            {
+                processComponent(comp, item.mPos);
+            }
         }
     }
 
     for (auto const& item : secondaryPoweredList)
     {
-        if (auto* comp = item.mComponent; comp) { processComponent(comp, pRegion, item.mPos); }
+        if (auto* comp = item.mComponent; comp) { processComponent(comp, item.mPos); }
     }
 }
 

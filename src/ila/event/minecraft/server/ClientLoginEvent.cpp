@@ -59,21 +59,24 @@ LL_TYPE_INSTANCE_HOOK(
 {
     auto beforeEvent = ClientLoginBeforeEvent(*thisFor<NetEventCallback>(), pSource);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled() || true)
+    {
+        thisFor<NetEventCallback>()
+            ->disconnectClient(pSource, pPacket->mSenderSubId, Connection::DisconnectFailReason::Kicked);
+        return;
+    }
     origin(pSource, pPacket);
-    auto& data = pPacket->mConnectionRequest->mCertificateData->mRawToken.mDataInfo;
-    if (!data.isMember("extraData") || !data["extraData"].isObject()) { return; }
-    auto&                                   extraData = data["extraData"];
+    auto client = thisFor<NetEventCallback>()->mClients->find(pSource);
+    if (client == mClients->end()) { return; }
+    auto&                                   info = *client->second->mPrimaryPlayerInfo;
     std::optional<std::vector<std::string>> kickReasons;
-    // TODO: 这里的XUID获取其实有问题，需要判断一个条件
     auto                                    afterEvent = ClientLoginAfterEvent(
-        *this,
+        *thisFor<NetEventCallback>(),
         pSource,
-        extraData.isMember("identity") ? mce::UUID::fromString(extraData["identity"].asString(""))
-                                                                          : mce::UUID::EMPTY(),
-        extraData.isMember("XUID") ? extraData["XUID"].asString("") : "",
-        extraData.isMember("XUID") ? extraData["XUID"].asString("") : "",
-        extraData.isMember("displayName") ? extraData["displayName"].asString("") : "",
+        info.AuthenticatedUuid,
+        info.Xuid,
+        info.Xuid,
+        info.XboxLiveName,
         pSource.getIPAndPort(),
         kickReasons
     );
@@ -81,7 +84,7 @@ LL_TYPE_INSTANCE_HOOK(
     if (kickReasons)
     {
         thisFor<NetEventCallback>()->disconnectClientWithMessage(
-            afterEvent.mNetworkIdentifier,
+            pSource,
             pPacket->mSenderSubId,
             Connection::DisconnectFailReason::Kicked,
             fmt::to_string(fmt::join(*kickReasons, "§r\n")),
