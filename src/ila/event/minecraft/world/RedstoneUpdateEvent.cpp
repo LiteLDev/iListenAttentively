@@ -103,7 +103,7 @@ LL_TYPE_INSTANCE_HOOK(
             doEvent = true;
         }
 
-        bool usedIsFirstTime = comp->mIsFirstTime;
+        bool& usedIsFirstTime = comp->mIsFirstTime;
         updateIndividualBlock(comp, pChunkPos, pos, pRegion);
 
         if (doEvent)
