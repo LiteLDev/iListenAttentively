@@ -1,12 +1,18 @@
 #include "ila/event/minecraft/world/RedstoneUpdateEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/world/level/block/Block.h>
-#include <mc/world/level/block/BlockType.h>
+#include <ll/api/event/Cancellable.h>
+#include <ll/api/event/world/WorldEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
+#include <mc/world/level/BlockPos.h>
+#include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/ObserverBlock.h>
 #include <mc/world/redstone/circuit/ChunkCircuitComponentList.h>
 #include <mc/world/redstone/circuit/CircuitSceneGraph.h>
 #include <mc/world/redstone/circuit/CircuitSystem.h>
 #include <mc/world/redstone/circuit/components/BaseCircuitComponent.h>
+#include <vector>
 
 namespace ila::mc::inline world
 {
@@ -84,21 +90,25 @@ LL_TYPE_INSTANCE_HOOK(
     secondaryPoweredList.reserve(components->second.mComponents->size());
 
     auto processComponent = [&](BaseCircuitComponent* comp, BlockPos const& pos) -> void {
-        if (auto strength = comp->getStrength(); strength != -1)
+        int strength = comp->getStrength();
+        if (strength == -1) { return; }
+
+        bool doEvent = false;
+        if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate)
         {
-            if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate)
-            {
-                auto beforeEvent = RedstoneUpdateBeforeEvent(
-                    pRegion,
-                    const_cast<BlockPos&>(pos),
-                    strength,
-                    comp->mIsFirstTime
-                );
-                LLEventBus.publish(beforeEvent);
-                if (beforeEvent.isCancelled()) { return; }
-                updateIndividualBlock(comp, pChunkPos, pos, pRegion);
-                LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pos, strength, comp->mIsFirstTime));
-            }
+            auto beforeEvent =
+                RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pos), strength, comp->mIsFirstTime);
+            LLEventBus.publish(beforeEvent);
+            if (beforeEvent.isCancelled()) { return; }
+            doEvent = true;
+        }
+
+        bool usedIsFirstTime = comp->mIsFirstTime;
+        updateIndividualBlock(comp, pChunkPos, pos, pRegion);
+
+        if (doEvent)
+        {
+            LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pos, strength, usedIsFirstTime));
         }
     };
 
@@ -108,10 +118,7 @@ LL_TYPE_INSTANCE_HOOK(
         {
             comp->mNeedsUpdate = false;
             if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
-            else
-            {
-                processComponent(comp, item.mPos);
-            }
+            else { processComponent(comp, item.mPos); }
         }
     }
 
