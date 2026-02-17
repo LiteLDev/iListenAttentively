@@ -1,0 +1,28 @@
+#pragma once
+
+// clang-format off
+#define ILA_VERSION_MAJOR         ${ILA_VERSION_MAJOR}
+#define ILA_VERSION_MINOR         ${ILA_VERSION_MINOR}
+#define ILA_VERSION_PATCH         ${ILA_VERSION_PATCH}
+${define ILA_VERSION_PRERELEASE}
+#define ILA_VERSION_COMMIT_SHA    ${GIT_COMMIT}
+// clang-format on
+
+#define ILA_VERSION_TO_STRING_INNER(ver) #ver
+#define ILA_VERSION_TO_STRING(ver)       ILA_VERSION_TO_STRING_INNER(ver)
+
+#ifdef ILA_VERSION_PRERELEASE
+#define ILA_FILE_VERSION_FLAG VS_FF_DEBUG
+#define ILA_FILE_VERSION_STRING                                                                                        \
+    ILA_VERSION_TO_STRING(ILA_VERSION_MAJOR)                                                                           \
+    "." ILA_VERSION_TO_STRING(ILA_VERSION_MINOR) "." ILA_VERSION_TO_STRING(                                            \
+        ILA_VERSION_PATCH                                                                                              \
+    ) "-" ILA_VERSION_PRERELEASE "+" ILA_VERSION_TO_STRING(ILA_VERSION_COMMIT_SHA)
+#else
+#define ILA_FILE_VERSION_FLAG 0x00000000L
+#define ILA_FILE_VERSION_STRING                                                                                        \
+    ILA_VERSION_TO_STRING(ILA_VERSION_MAJOR)                                                                           \
+    "." ILA_VERSION_TO_STRING(ILA_VERSION_MINOR) "." ILA_VERSION_TO_STRING(                                            \
+        ILA_VERSION_PATCH                                                                                              \
+    ) "+" ILA_VERSION_TO_STRING(ILA_VERSION_COMMIT_SHA)
+#endif

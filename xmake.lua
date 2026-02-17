@@ -1,32 +1,27 @@
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.vsxmake.autoupdate")
+add_rules("plugin.compile_commands.autoupdate")
 
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
 
--- Dependencies from liteldev-repo.
 option("target_type")
     set_default("server")
     set_showmenu(true)
     set_values("server", "client")
 option_end()
 
-local is_server = is_config("target_type", "server")
-
-if is_server then
-    add_requires("levilamina 1.9.1", {configs = {target_type = "server"}})
-else
-    add_requires("levilamina 1.9.1", {configs = {target_type = "client"}})
-end
-add_requires("levibuildscript 0.4.1")
-
-if not has_config("vs_runtime") then
-    set_runtimes("MD")
-end
-
 option("tests")
     set_default(false)
     set_showmenu(true)
     set_description("Enable tests")
+option_end()
+
+add_requires("levilamina 1.9.5", { configs = { target_type = get_config("target_type") } })
+add_requires("levibuildscript 0.5.0")
+
+if not has_config("vs_runtime") then
+    set_runtimes("MD")
+end
 
 target("iListenAttentively")
     add_cxflags(
@@ -46,145 +41,98 @@ target("iListenAttentively")
         "NOMINMAX", 
         "UNICODE",
         "ILA_EXPORT",
-        "_HAS_CXX23=1"
+        "_HAS_CXX23=1",
+        ( is_config("target_type", "server") and "LL_PLAT_S" or "LL_PLAT_C" ),
+        ( is_mode("debug") and "ILA_DEBUG" or "ILA_RELEASE" )
     )
     set_optimize("aggressive")
     set_configdir("$(builddir)/config")
-    set_configvar("IL_WORKSPACE_FOLDER", "$(projectdir)")
     add_configfiles("src/(ila/**.h.in)")
-    add_files("src/ila/**.cpp")
-    add_files("src/ila/**.rc")
-    add_headerfiles("src/(ila/**.h)")
-    add_includedirs("src", "$(builddir)/config")
-    add_packages(
-		"levilamina",
-        "fmt",
-        "magic_enum",
-        "nlohmann_json"
-    )
+    add_includedirs("$(builddir)/config")
+    add_packages("levilamina")
     add_rules("@levibuildscript/linkrule")
     set_exceptions("none")
     set_kind("shared")
     set_languages("cxx20")
     set_symbols("debug")
 
-    if is_mode("debug") then
-        add_defines("ILA_DEBUG")
-    end
-    
-    if is_server then
-        add_defines("LL_PLAT_S")
-    else
-        add_defines("LL_PLAT_C")
+    add_files("src/common/ila/**.cpp")
+    add_includedirs("src/common")
+    add_headerfiles("src/common/(ila/**.h)|(ila/**.hpp)")
+    if is_config("target_type", "server") then
+        add_files("src/server/ila/**.cpp")
+        add_includedirs("src/server")
+        add_headerfiles("src/server/(ila/**.h)|(ila/**.hpp)")
+    elseif is_config("target_type", "client") then
+        add_files("src/client/ila/**.cpp")
+        add_includedirs("src/client")
+        add_headerfiles("src/client/(ila/**.h)|(ila/**.hpp)")
     end
 
     if has_config("tests") then
         add_defines("ILA_TESTS")
-        add_includedirs("src-test/")
-        add_headerfiles("src-test/**.h")
-        add_files("src-test/**.cpp")
+        add_files("src-test/common/**.cpp")
+        add_includedirs("src-test/common/")
+        add_headerfiles("src-test/common/**.h")
+        if is_config("target_type", "server") then
+            add_files("src-test/server/**.cpp")
+            add_includedirs("src-test/server/")
+            add_headerfiles("src-test/server/**.h")
+        elseif is_config("target_type", "client") then
+            add_includedirs("src-test/client/")
+            add_files("src-test/client/**.cpp")
+            add_headerfiles("src-test/client/**.h")
+        end
     end
 
-    after_build(function (target)
-        local output_directory = path.join(os.projectdir(), "bin") -- total Output Path
-        local dll_directory = path.join(output_directory, "DLL", target:name()) -- Plugin Body Output Path
-        local pdb_directory = path.join(output_directory, "PDB") -- pdb output path
-        local sdk_directory = path.join(output_directory, "SDK") -- sdk output path
-        local library_directory = path.join(sdk_directory, "lib") -- lib output path
-        local includes_directory = path.join(sdk_directory, "include") -- sdk header file output path
-
-        local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
-        if not major then
-            major, minor, patch = 0, 0, 0
-            print("Failed to parse version tag, using 0.0.0")
-        end
-
-        -- delete old compilation results
-        if os.exists(output_directory) then
-            os.rm(output_directory)
-            cprint("${bright yellow}[Mod packed] ${bright green}old compilations have been removed.")
-        end
-
-        -- generate the manifest.json file
-        if not os.isfile(path.join(os.projectdir(), "manifest.json")) then
-            return cprint("${bright yellow}[Mod packed] ${bright red}manifest.json does not exist!")
-        end
-        local manifest_path = path.join(dll_directory, "manifest.json")
-        os.cp(path.join(os.projectdir(), "manifest.json"), manifest_path)
-        local mod_define = {
-            modName = target:name(),
-            modFile = path.filename(target:targetfile()),
-            modVersion = string.format("%d.%d.%d", major, minor, patch),
-            passive = not has_config("tests")
-        }
-        io.gsub(manifest_path, "%${(.-)}", function(var)
-            return tostring(mod_define[var]) or "${" .. var .. "}"
-        end)
-        cprint("${bright yellow}[Mod packed] ${bright green}has generated manifest.json to ${bright cyan}" .. manifest_path)
-
-        -- copy the plugin body
-        os.cp(target:targetfile(), path.join(dll_directory, target:name() .. ".dll"))
-        cprint("${bright yellow}[Mod packed] ${bright green}dll has copied to ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
-
-        -- copy PDB
-        local pdb_path = path.join(pdb_directory, target:name() .. ".pdb")
-        if os.isfile(target:symbolfile()) then
-            os.cp(target:symbolfile(), pdb_path)
-            cprint("${bright yellow}[Mod packed] ${bright green}pdb has copied to ${bright cyan}" .. pdb_path)
-        end
-
-        -- copy lib
-        os.cp(
-            path.join(
-                path.directory(target:targetfile()),
-                path.basename(target:targetfile()) .. ".lib"
-            ), 
-            path.join(
-                library_directory, target:name() .. ".lib"
-            )
-        )
-        cprint("${bright yellow}[Mod packed] ${bright green}library has copied to ${bright cyan}" .. library_directory)
-
-        -- iterate over all header files
-        for _, headerfile in ipairs(target:headerfiles()) do
-            if not headerfile:endswith(".hpp") then 
-                os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
-            end
-        end 
-        for _, headerfile in ipairs(target:configfiles()) do
-            os.cp(
-                path.join("$(builddir)/config", path.relative(string.sub(headerfile, 0, -4), "src")), 
-                path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
-            )
-        end
-        cprint("${bright yellow}[Mod packed] ${bright green}header files has copied to ${bright cyan}" .. includes_directory)
-    end)
-
     on_load(function (target)
-        local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
-        if not major then
-            print("Failed to parse version tag, using 0.0.0")
-            major, minor, patch = 0, 0, 0
+        local version_info = import("scripts.get-version-info", { rootdir = os.projectdir() }).get_version_info()
+        target:set("configvar", "ILA_VERSION_MAJOR", version_info.major)
+        target:set("configvar", "ILA_VERSION_MINOR", version_info.minor)
+        target:set("configvar", "ILA_VERSION_PATCH", version_info.patch)
+        if version_info.prerelease then
+            target:set("configvar", "ILA_VERSION_PRERELEASE", version_info.prerelease)
         end
-        if suffix then
-            prerelease = suffix:match("-(.*)")
-            if prerelease then
-                prerelease = prerelease:gsub("\n", "")
-            end
-            if prerelease then
-                target:set("configvar", "IL_VERSION_PRERELEASE", prerelease)
-            end
-        end
-        target:set("configvar", "IL_VERSION_MAJOR", major)
-        target:set("configvar", "IL_VERSION_MINOR", minor)
-        target:set("configvar", "IL_VERSION_PATCH", patch)
     end)
 
-    before_build(function (target)
-        local include_all = "#pragma once\n"
-        for _, filepath in ipairs(os.files("src/ila/event/**.h")) do
-            include_all = include_all .. "\n#include \"" .. path.relative(filepath, "src") .. "\""
+    after_build(function (target) 
+        local output_dir = path.join(os.projectdir(), "bin", "dll", target:name())
+
+        os.rm(output_dir)
+
+        os.vcp(target:targetfile(), format("%s/", output_dir))
+        os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
+
+        import("scripts.generate-manifest", { rootdir = os.projectdir() }).generate_manifest(
+            format("%s/manifest.json", output_dir),
+            {
+                name = "iListenAttentively",
+                entry = "iListenAttentively.dll",
+                version = import("scripts.get-version-info", { rootdir = os.projectdir() }).get_version_info().version_str,
+                author = "MiracleForest",
+                description = "iListenAttentively is a rich and modern LeviLamina Minecraft event library!",
+                passive = not get_config("tests") and is_mode("release"),
+                platform = get_config("target_type")
+            }
+        )
+    end)
+
+    on_package(function (target)
+        local output_dir = path.join(os.projectdir(), "bin", "sdk")
+
+        os.rm(output_dir)
+
+        local srcheaders, dstheaders = target:headerfiles(format("%s/include/", output_dir))
+        if srcheaders and dstheaders and #srcheaders > 0 then
+            for index = 1, #srcheaders, 1 do
+                os.vcp(srcheaders[index], dstheaders[index])
+            end
+        else
+            os.mkdir(path.join(output_dir, "include"))
         end
-        io.writefile("src/ila/include_all.h", include_all)
-        io.gsub("src/ila/include_all.h", "\\", "/")
+
+        local target_implib = target:artifactfile("implib")
+        if target_implib and os.isfile(target_implib) then
+            os.vcp(target_implib, format("%s/lib/", output_dir))
+        end
     end)
