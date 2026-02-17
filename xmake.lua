@@ -58,15 +58,18 @@ target("iListenAttentively")
 
     add_files("src/common/ila/**.cpp")
     add_includedirs("src/common")
-    add_headerfiles("src/common/(ila/**.h)|(ila/**.hpp)")
+    add_headerfiles("src/common/ila/**.h")
+    add_headerfiles("src/common/ila/**.hpp")
     if is_config("target_type", "server") then
         add_files("src/server/ila/**.cpp")
         add_includedirs("src/server")
-        add_headerfiles("src/server/(ila/**.h)|(ila/**.hpp)")
+        add_headerfiles("src/server/ila/**.h")
+        add_headerfiles("src/server/ila/**.hpp")
     elseif is_config("target_type", "client") then
         add_files("src/client/ila/**.cpp")
         add_includedirs("src/client")
-        add_headerfiles("src/client/(ila/**.h)|(ila/**.hpp)")
+        add_headerfiles("src/client/ila/**.h")
+        add_headerfiles("src/client/ila/**.hpp")
     end
 
     if has_config("tests") then
