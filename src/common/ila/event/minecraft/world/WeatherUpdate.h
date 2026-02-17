@@ -2,6 +2,7 @@
 #include "ila/base/Macro.h"
 #include <ll/api/chrono/GameChrono.h>
 #include <ll/api/event/Cancellable.h>
+#include <mc/nbt/CompoundTag.h>
 
 // #include <ll/api/event/world/LevelEvent.h>
 
@@ -29,7 +30,7 @@ public:
       mNextState(nextState) {}
 
 public:
-    ILAAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void serialize(CompoundTag& nbt) const override;
 
 public:
     Type              prevType() const { return mPrevState.first; }
@@ -43,7 +44,7 @@ public:
     using Cancellable::Cancellable;
 
 public:
-    ILAAPI void deserialize(CompoundTag const& nbt) override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
 
 public:
     void setClear() { mNextState = {Type::Clear, ll::chrono::ticks::zero()}; }

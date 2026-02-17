@@ -1,5 +1,9 @@
 #include "ila/event/minecraft/world/WeatherUpdate.h"
 #include "ila/base/Gloabl.hpp"
+#include <ll/api/chrono/GameChrono.h>
+#include <ll/api/reflection/Deserialization.h>
+#include <magic_enum.hpp>
+#include <mc/nbt/CompoundTag.h>
 
 namespace ila::mc::inline world {
 

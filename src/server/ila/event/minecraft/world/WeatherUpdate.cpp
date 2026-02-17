@@ -1,5 +1,7 @@
 #include "ila/event/minecraft/world/WeatherUpdate.h"
 #include "ila/base/Gloabl.hpp"
+#include <ll/api/chrono/GameChrono.h>
+#include <ll/api/memory/Hook.h>
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 

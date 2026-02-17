@@ -1,11 +1,14 @@
 #pragma once
 #include <ll/api/event/Emitter.h>
+#include <ll/api/event/EmitterBase.h>
 #include <ll/api/event/EventBus.h>
 #include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/io/Logger.h>
 #include <ll/api/memory/Hook.h>
 #include <ll/api/mod/NativeMod.h>
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
+#include <memory>
 
 namespace ila::inline base {
 

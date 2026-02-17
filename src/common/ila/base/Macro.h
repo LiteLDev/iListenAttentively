@@ -4,16 +4,16 @@
 
 #ifndef ILAAPI
 #  ifdef ILA_EXPORT
-#    define ILAAPI [[maybe_unused]] LL_SHARED_EXPORT
+#    define ILAPI [[maybe_unused]] LL_SHARED_EXPORT
 #  else
-#    define ILAAPI [[maybe_unused]] LL_SHARED_IMPORT
+#    define ILAPI [[maybe_unused]] LL_SHARED_IMPORT
 #  endif
 #endif
 
 #ifndef ILACAPI
-#  define ILACAPI extern "C" ILAAPI
+#  define ILACAPI extern "C" ILAPI
 #endif
 
 #ifndef ILANDAPI
-#  define ILANDAPI [[nodiscard]] ILAAPI
+#  define ILANDAPI [[nodiscard]] ILAPI
 #endif

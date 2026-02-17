@@ -1,7 +1,16 @@
 #include "ila/core/iListenAttentively.hpp"
 #include "ila/base/Gloabl.hpp"
 #include "ila/utils/RandomColorLogFormatter.hpp"
+#include <algorithm>
+#include <fmt/format.h>
+#include <ll/api/data/IndirectValue.h>
+#include <ll/api/event/EventBus.h>
+#include <ll/api/io/Formatter.h>
+#include <ll/api/io/Logger.h>
+#include <ll/api/mod/NativeMod.h>
 #include <ll/api/mod/RegisterHelper.h>
+#include <string>
+#include <vector>
 
 namespace ila::inline mod {
 
