@@ -1,6 +1,6 @@
-#include "ila/core/iListenAttentively.hpp"
-#include "ila/base/Gloabl.hpp"
-#include "ila/utils/RandomColorLogFormatter.hpp"
+#include "ila/base/Gloabl.i.h"
+#include "ila/core/iListenAttentively.i.h"
+#include "ila/utils/RandomColorLogFormatter.i.h"
 #include <algorithm>
 #include <fmt/format.h>
 #include <ll/api/data/IndirectValue.h>

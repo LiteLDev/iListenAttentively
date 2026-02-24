@@ -1,0 +1,35 @@
+#include "ila/base/Version.h"
+#include <winres.h>
+
+#pragma code_page(65001)
+
+IDI_ICON1 ICON "icon.ico"
+
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION ILA_VERSION_MAJOR, ILA_VERSION_MINOR, ILA_VERSION_PATCH
+    PRODUCTVERSION ILA_VERSION_MAJOR, ILA_VERSION_MINOR, ILA_VERSION_PATCH
+    FILEFLAGSMASK 0x3fL
+    FILEFLAGS ILA_FILE_VERSION_FLAG
+    FILEOS 0x40004L
+    FILETYPE 0x2L
+    FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "MiracleForest"
+            VALUE "FileDescription", "iListenAttentively is a rich and modern LeviLamina Minecraft event library!"
+            VALUE "FileVersion", ILA_FILE_VERSION_STRING
+            VALUE "InternalName", "iListenAttentively.dll"
+            VALUE "LegalCopyright", "Copyright (c) 2024-2026 MiracleForest. All Rights Reserved."
+            VALUE "OriginalFilename", "iListenAttentively.dll"
+            VALUE "ProductName", "iListenAttentively"
+            VALUE "ProductVersion", ILA_FILE_VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END

@@ -1,5 +1,5 @@
 #include "ila/event/minecraft/world/WeatherUpdate.h"
-#include "ila/base/Gloabl.hpp"
+#include "ila/base/Gloabl.i.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/events/LevelEventCoordinator.h>
 #include <mc/world/level/IWeatherManagerProxy.h>

@@ -1,4 +1,4 @@
-#include "ila/utils/RandomColorLogFormatter.hpp"
+#include "ila/utils/RandomColorLogFormatter.i.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>

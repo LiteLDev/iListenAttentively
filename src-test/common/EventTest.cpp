@@ -1,4 +1,4 @@
-#include "ila/base/Gloabl.hpp"
+#include "ila/base/Gloabl.i.h"
 
 inline struct EventTest {
     EventTest();

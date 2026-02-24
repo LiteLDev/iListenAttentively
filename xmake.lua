@@ -37,6 +37,9 @@ target("iListenAttentively")
         "/Ob3",
         "/Zo-"
     )
+    add_shflags(
+        "/DELAYLOAD:bedrock_runtime.dll"
+    )
     add_defines(
         "NOMINMAX", 
         "UNICODE",
@@ -47,10 +50,9 @@ target("iListenAttentively")
     )
     set_optimize("aggressive")
     set_configdir("$(builddir)/config")
-    add_configfiles("src/(ila/**.h.in)")
+    add_files("src/**.rc")
     add_includedirs("$(builddir)/config")
     add_packages("levilamina")
-    add_rules("@levibuildscript/linkrule")
     set_exceptions("none")
     set_kind("shared")
     set_languages("cxx20")
@@ -58,34 +60,23 @@ target("iListenAttentively")
 
     add_files("src/common/ila/**.cpp")
     add_includedirs("src/common")
-    add_headerfiles("src/common/ila/**.h")
-    add_headerfiles("src/common/ila/**.hpp")
-    if is_config("target_type", "server") then
-        add_files("src/server/ila/**.cpp")
-        add_includedirs("src/server")
-        add_headerfiles("src/server/ila/**.h")
-        add_headerfiles("src/server/ila/**.hpp")
-    elseif is_config("target_type", "client") then
-        add_files("src/client/ila/**.cpp")
-        add_includedirs("src/client")
-        add_headerfiles("src/client/ila/**.h")
-        add_headerfiles("src/client/ila/**.hpp")
-    end
+    add_headerfiles("src/common/ila/**.h", "src/common/ila/**.hpp")
+
+    local target_type = get_config("target_type") or "server"
+    add_files("src/" .. target_type .. "/ila/**.cpp")
+    add_includedirs("src/" .. target_type)
+    add_headerfiles("src/" .. target_type .. "/ila/**.h", "src/" .. target_type .. "/ila/**.hpp")
+    add_configfiles("src/" .. target_type .. "/(**.h.in)")
 
     if has_config("tests") then
         add_defines("ILA_TESTS")
         add_files("src-test/common/**.cpp")
         add_includedirs("src-test/common/")
         add_headerfiles("src-test/common/**.h")
-        if is_config("target_type", "server") then
-            add_files("src-test/server/**.cpp")
-            add_includedirs("src-test/server/")
-            add_headerfiles("src-test/server/**.h")
-        elseif is_config("target_type", "client") then
-            add_includedirs("src-test/client/")
-            add_files("src-test/client/**.cpp")
-            add_headerfiles("src-test/client/**.h")
-        end
+
+        add_files("src-test/" .. target_type .. "/**.cpp")
+        add_includedirs("src-test/" .. target_type .. "/")
+        add_headerfiles("src-test/" .. target_type .. "/**.h")
     end
 
     on_load(function (target)
@@ -98,7 +89,32 @@ target("iListenAttentively")
         end
     end)
 
-    after_build(function (target) 
+    before_link(function(target)
+        import("lib.detect.find_file")
+        import("core.project.config")
+
+        -- 修复莫名其妙的环境变量缺失导致的链接失败
+        os.addenvs(target:pkgenvs())
+
+        local libdir = path.join(config.builddir(), ".prelink", "lib")
+        if os.exists(libdir) then os.rm(libdir) end
+        os.mkdir(libdir)
+
+        local data = assert(find_file("bedrock_runtime_data", {"$(env PATH)"}), "Cannot find bedrock_runtime_data")
+        local link = assert(find_file("prelink.exe", {"$(env PATH)"}), "Cannot find prelink.exe")
+
+        os.runv(link, {
+            string.format("%s-%s-%s", get_config("target_type"), target:plat(), target:arch()),
+            path.join(config.builddir(), ".prelink"),
+            data,
+            table.unpack(target:objectfiles())
+        })
+
+        target:add("linkdirs", libdir)
+        target:add("links", "bedrock_runtime_api")
+    end)
+
+    after_build(function (target)
         local output_dir = path.join(os.projectdir(), "bin", "dll", target:name())
 
         os.rm(output_dir)
@@ -125,13 +141,30 @@ target("iListenAttentively")
 
         os.rm(output_dir)
 
-        local srcheaders, dstheaders = target:headerfiles(format("%s/include/", output_dir))
-        if srcheaders and dstheaders and #srcheaders > 0 then
-            for index = 1, #srcheaders, 1 do
-                os.vcp(srcheaders[index], dstheaders[index])
+        for _, header_file in ipairs(target:headerfiles()) do
+            if not header_file:endswith(".i.h") then
+                os.vcp(
+                    header_file,
+                    path.join(
+                        output_dir,
+                        "include",
+                        (path.relative(header_file, os.projectdir()):gsub("^[^/\\]+[/\\][^/\\]+[/\\]", ""))
+                    )
+                )
             end
-        else
-            os.mkdir(path.join(output_dir, "include"))
+        end
+
+        for _, source_file in ipairs(target:sourcefiles()) do
+            if source_file:endswith(".open.cpp") then
+                os.vcp(
+                    source_file,
+                    path.join(
+                        output_dir,
+                        "src",
+                        ((path.relative(source_file, os.projectdir()):gsub("^[^/\\]+[/\\]", "")):gsub("%.open%.cpp$", ".cpp"))
+                    )
+                )
+            end
         end
 
         local target_implib = target:artifactfile("implib")

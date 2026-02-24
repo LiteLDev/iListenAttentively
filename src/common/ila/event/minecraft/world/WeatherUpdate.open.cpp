@@ -1,5 +1,5 @@
 #include "ila/event/minecraft/world/WeatherUpdate.h"
-#include "ila/base/Gloabl.hpp"
+#include "ila/base/Gloabl.i.h"
 #include <ll/api/chrono/GameChrono.h>
 #include <ll/api/reflection/Deserialization.h>
 #include <magic_enum.hpp>
