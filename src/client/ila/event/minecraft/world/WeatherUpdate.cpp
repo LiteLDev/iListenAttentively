@@ -46,7 +46,7 @@ LL_TYPE_INSTANCE_HOOK(
                 {typeBeforeUpdate, ll::chrono::ticks::zero()},
                 {typeAfterDelay, ll::chrono::ticks::zero()}
             );
-            ll::event::EventBus::getInstance().publish(event);
+            getLLEventBus().publish(event);
         }
     },
         ll::chrono::ticks(1)

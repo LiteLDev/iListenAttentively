@@ -1,4 +1,5 @@
 #include "ila/event/minecraft/worldgen/structure/VillageFeatureEvent.h"
+#include "ila/base/Gloabl.i.h"
 #include "ll/api/base/FixedString.h"
 #include "ll/api/event/Cancellable.h"
 #include "ll/api/event/DynamicListener.h"
@@ -19,7 +20,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     ::ServerInstance& ins
 )
 {
-    ll::event::EventBus::getInstance().emplaceListener<ila::mc::worldgen::structure::VillageFeatureConstructionEvent>(
+    ila::getLLEventBus().emplaceListener<ila::mc::worldgen::structure::VillageFeatureConstructionEvent>(
         [this]([[maybe_unused]] ila::mc::worldgen::structure::VillageFeatureConstructionEvent& ev) {}
     );
     origin(ins);

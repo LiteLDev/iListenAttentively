@@ -5,9 +5,9 @@
 namespace ila::mc::inline world {
 
 void WeatherUpdateEvent::serialize(CompoundTag& nbt) const {
-    nbt["prev_type"]     = magic_enum::enum_name(mPrevState.first);
+    nbt["prev_type"]     = ll::reflection::serialize<CompoundTagVariant>(mPrevState.first).value();
     nbt["prev_duration"] = mPrevState.second.count();
-    nbt["next_type"]     = magic_enum::enum_name(mNextState.first);
+    nbt["next_type"]     = ll::reflection::serialize<CompoundTagVariant>(mNextState.first).value();
     nbt["next_duration"] = mNextState.second.count();
 }
 
