@@ -8,6 +8,7 @@
 #include <ll/api/mod/NativeMod.h>
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTagVariant.h>
 #include <memory>
 
 namespace ila::inline base {
@@ -35,3 +36,16 @@ ll::io::Logger&      getLogger();
 #define EventHook(before, after, ...)                                                                                  \
     EventHookFactory(before, __VA_ARGS__);                                                                             \
     EventHookFactory(after, __VA_ARGS__);
+
+#define HookAliasDef(hookAlias)                                                                                        \
+    struct hookAlias {                                                                                                 \
+        static std::atomic_uint _AutoHookCount;                                                                        \
+                                                                                                                       \
+        static int  hook(bool suspendThreads = true);                                                                  \
+        static bool unhook(bool suspendThreads = true);                                                                \
+    };
+
+#define HookAliasImpl(hookName, hookAlias)                                                                             \
+    std::atomic_uint hookAlias::_AutoHookCount{};                                                                      \
+    int              hookAlias::hook(bool suspendThreads) { return hookName::hook(suspendThreads); }                   \
+    bool             hookAlias::unhook(bool suspendThreads) { return hookName::unhook(suspendThreads); }

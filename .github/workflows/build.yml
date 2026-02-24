@@ -35,18 +35,18 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
           path: |
-            bin/DLL
+            bin/dll
       
       - name: Upload PDB
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
           path: |
-            bin/PDB
+            bin/pdb
 
       - name: Upload SDK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
           path: |
-            bin/SDK
+            bin/sdk

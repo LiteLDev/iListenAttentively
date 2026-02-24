@@ -4,8 +4,6 @@
 #include <ll/api/event/Cancellable.h>
 #include <mc/nbt/CompoundTag.h>
 
-// #include <ll/api/event/world/LevelEvent.h>
-
 namespace ila::mc::inline world {
 
 class WeatherUpdateEvent : public ll::event::Event {
@@ -34,11 +32,14 @@ public:
 
 public:
     Type              prevType() const { return mPrevState.first; }
-    ll::chrono::ticks prevDuration() const { return mPrevState.second; }
     Type              nextType() const { return mNextState.first; }
+    /** @warning This function is not available on the client side. */
+    ll::chrono::ticks prevDuration() const { return mPrevState.second; }
+    /** @warning This function is not available on the client side. */
     ll::chrono::ticks nextDuration() const { return mNextState.second; }
 };
 
+/** @warning This event is not available on the client side. */
 class WeatherUpdatingEvent final : public ll::event::Cancellable<WeatherUpdateEvent> {
 public:
     using Cancellable::Cancellable;

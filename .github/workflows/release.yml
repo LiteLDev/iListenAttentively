@@ -37,21 +37,21 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
           path: |
-            bin/DLL
+            bin/dll
       
       - name: Upload PDB
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
           path: |
-            bin/PDB
+            bin/pdb
 
       - name: Upload SDK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
           path: |
-            bin/SDK
+            bin/sdk
 
   update-release-notes:
     permissions:
@@ -89,19 +89,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-${{ github.sha }}
-          path: artifact/DLL
+          path: artifact/dll
 
       - name: Download PDB
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB
-          path: artifact/PDB
+          path: artifact/pdb
 
       - name: Download SDK
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK
-          path: artifact/SDK
+          path: artifact/sdk
 
       - name: Copy Files
         run: |
@@ -110,17 +110,17 @@ jobs:
       - name: Zip DLL
         run: |
           zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64.zip *
-        working-directory: artifact/DLL
+        working-directory: artifact/dll
       
       - name: Zip PDB
         run: |
           zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-windows-x64-PDB.zip *
-        working-directory: artifact/PDB
+        working-directory: artifact/pdb
       
       - name: Zip SDK
         run: |
           zip -r ../../${{ github.event.repository.name }}-${{ matrix.target_type }}-SDK.zip *
-        working-directory: artifact/SDK
+        working-directory: artifact/sdk
       
       - name: Upload Files
         uses: softprops/action-gh-release@v1
