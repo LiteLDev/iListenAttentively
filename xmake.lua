@@ -61,6 +61,7 @@ target("iListenAttentively")
     add_files("src/common/ila/**.cpp")
     add_includedirs("src/common")
     add_headerfiles("src/common/ila/**.h", "src/common/ila/**.hpp")
+    add_configfiles("src/common/(**.h.in)")
 
     local target_type = get_config("target_type") or "server"
     add_files("src/" .. target_type .. "/ila/**.cpp")
