@@ -1,9 +1,4 @@
 #include "ila/event/minecraft/world/WeatherUpdate.i.h"
-#include "ila/base/Gloabl.i.h"
-#include <ll/api/chrono/GameChrono.h>
-#include <ll/api/reflection/Deserialization.h>
-#include <magic_enum.hpp>
-#include <mc/nbt/CompoundTag.h>
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 
@@ -17,10 +12,14 @@ void WeatherUpdateEvent::serialize(CompoundTag& nbt) const {
 }
 
 void WeatherUpdatingEvent::deserialize(CompoundTag const& nbt) {
-    mPrevState.first  = ll::reflection::deserialize_to<Type>(nbt["prev_type"]).value();
-    mPrevState.second = ll::chrono::ticks{nbt["prev_duration"]};
     mNextState.first  = ll::reflection::deserialize_to<Type>(nbt["next_type"]).value();
     mNextState.second = ll::chrono::ticks{nbt["next_duration"]};
+    if (mNextState.first == WeatherUpdateEvent::Type::Clear) {
+        mNextState.second = ll::chrono::ticks::zero();
+    } else if (mNextState.second <= ll::chrono::ticks::zero()) {
+        mNextState.first  = WeatherUpdateEvent::Type::Clear;
+        mNextState.second = ll::chrono::ticks::zero();
+    }
 }
 
 WeatherUpdateEvent::Type getTypeFromLevels(float rainLevel, float lightningLevel) {
