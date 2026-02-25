@@ -1,0 +1,11 @@
+{
+    "input_pdb": "./bin/pdb/iListenAttentively.pdb",
+    "output_dir": "./bin/dll/iListenAttentively",
+    "symbols_output_dir": "./bin",
+    "overwrite_existing": true,
+    "filters": {
+        "include": "Hook|Event",
+        "function_only": false,
+        "case_sensitive": false
+    }
+}

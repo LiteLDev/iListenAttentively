@@ -28,7 +28,6 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
 
@@ -132,7 +131,6 @@ StyleCopReport.xml
 *.obj
 *.iobj
 *.pch
-*.pdb
 *.ipdb
 *.pgc
 *.pgd
