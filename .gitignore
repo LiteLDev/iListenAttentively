@@ -558,4 +558,4 @@ fabric.properties
 /bin/
 /vsxmake2026
 
-/src/common/ila/core/SymbolProvider.cpp
+src/common/ila/core/SymbolProvider.cpp
