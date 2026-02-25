@@ -9,9 +9,9 @@ namespace ila::mc::inline block {
 
 void BlockPistonEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["piston"]      = serializeRefObj(piston());
-    nbt["pistonBlock"] = serializeRefObj(pistonBlock());
-    nbt["facing"]      = ll::reflection::serialize<CompoundTagVariant>(facing()).value();
+    nbt["piston"]      = serializeRefObj(mPiston);
+    nbt["piston_block"] = serializeRefObj(mPistonBlock);
+    nbt["facing"]      = ll::reflection::serialize<CompoundTagVariant>(mFacing).value();
 }
 
 enum class PistonStateEx : schar {

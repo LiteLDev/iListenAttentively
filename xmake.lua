@@ -122,6 +122,7 @@ target("iListenAttentively")
 
         os.vcp(target:targetfile(), format("%s/", output_dir))
         os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
+        os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
 
         import("scripts.generate-manifest", { rootdir = os.projectdir() }).generate_manifest(
             format("%s/manifest.json", output_dir),
