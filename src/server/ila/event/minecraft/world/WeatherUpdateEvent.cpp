@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/WeatherUpdate.i.h"
+#include "ila/event/minecraft/world/WeatherUpdateEvent.i.h"
 
 namespace ila::mc::inline world {
 

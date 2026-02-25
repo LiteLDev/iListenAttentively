@@ -58,13 +58,13 @@ target("iListenAttentively")
     set_languages("cxx20")
     set_symbols("debug")
 
-    add_files("src/common/ila/**.cpp")
+    add_files("src/common/**.cpp")
     add_includedirs("src/common")
     add_headerfiles("src/common/ila/**.h", "src/common/ila/**.hpp")
     add_configfiles("src/common/(**.h.in)")
 
     local target_type = get_config("target_type") or "server"
-    add_files("src/" .. target_type .. "/ila/**.cpp")
+    add_files("src/" .. target_type .. "/**.cpp")
     add_includedirs("src/" .. target_type)
     add_headerfiles("src/" .. target_type .. "/ila/**.h", "src/" .. target_type .. "/ila/**.hpp")
     add_configfiles("src/" .. target_type .. "/(**.h.in)")

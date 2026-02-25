@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/WeatherUpdate.i.h"
+#include "ila/event/minecraft/world/WeatherUpdateEvent.i.h"
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 

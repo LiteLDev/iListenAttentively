@@ -1,6 +1,6 @@
 #pragma once
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/minecraft/world/WeatherUpdate.h"
+#include "ila/event/minecraft/world/WeatherUpdateEvent.h"
 
 namespace ila::mc::inline world {
 

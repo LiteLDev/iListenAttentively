@@ -1,6 +1,6 @@
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/minecraft/packet/ReceivePacket.h"
-#include "ila/event/minecraft/packet/ReceivePacket.i.h"
+#include "ila/event/minecraft/packet/ReceivePacketEvent.h"
+#include "ila/event/minecraft/packet/ReceivePacketEvent.i.h"
 #include <ll/api/service/Bedrock.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>

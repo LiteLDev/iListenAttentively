@@ -1,6 +1,6 @@
 #pragma once
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/minecraft/packet/ReceivePacket.h"
+#include "ila/event/minecraft/packet/ReceivePacketEvent.h"
 #include <mc/network/NetEventCallback.h>
 
 namespace ila::mc::inline packet {

@@ -1,13 +1,5 @@
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/minecraft/block/BlockPistonEvent.h"
-#include "mc/nbt/CompoundTag.h"
-#include <mc/world/level/Level.h>
-#include <mc/world/level/chunk/LevelChunk.h>
-#include <mc/world/level/chunk/LevelChunkEventManager.h>
-#include <ll/api/event/client/ClientJoinLevelEvent.h>
-#include <mc/deps/core/utility/pub_sub/SubscriptionContext.h>
-#include <ll/api/utils/StacktraceUtils.h>
-#include <mc/deps/core/utility/pub_sub/ConnectPosition.h>
+#include "ila/event/minecraft/packet/SendPacketEvent.h"
 
 inline struct EventTest {
     EventTest();
@@ -15,15 +7,12 @@ inline struct EventTest {
 } test;
 
 EventTest::EventTest() {
-    ila::getLLEventBus().emplaceListener<ila::mc::BlockPistonExtendEvent>([](ila::mc::BlockPistonExtendEvent& event) {
-        CompoundTag tag;
-        event.serialize(tag);
-        std::cout << tag.toSnbt(SnbtFormat::Console | SnbtFormat::Colored, 0) << std::endl;
-        event.cancel();
+    ila::getLLEventBus().emplaceListener<ila::mc::SendingPacketEvent>([](ila::mc::SendingPacketEvent& event) {
+        std::cout << "SendingPacketEvent(" << (event.networkSystem().isServer() ? "Server" : "Client") << ") -> "
+                  << event.packet().getName() << std::endl;
     });
-    ila::getLLEventBus().emplaceListener<ila::mc::BlockPistonRetractEvent>([](ila::mc::BlockPistonRetractEvent& event) {
-        CompoundTag tag;
-        event.serialize(tag);
-        std::cout << tag.toSnbt(SnbtFormat::Console | SnbtFormat::Colored, 0) << std::endl;
+    ila::getLLEventBus().emplaceListener<ila::mc::SentPacketEvent>([](ila::mc::SentPacketEvent& event) {
+        std::cout << "SentPacketEvent(" << (event.networkSystem().isServer() ? "Server" : "Client") << ") -> "
+                  << event.packet().getName() << std::endl;
     });
 }

@@ -1,5 +1,5 @@
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/minecraft/world/WeatherUpdate.i.h"
+#include "ila/event/minecraft/world/WeatherUpdateEvent.i.h"
 #include <ll/api/service/Bedrock.h>
 #include <ll/api/thread/ServerThreadExecutor.h>
 #include <mc/client/game/ClientInstance.h>

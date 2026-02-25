@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/packet/ReceivePacket.i.h"
+#include "ila/event/minecraft/packet/ReceivePacketEvent.i.h"
 #include <mc/client/network/ClientNetworkHandler.h>
 #include <mc/client/player/LocalPlayer.h>
 #include <mc/network/ServerNetworkHandler.h>

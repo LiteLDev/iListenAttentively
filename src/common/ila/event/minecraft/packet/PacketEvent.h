@@ -3,6 +3,7 @@
 #include <ll/api/event/Event.h>
 #include <mc/network/NetworkIdentifier.h>
 #include <mc/network/NetworkSystem.h>
+#include <mc/network/Packet.h>
 #include <mc/world/actor/player/Player.h>
 
 namespace ila::mc::inline packet {
