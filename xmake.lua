@@ -57,6 +57,12 @@ target("iListenAttentively")
     set_kind("shared")
     set_languages("cxx20")
     set_symbols("debug")
+    if is_mode("release") then
+        set_strip("all")
+    else
+        remove_files("src/common/ila/core/SymbolProvider.cpp")
+    end
+    local XorKey = math.random(1, 255)
 
     add_files("src/common/**.cpp")
     add_includedirs("src/common")
@@ -89,6 +95,23 @@ target("iListenAttentively")
             target:set("configvar", "ILA_VERSION_PRERELEASE", version_info.prerelease)
         end
     end)
+
+    if is_mode("release") then
+        before_build(function (target) 
+            io.gsub(
+                path.join(
+                    os.projectdir(),
+                    "src",
+                    "common",
+                    "ila",
+                    "core",
+                    "SymbolProvider.cpp"
+                ),
+                "constexpr uint8_t mXorKey = %d+;",
+                "constexpr uint8_t mXorKey = " .. XorKey .. ";"
+            )
+        end)
+    end
 
     before_link(function(target)
         import("lib.detect.find_file")
@@ -123,6 +146,17 @@ target("iListenAttentively")
         os.vcp(target:targetfile(), format("%s/", output_dir))
         os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
         os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
+
+        if is_mode("release") then
+            os.runv(
+                "python.exe",
+                {
+                    path.join(os.projectdir(), "tools", "iEncryptImports.py"),
+                    path.join(os.projectdir(), "bin", "dll", target:name(), path.filename(target:targetfile())),
+                    XorKey
+                }
+            )
+        end
 
         import("scripts.generate-manifest", { rootdir = os.projectdir() }).generate_manifest(
             format("%s/manifest.json", output_dir),
