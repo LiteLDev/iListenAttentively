@@ -9,9 +9,9 @@ public:
     using Cancellable::Cancellable;
 };
 
-class ReceivedPacketEvent final : public ll::event::Cancellable<PacketEvent> {
+class ReceivedPacketEvent final : public PacketEvent {
 public:
-    using Cancellable::Cancellable;
+    using PacketEvent::PacketEvent;
 };
 
 } // namespace ila::mc::inline packet

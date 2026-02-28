@@ -40,8 +40,9 @@ LL_TYPE_INSTANCE_HOOK(
     NetworkPeer::Reliability reliability,
     Compressibility          compressible
 ) {
+    auto length = mOutgoingData->mOwnedBuffer.size();
     origin(data, reliability, compressible);
-    if (!gSendPacketInfo) return;
+    if (!gSendPacketInfo || length == mOutgoingData->mOwnedBuffer.size()) return;
     auto& [net, id, subId, pkt] = *gSendPacketInfo;
     if (net->getConnectionFromId(id)->mPeer.get() != this) return;
     getLLEventBus().publish(SentPacketEvent{*net, id, subId, *pkt});
