@@ -21,7 +21,7 @@ iListenAttentively& iListenAttentively::getInstance() {
 
 bool iListenAttentively::load() {
     getSelf().getLogger().setFormatter(
-        ll::makePolymorphic<RandomColorLogFormatter>(
+        ll::makePolymorphic<logger_utils::RandomColorLogFormatter>(
             "{3:.3%T.} {2} {1} {0}",
             ll::io::Formatter::supportColorLog(),
             0b0010

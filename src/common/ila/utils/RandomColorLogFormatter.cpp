@@ -13,7 +13,7 @@
 #include <string>
 #include <string_view>
 
-namespace ila {
+namespace ila::inline utils::logger_utils {
 
 void RandomColorLogFormatter::format(ll::io::LogMessageView const& view, std::string& buffer) const noexcept {
     if (view.lvl != ll::io::LogLevel::Info) return PatternFormatter::format(view, buffer);

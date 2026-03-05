@@ -4,7 +4,7 @@
 #include <mc/deps/core/math/Color.h>
 #include <string>
 
-namespace ila {
+namespace ila::inline utils::logger_utils {
 
 class RandomColorLogFormatter : public ll::io::PatternFormatter {
 public:

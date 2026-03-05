@@ -10,6 +10,12 @@ option("target_type")
     set_values("server", "client")
 option_end()
 
+option("lite_pdb")
+    set_default(true)
+    set_showmenu(true)
+    set_description("Enable Lite PDB")
+option_end()
+
 option("tests")
     set_default(false)
     set_showmenu(true)
@@ -57,6 +63,7 @@ target("iListenAttentively")
     set_kind("shared")
     set_languages("cxx20")
     set_symbols("debug")
+    add_syslinks("ws2_32")
     if is_mode("release") then
         set_strip("all")
     else
@@ -145,7 +152,11 @@ target("iListenAttentively")
 
         os.vcp(target:targetfile(), format("%s/", output_dir))
         os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
-        os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
+        if has_config("lite_pdb") then
+            os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
+        else 
+            os.vcp(target:symbolfile(), output_dir)
+        end
 
         if is_mode("release") then
             os.runv(
