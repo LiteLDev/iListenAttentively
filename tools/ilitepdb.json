@@ -3,7 +3,7 @@
     "output_dir": "./bin/dll/iListenAttentively",
     "overwrite_existing": true,
     "filters": {
-        "include": "Hook|Event",
+        "include": "serialize@\\w+Event|\\w+Hook[\\d|]@",
         "function_only": false,
         "case_sensitive": false
     }
