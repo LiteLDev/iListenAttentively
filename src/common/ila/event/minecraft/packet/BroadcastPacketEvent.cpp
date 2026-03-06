@@ -18,8 +18,8 @@ void BroadcastPacketEvent::serialize(CompoundTag& nbt) const {
     nbt["targets"] = mTargets
         | std::views::transform([](NetworkIdentifierWithSubId const& id) {
             return CompoundTag{
-                { "network_identifier", serializeRefObj(id.id)                                              },
-                { "sender_sub_id",      ll::reflection::serialize<CompoundTagVariant>(id.subClientId).value() }
+                { "network_identifier", serializeRefObj(id.id)                  },
+                { "sender_sub_id",      magic_enum::enum_name(id.subClientId) }
             };
         })
         | std::ranges::to<ListTag>();

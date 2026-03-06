@@ -29,25 +29,16 @@ public:
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
 
 public:
-    Type              prevType() const { return mPrevState.first; }
-    Type              nextType() const { return mNextState.first; }
+    Type prevType() const { return mPrevState.first; }
+    Type nextType() const { return mNextState.first; }
     /** @warning This function is not available on the client side. */
     ll::chrono::ticks prevDuration() const { return mPrevState.second; }
     /** @warning This function is not available on the client side. */
     ll::chrono::ticks nextDuration() const { return mNextState.second; }
-};
 
-/** @warning This event is not available on the client side. */
-class WeatherUpdatingEvent final : public ll::event::Cancellable<WeatherUpdateEvent> {
-public:
-    using Cancellable::Cancellable;
-
-public:
-    ILAPI void deserialize(CompoundTag const& nbt) override;
-
-public:
     void setClear() { mNextState = {Type::Clear, ll::chrono::ticks::zero()}; }
     void setRain(ll::chrono::ticks time) {
         if (time <= ll::chrono::ticks::zero()) {
@@ -61,6 +52,12 @@ public:
         }
         mNextState = {Type::Thunder, time};
     }
+};
+
+/** @warning This event is not available on the client side. */
+class WeatherUpdatingEvent final : public ll::event::Cancellable<WeatherUpdateEvent> {
+public:
+    using Cancellable::Cancellable;
 };
 
 class WeatherUpdatedEvent final : public WeatherUpdateEvent {

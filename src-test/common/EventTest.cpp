@@ -1,6 +1,12 @@
+#include "ll/api/event/Event.h"
 #include "ila/base/Gloabl.i.h"
+#include "ila/event/minecraft/explosion/ExplosionCollisionOffsetEvent.h"
+#include "ila/event/minecraft/explosion/ExplosionDestroyBlockEvent.h"
+#include "ll/api/event/Cancellable.h"
+#include "ll/api/event/EventId.h"
+#include "ll/api/event/Listener.h"
 #include <ll/api/utils/StacktraceUtils.h>
-#include "ila/event/minecraft/server/ServerPongEvent.h"
+#include <ranges>
 
 inline struct EventTest {
     EventTest();
@@ -8,14 +14,20 @@ inline struct EventTest {
 } test;
 
 EventTest::EventTest() {
-    ila::getLLEventBus().emplaceListener<ila::mc::SendingServerPongEvent>([](ila::mc::SendingServerPongEvent& event) {
+    auto ids =
+        ila::getLLEventBus().events()
+        | std::views::filter([](std::pair<std::string_view, ll::event::EventIdView> const& id) {
+        return id.second.name.contains("Explo") && id.second.name.contains("Event");
+    }) | std::ranges::to<std::vector>();
+
+    auto listener = ll::event::Listener<ll::event::Cancellable<ll::event::Event>>::create([](ll::event::Cancellable<ll::event::Event>& event) {
+        if (event.getId() == ll::event::getEventId<ila::mc::ExplosionDestroyBlockingEvent>) event.cancel();
         CompoundTag nbt;
         event.serialize(nbt);
-        std::cout << nbt.toSnbt(SnbtFormat::Colored | SnbtFormat::Console, 0) << std::endl;
+        std::cout << nbt.toSnbt(SnbtFormat::Colored | SnbtFormat::Console | SnbtFormat::PrettyFilePrint, 2) << std::endl;
     });
-    ila::getLLEventBus().emplaceListener<ila::mc::SentServerPongEvent>([](ila::mc::SentServerPongEvent& event) {
-        CompoundTag nbt;
-        event.serialize(nbt);
-        std::cout << nbt.toSnbt(SnbtFormat::Colored | SnbtFormat::Console, 0) << std::endl;
-    });
+
+    for (auto& id : ids) {
+        ila::getLLEventBus().addListener(listener, id.second);
+    }
 }

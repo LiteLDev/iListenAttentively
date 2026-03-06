@@ -1,4 +1,5 @@
 #pragma once
+#include "ila/utils/MemoryUtils.i.h"
 #include <ll/api/event/Emitter.h>
 #include <ll/api/event/EmitterBase.h>
 #include <ll/api/event/EventBus.h>
@@ -9,14 +10,16 @@
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
 #include <mc/nbt/CompoundTagVariant.h>
-#include <memory>
 
 namespace ila::inline base {
 
-using namespace ll::memory_literals;
 using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
 using ll::memory::dAccess;
+using namespace ila::memory_utils;
+namespace reflection {
+using namespace ll::reflection;
+}
 
 ll::event::EventBus& getLLEventBus();
 ll::mod::NativeMod&  getSelfMod();

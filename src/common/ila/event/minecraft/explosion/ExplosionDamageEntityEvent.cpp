@@ -1,0 +1,21 @@
+#include "ila/event/minecraft/explosion/ExplosionDamageEntityEvent.h"
+#include "ila/base/Gloabl.i.h"
+
+namespace ila::mc::inline explosion {
+
+void ExplosionDamageEntityEvent::serialize(CompoundTag& nbt) const {
+    ExplosionProcessEntityEvent::serialize(nbt);
+    nbt["source"]    = serializeRefObj(mSource);
+    nbt["damage"]    = mDamage;
+    nbt["knockback"] = mKnockback;
+    nbt["ignite"]    = mIgnite;
+}
+
+void ExplosionDamageEntityEvent::deserialize(CompoundTag const& nbt) {
+    ExplosionProcessEntityEvent::deserialize(nbt);
+    mDamage    = nbt["damage"];
+    mKnockback = nbt["knock"];
+    mIgnite    = nbt["ignite"];
+}
+
+} // namespace ila::mc::inline explosion

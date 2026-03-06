@@ -6,15 +6,15 @@ namespace ila::mc::inline world {
 
 void WeatherUpdateEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
-    nbt["prev_type"]     = ll::reflection::serialize<CompoundTagVariant>(mPrevState.first).value();
+    reflection::serialize_to(nbt["prev_type"], mPrevState.first).value();
     nbt["prev_duration"] = mPrevState.second.count();
-    nbt["next_type"]     = ll::reflection::serialize<CompoundTagVariant>(mNextState.first).value();
+    reflection::serialize_to(nbt["next_type"], mNextState.first).value();
     nbt["next_duration"] = mNextState.second.count();
 }
 
-void WeatherUpdatingEvent::deserialize(CompoundTag const& nbt) {
-    Cancellable::deserialize(nbt);
-    mNextState.first  = ll::reflection::deserialize_to<Type>(nbt["next_type"]).value();
+void WeatherUpdateEvent::deserialize(CompoundTag const& nbt) {
+    Event::deserialize(nbt);
+    ll::reflection::deserialize(mNextState.first, nbt["next_type"]).value();
     mNextState.second = ll::chrono::ticks{nbt["next_duration"]};
     if (mNextState.first == WeatherUpdateEvent::Type::Clear) {
         mNextState.second = ll::chrono::ticks::zero();
