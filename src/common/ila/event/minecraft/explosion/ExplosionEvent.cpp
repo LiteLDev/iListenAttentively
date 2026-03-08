@@ -102,7 +102,6 @@ void ExplosionEvent::deserialize(CompoundTag const& nbt) {
 }
 
 LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosion::explode, bool, IRandom& random) {
-    mFire = true;
     if (mRadius == 0.0f) return false;
 
     {
@@ -147,7 +146,8 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 getLLEventBus().publish(event);
                 if (!event.isCancelled()) {
                     std::swap(*mPos, currentPos);
-                    inWater = mRegion.getLiquidBlock(BlockPos{currentPos}).mBlockType->mMaterial.mType == MaterialType::Water;
+                    inWater =
+                        mRegion.getLiquidBlock(BlockPos{currentPos}).mBlockType->mMaterial.mType == MaterialType::Water;
 
                     getLLEventBus().publish(ExplosionCollidedEvent{*this, currentPos, mPos});
                 }
@@ -233,10 +233,10 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
             continue;
         }
 
-        auto& aabb       = *entity->mBuiltInComponents->mAABBShapeComponent->mAABB;
-        auto  entityPos  = *entity->mBuiltInComponents->mStateVectorComponent->mPos;
-        entityPos.y      = aabb.min.y;
-        auto distance    = static_cast<float>((entityPos - sourcePos).length());
+        auto& aabb      = *entity->mBuiltInComponents->mAABBShapeComponent->mAABB;
+        auto  entityPos = *entity->mBuiltInComponents->mStateVectorComponent->mPos;
+        entityPos.y     = aabb.min.y;
+        auto distance   = static_cast<float>((entityPos - sourcePos).length());
 
         if (entity->getEntityTypeId() != ActorType::Player) {
             distance = std::max(0.0f, distance - entity->mBuiltInComponents->mAABBShapeComponent->mBBDim->x * 0.5f);
@@ -367,7 +367,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
     }
 
     if (mRadius > 0.0f) { // 粒子效果和声音
-        { // 声音
+        {                 // 声音
             auto event = ExplosionSoundingEvent{*this};
             getLLEventBus().publish(event);
             if (!event.isCancelled()) {
@@ -375,12 +375,13 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 getLLEventBus().publish(ExplosionSoundedEvent{*this});
             }
         }
-        { // 粒子效果
-            auto event = ExplosionParticlingEvent{*this};
+        { // 爆炸粒子效果
+            auto pos   = mPos;
+            auto event = ExplosionParticlingEvent{*this, pos, mParticleType};
             getLLEventBus().publish(event);
             if (!event.isCancelled()) {
-                level.broadcastLocalEvent(mRegion, mParticleType, mPos, static_cast<int>(mRadius));
-                getLLEventBus().publish(ExplosionParticledEvent{*this});
+                level.broadcastLocalEvent(mRegion, mParticleType, pos, static_cast<int>(mRadius));
+                getLLEventBus().publish(ExplosionParticledEvent{*this, pos, mParticleType});
             }
         }
     }
@@ -389,12 +390,12 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
 
     BlockPos minPos{INT_MAX};
     BlockPos maxPos{INT_MIN};
-    int blockCount{0};
+    bool     blockChangable{false};
 
     { // 方块相关处理
-        ParticlesBlockExplosionEvent particlesEvent;
-        particlesEvent.mRadius = mRadius;
-        particlesEvent.mOrigin = mPos;
+        ParticlesBlockExplosionEvent particlesEvent{mRadius, mPos, {}};
+        // key: blockPos, isExtraBlock  value: block, itemStacks
+        ll::OrderedMap<std::pair<BlockPos, bool>, std::pair<Block const*, std::vector<ItemStack>>> blockDrops;
 
         for (auto& blockPos : *mAffectedBlocks) {
             auto& block      = mRegion.getBlock(blockPos);
@@ -408,7 +409,15 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
             }
 
             if (mBreaking) { // 方块被爆炸破坏
-                if (!random.nextInt(8)) particlesEvent.mPositions.emplace_back(blockPos);
+                if (!random.nextInt(8)) {
+                    auto pos = Vec3{blockPos};
+                    auto event =
+                        ExplosionParticlingEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion};
+                    getLLEventBus().publish(event);
+                    if (!event.isCancelled()) {
+                        particlesEvent.mPositions.emplace_back(pos);
+                    }
+                }
 
                 if (!block.isAir()) {
                     if (!level.isClientSide()) {
@@ -431,24 +440,15 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                 if (event.isCancelled()) return;
                             }
                             auto resources = block.mBlockType->getResourceDrops(block, randomize, resourceDropsContext);
-                            { // 生成方块掉落物
+                            { // 获取并保存方块掉落物
                                 auto event =
                                     ExplosionLootingBlockEvent{*this, blockPos, block, isExtraBlock, *resources.mItems};
                                 getLLEventBus().publish(event);
                                 if (!event.isCancelled() && !resources.mItems->empty()) {
-                                    for (auto& itemStack : *resources.mItems) {
-                                        BlockType::popResource(mRegion, blockPos, itemStack);
-                                    }
-
-                                    getLLEventBus().publish(
-                                        ExplosionLootedBlockEvent{
-                                            *this,
-                                            blockPos,
-                                            block,
-                                            isExtraBlock,
-                                            *resources.mItems
-                                        }
-                                    );
+                                    blockDrops.insert({
+                                        {blockPos, isExtraBlock                },
+                                        {&block,   std::move(*resources.mItems)}
+                                    });
                                 }
                             }
                             { // 生成经验球
@@ -506,9 +506,9 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                         destroy(extraBlock, true);
                     }
 
-                    minPos = std::min(minPos, blockPos);
-                    maxPos = std::max(maxPos, blockPos);
-                    ++blockCount;
+                    minPos         = std::min(minPos, blockPos);
+                    maxPos         = std::max(maxPos, blockPos);
+                    blockChangable = true;
                 }
 
                 if (!level.isClientSide()) {
@@ -519,11 +519,16 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 }
             }
 
-            if (!level.isClientSide()) { // 给客户端发送爆炸破坏数据包
+            if (!level.isClientSide()) { // 生成方块被爆炸破坏粒子
                 LevelEventGenericPacket{
                     {std::to_underlying(SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion),
                      std::move(*particlesEvent.save())}
                 }.sendTo(*mPos, mRegion.mDimension.mId);
+                for (auto& pos : particlesEvent.mPositions) {
+                    getLLEventBus().publish(
+                        ExplosionParticledEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion}
+                    );
+                }
             }
 
             if (mFire && isAirBlock) { // 生成火焰方块
@@ -542,10 +547,39 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 }
             }
         }
+
+        /*
+        生成方块掉落物
+        物品合并逻辑：
+            - 限制单个物品掉落物品数量 (计算公式为: 16 * (length / 10 + 1))
+            - 其中length为items当前的长度
+
+            - 然后就是正常的物品合并操作
+            - 只不过最大堆叠数量为 min(上面计算的限制, 物品堆叠上限)
+
+            - 最后一点，不检测坐标，无视距离的
+            - 也就是说哪个方块先被遍历，就掉落在哪
+        */
+        if (!blockDrops.empty()) {
+            std::vector<std::pair<ItemStack, BlockPos>> items;
+            for (auto& [key, value] : blockDrops) {
+                for (auto& itemStack : value.second) {
+                    _addOrMergeItemStack(itemStack, key.first, items);
+                }
+            }
+            for (auto& [itemStack, pos] : items) {
+                BlockType::popResource(mRegion, pos, itemStack);
+            }
+            for (auto& [key, value] : blockDrops) {
+                getLLEventBus().publish(
+                    ExplosionLootedBlockEvent{*this, key.first, *value.first, key.second, value.second}
+                );
+            }
+        }
     }
 
 
-    if (blockCount > 0) { // 触发方块更新事件
+    if (blockChangable) { // 触发方块更新事件
         auto area = BoundingBox{minPos.add(-1), maxPos.add(1)};
         for (auto* listener : *mRegion.mListeners) {
             if (!listener) continue;
