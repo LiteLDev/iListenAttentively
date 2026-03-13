@@ -1,1 +1,1 @@
-#include "ila/event/minecraft/worldgen/structure/StructureEvent.h"
+#include "ila/event/worldgen/structure/StructureEvent.h"

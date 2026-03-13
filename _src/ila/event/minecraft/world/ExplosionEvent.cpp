@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/ExplosionEvent.h"
+#include "ila/event/world/ExplosionEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/legacy/ActorUniqueID.h>

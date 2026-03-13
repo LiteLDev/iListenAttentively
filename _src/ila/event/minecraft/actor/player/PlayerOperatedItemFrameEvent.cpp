@@ -1,5 +1,5 @@
 #pragma include_alias("mc/world/level/block/states/BlockStateVariant.h", "ila/patch/BlockStateVariant.hpp")
-#include "ila/event/minecraft/actor/player/PlayerOperatedItemFrameEvent.h"
+#include "ila/event/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>

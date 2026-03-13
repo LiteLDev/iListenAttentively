@@ -1,6 +1,6 @@
-#include "ila/event/minecraft/actor/player/PlayerCloseContainerEvent.h"
+#include "ila/event/actor/player/PlayerCloseContainerEvent.h"
 #include "ila/base/Gloabl.h"
-#include "ila/event/minecraft/server/SendPacketEvent.h"
+#include "ila/event/server/SendPacketEvent.h"
 #include <ll/api/base/StdInt.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
 #include <magic_enum.hpp>

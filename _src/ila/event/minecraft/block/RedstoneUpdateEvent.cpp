@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/RedstoneUpdateEvent.h"
+#include "ila/event/block/RedstoneUpdateEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/BlockType.h>

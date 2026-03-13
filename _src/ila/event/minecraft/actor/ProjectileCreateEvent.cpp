@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/ProjectileCreateEvent.h"
+#include "ila/event/actor/ProjectileCreateEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/memory/Hook.h>
 #include <mc/deps/core/math/Vec3.h>

@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/ActorTickEvent.h"
+#include "ila/event/actor/ActorTickEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/memory/Hook.h>
 #include <mc/world/actor/Actor.h>

@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/player/PlayerEditSignEvent.h"
+#include "ila/event/actor/player/PlayerEditSignEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>

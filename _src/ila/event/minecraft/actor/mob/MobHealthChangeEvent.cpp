@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/mob/MobHealthChangeEvent.h"
+#include "ila/event/actor/mob/MobHealthChangeEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>

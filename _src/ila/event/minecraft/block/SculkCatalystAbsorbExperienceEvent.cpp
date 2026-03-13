@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/SculkCatalystAbsorbExperienceEvent.h"
+#include "ila/event/block/SculkCatalystAbsorbExperienceEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>

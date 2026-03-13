@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/worldgen/system/BiomeDecorationSystemEvent.h"
+#include "ila/event/worldgen/system/BiomeDecorationSystemEvent.h"
 #include "ll/api/memory/Hook.h"
 #include "ll/api/memory/Memory.h"
 #include "mc/world/level/ChunkPos.h"

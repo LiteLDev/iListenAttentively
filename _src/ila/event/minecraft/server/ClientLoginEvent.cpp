@@ -1,6 +1,6 @@
-#include "ila/event/minecraft/server/ClientLoginEvent.h"
+#include "ila/event/server/ClientLoginEvent.h"
 #include "ila/base/Gloabl.h"
-#include "ila/event/minecraft/server/ReceivePacketEvent.h"
+#include "ila/event/server/ReceivePacketEvent.h"
 #include <ll/api/service/Bedrock.h>
 #include <mc/certificates/UnverifiedCertificate.h>
 #include <mc/certificates/identity/GameServerToken.h>

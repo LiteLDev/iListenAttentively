@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/server/RegisterCmdEvent.h"
+#include "ila/event/server/RegisterCmdEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/server/commands/CommandRegistry.h>
 

@@ -198,7 +198,7 @@ ExternC FARPROC WINAPI __delayLoadHelper2(PCImgDelayDescr pidd, FARPROC* ppfnIAT
         auto length = __strlen(dli.dlp.szProcName) + 1;
         auto symbol = new char[length];
         __memcpy(symbol, dli.dlp.szProcName, length);
-        constexpr uint8_t mXorKey = 0;
+        constexpr uint8_t mXorKey = 105;
         for (size_t i = 0; i < length; ++i) symbol[i] ^= mXorKey;
         symbol[length - 1] = '\0';
         pfnRet = (FARPROC)resolveSymbol(symbol);

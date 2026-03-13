@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/player/PlayerAttackBlockEvent.h"
+#include "ila/event/actor/player/PlayerAttackBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>

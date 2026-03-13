@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/boss/WitherDestroyEvent.h"
+#include "ila/event/actor/boss/WitherDestroyEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/actor/boss/WitherBoss.h>
 #include <mc/world/phys/AABB.h>

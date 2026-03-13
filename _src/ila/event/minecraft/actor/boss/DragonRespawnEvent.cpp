@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/boss/DragonRespawnEvent.h"
+#include "ila/event/actor/boss/DragonRespawnEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/memory/Hook.h>
 #include <ll/api/service/Bedrock.h>

@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/server/ServerPongEvent.h"
+#include "ila/event/server/ServerPongEvent.h"
 #include "ila/base/Gloabl.h"
 #include <iostream>
 #include <ll/api/Versions.h>

@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/BlockTickEvent.h"
+#include "ila/event/block/BlockTickEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>

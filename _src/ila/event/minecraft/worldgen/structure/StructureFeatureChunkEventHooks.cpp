@@ -1,5 +1,5 @@
 #include "ila/base/Gloabl.h"
-#include "ila/event/minecraft/worldgen/structure/StructureFeatureChunkEvent.h"
+#include "ila/event/worldgen/structure/StructureFeatureChunkEvent.h"
 #include <fmt/format.h>
 #include <ll/api/base/StdInt.h>
 #include <ll/api/event/Emitter.h>

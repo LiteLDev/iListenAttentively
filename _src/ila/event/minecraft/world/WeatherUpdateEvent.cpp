@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/WeatherUpdateEvent.h"
+#include "ila/event/world/WeatherUpdateEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/LevelEvent.h>

@@ -1,5 +1,5 @@
 #pragma include_alias("mc/world/events/ActorGriefingBlockEvent.h", "ila/patch/ActorGriefingBlockEvent.hpp")
-#include "ila/event/minecraft/actor/mob/MobTakeBlockEvent.h"
+#include "ila/event/actor/mob/MobTakeBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include "ila/patch/VariantParameterList.hpp"
 #include <ila/patch/ActorGriefingBlockEvent.hpp>

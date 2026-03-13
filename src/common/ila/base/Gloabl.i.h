@@ -27,6 +27,13 @@ ll::io::Logger&      getLogger();
 
 } // namespace ila::inline base
 
+namespace ll::memory {
+template <class T>
+constexpr FuncPtr resolveIdentifier(ila::memory_utils::internal::Address const& address) {
+    return address.as<void*>();
+}
+} // namespace ll::memory
+
 #define EventHookFactory(eventName, ...)                                                                               \
     static std::unique_ptr<ll::event::EmitterBase> eventName##EmitterFactory();                                        \
     class eventName##Emitter : public ll::event::Emitter<eventName##EmitterFactory, eventName> {                       \

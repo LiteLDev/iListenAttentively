@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/SculkSpreadEvent.h"
+#include "ila/event/block/SculkSpreadEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>

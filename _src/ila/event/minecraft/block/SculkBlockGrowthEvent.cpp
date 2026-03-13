@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/SculkBlockGrowthEvent.h"
+#include "ila/event/block/SculkBlockGrowthEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/WorldBlockTarget.h>

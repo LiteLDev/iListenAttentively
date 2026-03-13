@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/ActorTriggerPressurePlateEvent.h"
+#include "ila/event/actor/ActorTriggerPressurePlateEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>

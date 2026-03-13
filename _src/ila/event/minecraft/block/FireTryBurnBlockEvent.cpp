@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/FireTryBurnBlockEvent.h"
+#include "ila/event/block/FireTryBurnBlockEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/FireBlock.h>

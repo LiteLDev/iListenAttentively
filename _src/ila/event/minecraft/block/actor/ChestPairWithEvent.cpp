@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/actor/ChestPairWithEvent.h"
+#include "ila/event/block/actor/ChestPairWithEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>

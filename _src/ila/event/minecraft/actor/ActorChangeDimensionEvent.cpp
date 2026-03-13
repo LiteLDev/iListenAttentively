@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/ActorChangeDimensionEvent.h"
+#include "ila/event/actor/ActorChangeDimensionEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>

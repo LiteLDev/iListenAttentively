@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/world/SpawnWanderingTraderEvent.h"
+#include "ila/event/world/SpawnWanderingTraderEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/actor/ai/village/WanderingTraderScheduler.h>
 #include <mc/world/level/BlockPos.h>

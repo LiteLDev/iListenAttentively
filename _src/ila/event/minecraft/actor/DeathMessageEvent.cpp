@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/DeathMessageEvent.h"
+#include "ila/event/actor/DeathMessageEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>

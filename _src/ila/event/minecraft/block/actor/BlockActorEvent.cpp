@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/actor/BlockActorEvent.h"
+#include "ila/event/block/actor/BlockActorEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Event.h>
 #include <ll/api/event/EventRefObjSerializer.h>

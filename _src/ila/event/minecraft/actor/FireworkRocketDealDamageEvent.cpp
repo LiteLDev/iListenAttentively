@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/FireworkRocketDealDamageEvent.h"
+#include "ila/event/actor/FireworkRocketDealDamageEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/EventRefObjSerializer.h>
 #include <ll/api/event/entity/ActorEvent.h>

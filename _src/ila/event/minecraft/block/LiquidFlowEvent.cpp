@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/block/LiquidFlowEvent.h"
+#include "ila/event/block/LiquidFlowEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>

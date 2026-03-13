@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ila/base/Macro.h"
-#include "ila/event/minecraft/worldgen/structure/StructureEvent.h"
+#include "ila/event/worldgen/structure/StructureEvent.h"
 #include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
 #include <mc/deps/core/string/HashedString.h>

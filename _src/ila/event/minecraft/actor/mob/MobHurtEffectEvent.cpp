@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/mob/MobHurtEffectEvent.h"
+#include "ila/event/actor/mob/MobHurtEffectEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/base/Containers.h>
 #include <ll/api/event/Cancellable.h>

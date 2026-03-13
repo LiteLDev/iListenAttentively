@@ -1,4 +1,4 @@
-#include "ila/event/minecraft/actor/player/PlayerInteractEntityEvent.h"
+#include "ila/event/actor/player/PlayerInteractEntityEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/EventRefObjSerializer.h>
