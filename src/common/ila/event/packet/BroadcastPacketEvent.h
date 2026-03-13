@@ -21,7 +21,8 @@ public:
         ll::DenseSet<NetworkIdentifierWithSubId>& targets,
         Packet&                                   packet
     )
-    : mNetworkSystem(networkSystem),
+    : Event(),
+      mNetworkSystem(networkSystem),
       mTargets(targets),
       mPacket(packet) {}
 

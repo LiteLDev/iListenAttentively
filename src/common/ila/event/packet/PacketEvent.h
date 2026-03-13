@@ -22,7 +22,8 @@ public:
         SubClientId              senderSubId,
         Packet&                  packet
     )
-    : mNetworkSystem(networkSystem),
+    : Event(),
+      mNetworkSystem(networkSystem),
       mNetworkIdentifier(networkIdentifier),
       mSenderSubId(senderSubId),
       mPacket(packet) {}

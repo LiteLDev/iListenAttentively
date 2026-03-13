@@ -28,7 +28,8 @@ private:
 
 public:
     constexpr explicit ServerPongEvent(std::pair<std::string, ushort> address, PongData& pongData)
-    : mAddress(address),
+    : Event(),
+      mAddress(address),
       mPongData(pongData) {}
 
 public:
