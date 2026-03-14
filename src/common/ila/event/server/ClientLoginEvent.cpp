@@ -1,14 +1,14 @@
 #include "ila/event/server/ClientLoginEvent.h"
 #include "ila/base/Gloabl.i.h"
 #include "mc/network/connection/DisconnectFailReason.h"
-#include "patch_mc/platform/UUID.h"
+#include "patch_mc/platform/UUID.i.h"
 #include <ll/api/service/Bedrock.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/network/packet/LoginPacket.h>
 
-namespace ila::mc::inline server {
+namespace ila::server {
 
 struct PlayerAuthenticationInfoReflection {
     std::string xuid;
@@ -92,4 +92,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(ClientLoginingEvent, ClientLoginedEvent, <ClientLoginEventHook1, ClientLoginEventHook2>);
 
-} // namespace ila::mc::inline server
+} // namespace ila::server

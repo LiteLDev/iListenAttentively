@@ -60,7 +60,7 @@
 #include <mc/world/level/storage/GameRules.h>
 #include <utility>
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 struct ExplosionReflection {
     Vec3                                 pos;
@@ -604,4 +604,4 @@ EventHook(ExplosionProcessBlockingEvent, ExplosionProcessBlockedEvent, <Explosio
 EventHook(ExplosionProcessEntityingEvent, ExplosionProcessEntityedEvent, <ExplosionEventHook>);
 EventHook(ExplosionSoundingEvent, ExplosionSoundedEvent, <ExplosionEventHook>);
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

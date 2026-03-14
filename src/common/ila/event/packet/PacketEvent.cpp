@@ -1,7 +1,7 @@
 #include "ila/event/packet/PacketEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 void PacketEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
@@ -11,4 +11,4 @@ void PacketEvent::serialize(CompoundTag& nbt) const {
     nbt["packet"] = serializeRefObj(mPacket);
 }
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

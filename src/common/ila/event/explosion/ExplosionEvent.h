@@ -4,7 +4,7 @@
 #include <ll/api/event/world/WorldEvent.h>
 #include <mc/world/level/Explosion.h>
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionEvent : public ll::event::WorldEvent {
 private:
@@ -33,4 +33,4 @@ public:
     using ExplosionEvent::ExplosionEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

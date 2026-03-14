@@ -7,7 +7,7 @@
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 IncomingPacketFilterResult handleReceive(
     NetEventCallback&                 self,
@@ -59,4 +59,4 @@ IncomingPacketFilterResult handleReceive(
     return IncomingPacketFilterResult::RejectedSilently;
 }
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

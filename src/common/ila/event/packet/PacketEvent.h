@@ -6,7 +6,7 @@
 #include <mc/network/Packet.h>
 #include <mc/world/actor/player/Player.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 class PacketEvent : public ll::event::Event {
 private:
@@ -49,4 +49,4 @@ public:
     bool isServerSide() const { return networkSystem().isServer(); }
 };
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

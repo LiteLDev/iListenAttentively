@@ -3,10 +3,10 @@
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 optional_ref<Player> PacketEvent::player() const {
     return ll::service::getServerNetworkHandler()->_getServerPlayer(mNetworkIdentifier, mSenderSubId);
 }
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

@@ -4,7 +4,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <mc/nbt/CompoundTag.h>
 
-namespace ila::mc::inline world {
+namespace ila::world {
 
 class WeatherUpdateEvent : public ll::event::Event {
 public:
@@ -65,4 +65,4 @@ public:
     using WeatherUpdateEvent::WeatherUpdateEvent;
 };
 
-} // namespace ila::mc::inline world
+} // namespace ila::world

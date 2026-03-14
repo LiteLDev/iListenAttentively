@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionProcessBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionProcessBlockEvent::serialize(CompoundTag& nbt) const {
     ExplosionEvent::serialize(nbt);
@@ -10,4 +10,4 @@ void ExplosionProcessBlockEvent::serialize(CompoundTag& nbt) const {
     nbt["is_extra_block"] = mIsExtraBlock;
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

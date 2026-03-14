@@ -9,7 +9,7 @@
 #include <optional>
 #include <ranges>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 void BroadcastPacketEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
@@ -87,4 +87,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(BroadcastingPacketEvent, BroadcastedPacketEvent, <BroadcastPacketEventHook1, BroadcastPacketEventHook2>);
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

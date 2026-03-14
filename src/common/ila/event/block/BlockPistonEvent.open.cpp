@@ -5,7 +5,7 @@
 #include <mc/world/level/dimension/Dimension.h>
 #include <mc/world/redstone/circuit/CircuitSystem.h>
 
-namespace ila::mc::inline block {
+namespace ila::block {
 
 void BlockPistonEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
@@ -78,4 +78,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(BlockPistonExtendEvent, BlockPistonRetractEvent, <BlockPistonEventHook>);
 
-} // namespace ila::mc::inline block
+} // namespace ila::block

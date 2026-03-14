@@ -1,7 +1,7 @@
 #include "ila/event/player/PlayerShieldBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline player {
+namespace ila::player {
 
 void PlayerShieldBlockEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
@@ -60,4 +60,4 @@ EventHook(
     <PlayerShieldBlockEventHook1, PlayerShieldBlockEventHook2>
 );
 
-} // namespace ila::mc::inline player
+} // namespace ila::player

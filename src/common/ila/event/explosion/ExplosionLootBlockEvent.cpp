@@ -4,7 +4,7 @@
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/item/Item.h>
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionLootBlockEvent::serialize(CompoundTag& nbt) const {
     ExplosionProcessBlockEvent::serialize(nbt);
@@ -33,4 +33,4 @@ void ExplosionLootBlockEvent::deserialize(CompoundTag const& nbt) {
     );
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

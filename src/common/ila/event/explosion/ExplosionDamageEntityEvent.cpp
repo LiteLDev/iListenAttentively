@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionDamageEntityEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionDamageEntityEvent::serialize(CompoundTag& nbt) const {
     ExplosionProcessEntityEvent::serialize(nbt);
@@ -18,4 +18,4 @@ void ExplosionDamageEntityEvent::deserialize(CompoundTag const& nbt) {
     mIgnite    = nbt["ignite"];
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

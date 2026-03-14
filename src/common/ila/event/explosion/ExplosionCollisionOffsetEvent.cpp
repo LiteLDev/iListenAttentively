@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionCollisionOffsetEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionCollisionOffsetEvent::serialize(CompoundTag& nbt) const {
     ExplosionEvent::serialize(nbt);
@@ -14,4 +14,4 @@ void ExplosionCollisionOffsetEvent::deserialize(CompoundTag const& nbt) {
     reflection::deserialize(mOffsetPos, nbt["offset_pos"]).value();
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

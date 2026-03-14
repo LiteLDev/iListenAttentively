@@ -2,7 +2,7 @@
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 
-namespace ila::mc::inline world {
+namespace ila::world {
 
 void WeatherUpdateEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
@@ -97,4 +97,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 HookAliasImpl(WeatherUpdateEventHook, WeatherUpdateEventHook1);
 
-} // namespace ila::mc::inline world
+} // namespace ila::world

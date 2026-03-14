@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionKnockbackEntityEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionKnockbackEntityEvent::serialize(CompoundTag& nbt) const {
     ExplosionProcessEntityEvent::serialize(nbt);
@@ -13,4 +13,4 @@ void ExplosionKnockbackEntityEvent::deserialize(CompoundTag const& nbt) {
     reflection::deserialize(mKnockback, nbt["knockback"]).value();
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

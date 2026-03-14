@@ -1,7 +1,7 @@
 #pragma once
 #include "ila/event/explosion/ExplosionProcessEntityEvent.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionKnockbackEntityEvent : public ExplosionProcessEntityEvent {
 protected:
@@ -32,4 +32,4 @@ public:
     using ExplosionKnockbackEntityEvent::ExplosionKnockbackEntityEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

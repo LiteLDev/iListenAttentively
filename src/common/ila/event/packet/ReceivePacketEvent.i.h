@@ -3,7 +3,7 @@
 #include "ila/event/packet/ReceivePacketEvent.h"
 #include <mc/network/NetEventCallback.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 IncomingPacketFilterResult handleReceive(
     NetEventCallback&                 self, //
@@ -11,4 +11,4 @@ IncomingPacketFilterResult handleReceive(
     bool                              isServerSide
 );
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

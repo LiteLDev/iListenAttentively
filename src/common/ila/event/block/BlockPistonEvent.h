@@ -6,7 +6,7 @@
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/actor/PistonBlockActor.h>
 
-namespace ila::mc::inline block {
+namespace ila::block {
 
 class BlockPistonEvent : public ll::event::WorldEvent {
 private:
@@ -42,4 +42,4 @@ public:
     using Cancellable::Cancellable;
 };
 
-} // namespace ila::mc::inline block
+} // namespace ila::block

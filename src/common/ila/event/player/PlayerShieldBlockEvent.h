@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
 
-namespace ila::mc::inline player {
+namespace ila::player {
 
 class PlayerShieldBlockEvent : public ll::event::PlayerEvent {
 private:
@@ -35,4 +35,4 @@ public:
     using PlayerShieldBlockEvent::PlayerShieldBlockEvent;
 };
 
-} // namespace ila::mc::inline player
+} // namespace ila::player

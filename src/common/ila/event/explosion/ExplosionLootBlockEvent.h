@@ -2,7 +2,7 @@
 #include "ila/event/explosion/ExplosionProcessBlockEvent.h"
 #include <mc/world/actor/ActorDamageSource.h>
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionLootBlockEvent : public ExplosionProcessBlockEvent {
 private:
@@ -39,4 +39,4 @@ public:
     using ExplosionLootBlockEvent::ExplosionLootBlockEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

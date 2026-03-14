@@ -5,7 +5,7 @@
 #include <mc/common/SubClientId.h>
 #include <mc/network/NetworkIdentifier.h>
 
-namespace ila::mc::inline server {
+namespace ila::server {
 
 class ClientLoginEvent : public ll::event::Event {
 private:
@@ -39,4 +39,4 @@ public:
     using ClientLoginEvent::ClientLoginEvent;
 };
 
-} // namespace ila::mc::inline server
+} // namespace ila::server

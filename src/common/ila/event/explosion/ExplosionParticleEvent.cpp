@@ -2,7 +2,7 @@
 #include "ila/base/Gloabl.i.h"
 #include "patch_mc/deps/shared_types/legacy/LevelEvent.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionParticleEvent::serialize(CompoundTag& nbt) const {
     ExplosionEvent::serialize(nbt);
@@ -15,4 +15,4 @@ void ExplosionParticleEvent::deserialize(CompoundTag const& nbt) {
     reflection::deserialize(mPos, nbt["pos"]).value();
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

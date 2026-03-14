@@ -18,3 +18,4 @@
 - 若存在相同的 Hook 代码，可将共用部分放在 `common` 目录下，并创建 `事件名.i.h` 头文件，使用 `HookAliasDef` 宏定义注册 Hook 别名，同时在 Hook 代码下方使用 `HookAliasImpl` 宏定义注册别名实现，如 [WeatherUpdateEvent.cpp](src\common\ila\event\minecraft\world\WeatherUpdateEvent.cpp#L98) 跟 [WeatherUpdateEvent.i.h](src\common\ila\event\minecraft\world\WeatherUpdateEvent.i.h#L10) 。
 - 事件序列化和反序列化中一律直接使用成员变量，不使用获取函数
 - 重写的函数一律使用Low优先级
+- 事件命名空间一律为`ila::大分类`，比如`ila::block`，如果某个事件分支过多，可以单独开一个文件夹，命名空间后面加`inline`，比如`ila::block::inline fire`，如果嵌套inline超过2层，建议到开发群内讨论是否应该重新划分所在目录

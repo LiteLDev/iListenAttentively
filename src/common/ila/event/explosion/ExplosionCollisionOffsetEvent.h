@@ -1,7 +1,7 @@
 #pragma once
 #include "ila/event/explosion/ExplosionEvent.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionCollisionOffsetEvent : public ExplosionEvent {
 protected:
@@ -35,4 +35,4 @@ public:
     using ExplosionCollisionOffsetEvent::ExplosionCollisionOffsetEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

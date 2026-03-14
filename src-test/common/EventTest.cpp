@@ -15,15 +15,15 @@ inline struct EventTest {
 } test;
 
 EventTest::EventTest() {
-    ila::getLLEventBus().emplaceListener<ila::mc::PlayerShieldBlockingEvent>(
-        [](ila::mc::PlayerShieldBlockingEvent& event) {
+    ila::getLLEventBus().emplaceListener<ila::player::PlayerShieldBlockingEvent>(
+        [](ila::player::PlayerShieldBlockingEvent& event) {
         CompoundTag nbt;
         event.serialize(nbt);
         std::cout << nbt.toSnbt(SnbtFormat::PrettyConsolePrint, 2) << std::endl;
     }
     );
-    ila::getLLEventBus().emplaceListener<ila::mc::PlayerShieldBlockedEvent>(
-        [](ila::mc::PlayerShieldBlockedEvent& event) {
+    ila::getLLEventBus().emplaceListener<ila::player::PlayerShieldBlockedEvent>(
+        [](ila::player::PlayerShieldBlockedEvent& event) {
         CompoundTag nbt;
         event.serialize(nbt);
         std::cout << nbt.toSnbt(SnbtFormat::PrettyConsolePrint, 2) << std::endl;

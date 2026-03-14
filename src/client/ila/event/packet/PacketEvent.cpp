@@ -5,7 +5,7 @@
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 optional_ref<Player> PacketEvent::player() const {
     // clang-format off
@@ -21,4 +21,4 @@ optional_ref<Player> PacketEvent::player() const {
     // clang-format on
 }
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

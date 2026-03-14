@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionFlameEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionFlameEvent::serialize(CompoundTag& nbt) const {
     ExplosionEvent::serialize(nbt);
@@ -13,4 +13,4 @@ void ExplosionFlameEvent::deserialize(CompoundTag const& nbt) {
     reflection::deserialize(mPos, nbt["pos"]).value();
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

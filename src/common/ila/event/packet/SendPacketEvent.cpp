@@ -5,7 +5,7 @@
 #include <mc/network/NetworkIdentifierWithSubId.h>
 #include <optional>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 thread_local std::optional<std::tuple<NetworkSystem*, NetworkIdentifier, SubClientId, Packet*>> gSendPacketInfo{
     std::nullopt
@@ -50,4 +50,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(SendingPacketEvent, SentPacketEvent, <SendPacketEventHook1, SendPacketEventHook2>);
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

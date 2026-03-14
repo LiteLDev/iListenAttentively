@@ -7,7 +7,7 @@
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/Packet.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 class BroadcastPacketEvent : public ll::event::Event {
 private:
@@ -48,4 +48,4 @@ public:
     using BroadcastPacketEvent::BroadcastPacketEvent;
 };
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

@@ -2,7 +2,7 @@
 #include "ila/event/explosion/ExplosionProcessEntityEvent.h"
 #include <mc/world/actor/ActorDamageSource.h>
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionDamageEntityEvent : public ExplosionProcessEntityEvent {
 protected:
@@ -49,4 +49,4 @@ public:
     using ExplosionDamageEntityEvent::ExplosionDamageEntityEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

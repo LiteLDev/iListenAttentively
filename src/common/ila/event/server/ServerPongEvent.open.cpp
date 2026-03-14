@@ -23,7 +23,7 @@
 #include <source_location>
 #include <winsock2.h>
 
-namespace ila::mc::inline server {
+namespace ila::server {
 
 void ServerPongEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
@@ -157,4 +157,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(SendingServerPongEvent, SentServerPongEvent, <ServerPongEventHook>);
 
-} // namespace ila::mc::inline server
+} // namespace ila::server

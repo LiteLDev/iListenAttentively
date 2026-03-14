@@ -1,7 +1,7 @@
 #include "ila/event/explosion/ExplosionExperienceBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 void ExplosionExperienceBlockEvent::serialize(CompoundTag& nbt) const {
     ExplosionProcessBlockEvent::serialize(nbt);
@@ -13,4 +13,4 @@ void ExplosionExperienceBlockEvent::deserialize(CompoundTag const& nbt) {
     mExperience = nbt["experience"];
 }
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

@@ -1,7 +1,7 @@
 #pragma once
 #include "ila/event/explosion/ExplosionProcessBlockEvent.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 /** @warning This event is not available on the client side. */
 class ExplosionDestroyBlockingEvent final : public ll::event::Cancellable<ExplosionProcessBlockEvent> {
@@ -15,4 +15,4 @@ public:
     using ExplosionProcessBlockEvent::ExplosionProcessBlockEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion

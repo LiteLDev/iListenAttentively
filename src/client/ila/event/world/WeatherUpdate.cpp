@@ -6,7 +6,7 @@
 #include <mc/network/GameConnectionInfo.h>
 #include <mc/world/level/Weather.h>
 
-namespace ila::mc::inline world {
+namespace ila::world {
 
 LL_TYPE_INSTANCE_HOOK(
     WeatherUpdateHook2,
@@ -55,4 +55,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(WeatherUpdatingEvent, WeatherUpdatedEvent, <WeatherUpdateEventHook1, WeatherUpdateHook2>);
 
-} // namespace ila::mc::inline world
+} // namespace ila::world

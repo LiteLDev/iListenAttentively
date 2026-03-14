@@ -4,7 +4,7 @@
 #include <mc/world/level/GameType.h>
 #include <utility>
 
-namespace ila::mc::inline server {
+namespace ila::server {
 
 class ServerPongEvent : public ll::event::Event {
 public:
@@ -63,4 +63,4 @@ public:
     using ServerPongEvent::ServerPongEvent;
 };
 
-} // namespace ila::mc::inline server
+} // namespace ila::server

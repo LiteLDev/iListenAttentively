@@ -5,7 +5,7 @@
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>
 
-namespace ila::mc::inline packet {
+namespace ila::packet {
 
 LL_TYPE_INSTANCE_HOOK(
     ReceivePacketEventHook,
@@ -25,4 +25,4 @@ LL_TYPE_INSTANCE_HOOK(
 
 EventHook(ReceivingPacketEvent, ReceivedPacketEvent, <ReceivePacketEventHook>);
 
-} // namespace ila::mc::inline packet
+} // namespace ila::packet

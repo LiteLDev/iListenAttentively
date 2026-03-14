@@ -1,7 +1,7 @@
 #pragma once
 #include "ila/event/explosion/ExplosionEvent.h"
 
-namespace ila::mc::inline explosion {
+namespace ila::explosion {
 
 class ExplosionFlameEvent : public ExplosionEvent {
 protected:
@@ -32,4 +32,4 @@ public:
     using ExplosionFlameEvent::ExplosionFlameEvent;
 };
 
-} // namespace ila::mc::inline explosion
+} // namespace ila::explosion
