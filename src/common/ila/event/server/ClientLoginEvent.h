@@ -27,11 +27,13 @@ public:
     PlayerAuthenticationInfo& authInfo() const { return mAuthInfo; }
 };
 
+/** @warning This event is not available on the client side. */
 class ClientLoginingEvent final : public ll::event::Cancellable<ClientLoginEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class ClientLoginedEvent final : public ClientLoginEvent {
 public:
     using ClientLoginEvent::ClientLoginEvent;

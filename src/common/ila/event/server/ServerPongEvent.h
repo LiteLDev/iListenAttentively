@@ -51,11 +51,13 @@ public:
     std::vector<std::string>&             others() const { return mPongData.mOthers; }
 };
 
+/** @warning This event is not available on the client side. */
 class SendingServerPongEvent final : public ll::event::Cancellable<ServerPongEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class SentServerPongEvent final : public ServerPongEvent {
 public:
     using ServerPongEvent::ServerPongEvent;

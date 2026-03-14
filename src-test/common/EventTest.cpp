@@ -1,8 +1,12 @@
 #include "ll/api/event/Event.h"
 #include "ila/base/Gloabl.i.h"
-#include "ila/event/server/ClientLoginEvent.h"
+#include "ila/event/player/PlayerShieldBlockEvent.h"
+#include "ll/api/base/Containers.h"
 #include "ll/api/event/EventId.h"
 #include "ll/api/event/Listener.h"
+#include "ll/api/memory/Hook.h"
+#include "mc/world/item/ItemStackBase.h"
+#include "mc/nbt/Tag.h"
 #include <ll/api/utils/StacktraceUtils.h>
 
 inline struct EventTest {
@@ -11,10 +15,18 @@ inline struct EventTest {
 } test;
 
 EventTest::EventTest() {
-    ila::getLLEventBus().emplaceListener<ila::mc::ClientLoginingEvent>([](ila::mc::ClientLoginingEvent& event) {
-        event.authInfo().XboxLiveName = "zimuya";
-    });
-    ila::getLLEventBus().emplaceListener<ila::mc::ClientLoginedEvent>([](ila::mc::ClientLoginedEvent& event) {
-        event.authInfo().XboxLiveName = "萱宝最可爱~";
-    });
+    ila::getLLEventBus().emplaceListener<ila::mc::PlayerShieldBlockingEvent>(
+        [](ila::mc::PlayerShieldBlockingEvent& event) {
+        CompoundTag nbt;
+        event.serialize(nbt);
+        std::cout << nbt.toSnbt(SnbtFormat::PrettyConsolePrint, 2) << std::endl;
+    }
+    );
+    ila::getLLEventBus().emplaceListener<ila::mc::PlayerShieldBlockedEvent>(
+        [](ila::mc::PlayerShieldBlockedEvent& event) {
+        CompoundTag nbt;
+        event.serialize(nbt);
+        std::cout << nbt.toSnbt(SnbtFormat::PrettyConsolePrint, 2) << std::endl;
+    }
+    );
 }

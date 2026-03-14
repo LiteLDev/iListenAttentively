@@ -51,6 +51,7 @@ target("iListenAttentively")
         "UNICODE",
         "ILA_EXPORT",
         "_HAS_CXX23=1",
+        "_SILENCE_CXX20_IS_ALWAYS_EQUAL_DEPRECATION_WARNING=1",
         ( is_config("target_type", "server") and "LL_PLAT_S" or "LL_PLAT_C" ),
         ( is_mode("debug") and "ILA_DEBUG" or "ILA_RELEASE" )
     )
