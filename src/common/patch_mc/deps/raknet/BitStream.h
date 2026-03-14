@@ -31,7 +31,9 @@ public:
     }
     BitStream& operator=(BitStream const&) = default;
     BitStream(BitStream const&)            = default;
+    MCAPI BitStream(uchar* data, uint lengthInBytes, bool _copyData);
 
+public:
     template <class T>
     std::optional<T> Read() {
         std::array<uchar, sizeof(T)> buffer{};
@@ -52,13 +54,12 @@ public:
 
 public:
     MCAPI void AddBitsAndReallocate(uint numberOfBitsToWrite);
-    MCAPI BitStream(uchar* _data, uint lengthInBytes, bool _copyData);
     MCAPI bool Read(char* outByteArray, uint numberOfBytes);
     MCAPI bool ReadAlignedBytes(uchar* inOutByteArray, uint numberOfBytesToRead);
     MCAPI bool ReadAlignedVar16(char* inOutByteArray);
     MCAPI bool ReadAlignedVar32(char* inOutByteArray);
     MCAPI bool ReadBits(uchar* inOutByteArray, uint numberOfBitsToRead, bool alignBitsToRight);
-    MCAPI void Write(::RakNet::BitStream* bitStream, uint numberOfBits);
+    MCAPI void Write(RakNet::BitStream* bitStream, uint numberOfBits);
     MCAPI void Write(char const* inputByteArray, uint numberOfBytes);
     MCAPI void Write0();
     MCAPI void Write1();
