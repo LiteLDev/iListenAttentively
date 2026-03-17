@@ -11,7 +11,17 @@
 #include "ll/api/reflection/Reflection.h"
 #include "ll/api/service/Bedrock.h"
 #include "ll/api/utils/StringUtils.h"
+#include <array>
+#include <boost/pfr/core.hpp>
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 #include <initializer_list>
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/Event.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Deserialization.h>
+#include <ll/api/reflection/Serialization.h>
+#include <magic_enum.hpp>
 #include <mc/deps/raknet/DefaultMessageIDTypes.h>
 #include <mc/deps/raknet/RNS2RecvStruct.h>
 #include <mc/deps/raknet/RNS2_SendParameters.h>
@@ -19,9 +29,18 @@
 #include <mc/deps/raknet/RakNetSocket2.h>
 #include <mc/deps/raknet/RakPeer.h>
 #include <mc/deps/raknet/SystemAddress.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/CompoundTagVariant.h>
+#include <patch_mc/deps/raknet/BitStream.h>
 #include <ranges>
 #include <source_location>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <utility>
+#include <vector>
 #include <winsock2.h>
+#include <ws2def.h>
 
 namespace ila::server {
 
@@ -71,7 +90,8 @@ LL_TYPE_INSTANCE_HOOK(
         return origin(recvStruct);
     }
 
-    if (static_cast<size_t>(recvStruct->mBytesRead) < sizeof(uint8) + sizeof(uint64) + sizeof(vscOfflineMessageDataId)) {
+    if (static_cast<size_t>(recvStruct->mBytesRead)
+        < sizeof(uint8) + sizeof(uint64) + sizeof(vscOfflineMessageDataId)) {
         return origin(recvStruct);
     }
 

@@ -1,5 +1,13 @@
 #include "ila/event/player/PlayerShieldBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <ll/api/base/Containers.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/player/PlayerEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/player/Player.h>
 
 namespace ila::player {
 

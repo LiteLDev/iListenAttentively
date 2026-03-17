@@ -1,4 +1,13 @@
+#include "WeatherUpdateEvent.h"
 #include "ila/event/world/WeatherUpdateEvent.i.h"
+#include <algorithm>
+#include <ila/base/Gloabl.i.h>
+#include <ll/api/chrono/GameChrono.h>
+#include <ll/api/event/Event.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Deserialization.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 

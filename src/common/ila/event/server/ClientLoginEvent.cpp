@@ -2,11 +2,23 @@
 #include "ila/base/Gloabl.i.h"
 #include "mc/network/connection/DisconnectFailReason.h"
 #include "patch_mc/platform/UUID.i.h"
+#include <ll/api/event/Event.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Deserialization.h>
+#include <ll/api/reflection/Serialization.h>
 #include <ll/api/service/Bedrock.h>
+#include <mc/certificates/identity/PlayerAuthenticationInfo.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/network/NetEventCallback.h>
 #include <mc/network/NetworkConnection.h>
+#include <mc/network/NetworkIdentifier.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/network/packet/LoginPacket.h>
+#include <mc/platform/UUID.h>
+#include <optional>
+#include <string>
 
 namespace ila::server {
 
@@ -59,7 +71,7 @@ LL_TYPE_INSTANCE_HOOK(
     &ServerNetworkHandler::$_validateLoginPacket,
     std::optional<PlayerAuthenticationInfo>,
     NetworkIdentifier const& source,
-    LoginPacket const&     packet
+    LoginPacket const&       packet
 ) {
     auto result = origin(source, packet);
     if (!result || isDisconnect(source)) return result;
@@ -80,7 +92,7 @@ LL_TYPE_INSTANCE_HOOK(
     ServerNetworkHandler,
     &ServerNetworkHandler::_onClientAuthenticated,
     void,
-    NetworkIdentifier const&     source,
+    NetworkIdentifier const&        source,
     PlayerAuthenticationInfo const& playerInfo
 ) {
     origin(source, playerInfo);

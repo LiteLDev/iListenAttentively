@@ -2,7 +2,10 @@
 #include "ila/base/Macro.h"
 #include <ll/api/chrono/GameChrono.h>
 #include <ll/api/event/Cancellable.h>
+#include <ll/api/event/Event.h>
 #include <mc/nbt/CompoundTag.h>
+#include <stdexcept>
+#include <utility>
 
 namespace ila::world {
 
