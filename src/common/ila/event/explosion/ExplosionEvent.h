@@ -2,6 +2,7 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/world/level/Explosion.h>
 
 namespace ila::explosion {

@@ -1,7 +1,17 @@
 #include "ila/event/block/BlockPistonEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/event/world/WorldEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/common/FacingID.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/PistonBlock.h>
 #include <mc/world/level/block/VanillaStates.h>
+#include <mc/world/level/block/actor/PistonBlockActor.h>
+#include <mc/world/level/block/actor/PistonState.h>
 #include <mc/world/level/dimension/Dimension.h>
 #include <mc/world/redstone/circuit/CircuitSystem.h>
 

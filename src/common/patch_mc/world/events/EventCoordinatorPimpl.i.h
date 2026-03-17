@@ -1,6 +1,11 @@
 #pragma once
+#include <functional>
+#include <ll/api/base/StdInt.h>
 #include <mc/world/events/BlockEventListener.h>
 #include <mc/world/events/EventCoordinatorPimpl.h>
+#include <mc/world/events/EventResult.h>
+#include <thread>
+#include <vector>
 
 template <>
 class EventCoordinatorPimpl<BlockEventListener> {

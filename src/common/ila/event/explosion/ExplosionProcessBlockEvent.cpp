@@ -1,5 +1,9 @@
 #include "ila/event/explosion/ExplosionProcessBlockEvent.h"
+#include "ExplosionEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTag.h>
 
 namespace ila::explosion {
 

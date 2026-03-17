@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include <ll/api/base/StdInt.h>
 #include <mc/_HeaderOutputPredefine.h>
 #include <mc/deps/raknet/RakNetSocket2.h>
 #include <mc/deps/raknet/SystemAddress.h>

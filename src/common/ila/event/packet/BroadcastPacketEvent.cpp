@@ -1,13 +1,29 @@
 #include "ila/event/packet/BroadcastPacketEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <iterator>
+#include <ll/api/base/Containers.h>
+#include <ll/api/event/Event.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/memory/Hook.h>
 #include <ll/api/service/Bedrock.h>
+#include <magic_enum.hpp>
+#include <mc/deps/core/utility/optional_ref.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/nbt/ListTag.h>
 #include <mc/network/BatchedNetworkPeer.h>
+#include <mc/network/Compressibility.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
+#include <mc/network/NetworkPeer.h>
+#include <mc/network/NetworkSystem.h>
+#include <mc/network/Packet.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>
+#include <mc/world/actor/player/Player.h>
 #include <optional>
 #include <ranges>
+#include <string>
+#include <vector>
 
 namespace ila::packet {
 

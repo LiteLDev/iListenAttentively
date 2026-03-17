@@ -1,4 +1,9 @@
 #pragma once
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <ll/api/base/StdInt.h>
+#include <malloc.h>
 #include <mc/_HeaderOutputPredefine.h>
 #include <optional>
 

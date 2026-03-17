@@ -1,7 +1,13 @@
-#include "ila/base/Gloabl.i.h"
 #include "ila/event/packet/ReceivePacketEvent.h"
+#include "ila/base/Gloabl.i.h"
 #include "ila/event/packet/ReceivePacketEvent.i.h"
+#include <ll/api/base/StdInt.h>
+#include <ll/api/memory/Hook.h>
 #include <ll/api/service/Bedrock.h>
+#include <mc/network/IncomingPacketFilterResult.h>
+#include <mc/network/MinecraftPacketIds.h>
+#include <mc/network/NetEventCallback.h>
+#include <mc/network/NetworkIdentifierWithSubId.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/server/ServerPlayer.h>
 

@@ -4,21 +4,34 @@
 #include "ila/event/block/fire/FireRemoveEvent.h"
 #include "ila/event/block/fire/FireSpreadEvent.h"
 #include "ila/event/block/fire/SoulFireSpawnEvent.h"
+#include <algorithm>
+#include <array>
+#include <functional>
+#include <ll/api/event/world/WorldEvent.h>
+#include <ll/api/memory/Hook.h>
+#include <ll/api/reflection/Serialization.h>
 #include <ll/api/utils/ErrorUtils.h>
+#include <mc/nbt/CompoundTag.h>
 #include <mc/util/Random.h>
 #include <mc/util/Randomize.h>
+#include <mc/world/level/BlockPos.h>
+#include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/Weather.h>
 #include <mc/world/level/biome/Biome.h>
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/BlockChangeContext.h>
+#include <mc/world/level/block/BlockProperty.h>
 #include <mc/world/level/block/FireBlock.h>
+#include <mc/world/level/block/FlameOdds.h>
 #include <mc/world/level/block/VanillaStates.h>
 #include <mc/world/level/block/block_events/BlockQueuedTickEvent.h>
 #include <mc/world/level/dimension/Dimension.h>
 #include <mc/world/level/levelgen/structure/BoundingBox.h>
 #include <mc/world/level/material/Material.h>
+#include <mc/world/level/material/MaterialType.h>
 #include <mc/world/level/storage/GameRuleId.h>
+#include <mc/world/level/storage/GameRules.h>
 #include <mc/world/level/storage/LevelData.h>
 #include <utility>
 
@@ -129,14 +142,14 @@ LL_TYPE_INSTANCE_HOOK(
     } else {
         if (fireAge < 15) {
             auto newAge = fireAge + random.nextInt(3) / 2;
-            
+
             auto event = FireAgingEvent{region, pos, fireAge, newAge};
             getLLEventBus().publish(event);
             if (!event.isCancelled() && event.newAge() != fireAge) {
                 region.setBlock(
                     pos,
                     fireBlock.mBlockType->trySetState<int>(VanillaStates::Age(), newAge, fireBlock.mData)
-                    .value_or<Block const>(fireBlock),
+                        .value_or<Block const>(fireBlock),
                     1,
                     0,
                     BlockChangeContext{false}

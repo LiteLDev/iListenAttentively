@@ -1,5 +1,7 @@
 #include "ila/event/explosion/ExplosionExperienceBlockEvent.h"
+#include "ExplosionProcessBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <mc/nbt/CompoundTag.h>
 
 namespace ila::explosion {
 

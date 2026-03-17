@@ -1,3 +1,4 @@
+#include <ll/api/base/StdInt.h>
 #include <mc/deps/nether_net/realms/NetworkID.h>
 
 namespace NetherNet::Realms {

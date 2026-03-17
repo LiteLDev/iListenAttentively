@@ -54,7 +54,7 @@ void ClientLoginEvent::deserialize(CompoundTag const& nbt) {
     reflection::deserialize(reinterpret_cast<PlayerAuthenticationInfoReflection&>(mAuthInfo), nbt["auth_info"]).value();
 }
 
-bool isDisconnect(NetworkIdentifier const& source) {
+static bool isDisconnect(NetworkIdentifier const& source) {
     auto networkSystem = ll::service::getNetworkSystem(false);
     if (!networkSystem) return true;
 

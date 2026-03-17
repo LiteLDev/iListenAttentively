@@ -1,6 +1,10 @@
 #pragma once
+#include <cstdarg>
 #include <ll/api/memory/Memory.h>
+#include <ll/api/memory/Signature.h>
+#include <ll/api/memory/Symbol.h>
 #include <ll/api/utils/SystemUtils.h>
+#include <type_traits>
 
 namespace ila::inline utils::memory_utils {
 

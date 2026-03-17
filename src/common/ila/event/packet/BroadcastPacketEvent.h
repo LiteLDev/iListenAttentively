@@ -4,8 +4,12 @@
 #include <ll/api/base/Containers.h>
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/Event.h>
+#include <mc/deps/core/utility/optional_ref.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/network/NetworkIdentifierWithSubId.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/Packet.h>
+#include <mc/world/actor/player/Player.h>
 
 namespace ila::packet {
 

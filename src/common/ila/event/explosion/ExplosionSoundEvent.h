@@ -1,5 +1,7 @@
 #pragma once
 #include "ila/event/explosion/ExplosionEvent.h"
+#include <ll/api/event/Cancellable.h>
+#include <mc/deps/shared_types/legacy/LevelSoundEvent.h>
 
 namespace ila::explosion {
 

@@ -1,6 +1,10 @@
 #include "ila/event/explosion/ExplosionParticleEvent.h"
+#include "ExplosionEvent.h"
 #include "ila/base/Gloabl.i.h"
 #include "patch_mc/deps/shared_types/legacy/LevelEvent.i.h"
+#include <ll/api/reflection/Deserialization.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTag.h>
 
 namespace ila::explosion {
 

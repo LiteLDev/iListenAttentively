@@ -1,5 +1,6 @@
 #pragma once
 #include "ila/event/explosion/ExplosionProcessBlockEvent.h"
+#include <ll/api/event/Cancellable.h>
 
 namespace ila::explosion {
 

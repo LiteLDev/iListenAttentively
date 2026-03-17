@@ -1,3 +1,4 @@
+#include <ll/api/base/StdInt.h>
 #include <mc/deps/nether_net/p2p/NetworkID.h>
 
 namespace NetherNet::P2P {

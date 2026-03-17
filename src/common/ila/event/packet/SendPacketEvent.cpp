@@ -1,9 +1,18 @@
 #include "ila/event/packet/SendPacketEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <ll/api/memory/Hook.h>
+#include <mc/common/SubClientId.h>
 #include <mc/network/BatchedNetworkPeer.h>
+#include <mc/network/Compressibility.h>
 #include <mc/network/NetworkConnection.h>
+#include <mc/network/NetworkIdentifier.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
+#include <mc/network/NetworkPeer.h>
+#include <mc/network/NetworkSystem.h>
+#include <mc/network/Packet.h>
 #include <optional>
+#include <string>
+#include <tuple>
 
 namespace ila::packet {
 

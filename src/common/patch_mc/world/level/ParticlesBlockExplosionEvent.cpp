@@ -1,5 +1,9 @@
-#include "patch_mc/world/level/ParticlesBlockExplosionEvent.i.h"
 #include "ila/base/Gloabl.i.h"
+#include "patch_mc/world/level/ParticlesBlockExplosionEvent.i.h"
+#include <functional>
+#include <ila/utils/MemoryUtils.i.h>
+#include <mc/nbt/CompoundTag.h>
+#include <memory>
 
 std::unique_ptr<CompoundTag> ParticlesBlockExplosionEvent::save() const {
     using namespace ila;

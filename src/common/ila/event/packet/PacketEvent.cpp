@@ -1,5 +1,9 @@
 #include "ila/event/packet/PacketEvent.h"
 #include "ila/base/Gloabl.i.h"
+#include <ll/api/event/Event.h>
+#include <ll/api/event/EventRefObjSerializer.h>
+#include <ll/api/reflection/Serialization.h>
+#include <mc/nbt/CompoundTag.h>
 
 namespace ila::packet {
 
