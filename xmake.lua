@@ -22,6 +22,12 @@ option("tests")
     set_description("Enable tests")
 option_end()
 
+option("fakes")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Enable fakes")
+option_end()
+
 add_requires("levilamina 1.9.5", { configs = { target_type = get_config("target_type") } })
 add_requires("levibuildscript 0.5.0")
 
@@ -92,6 +98,13 @@ target("iListenAttentively")
         add_files("src-test/" .. target_type .. "/**.cpp")
         add_includedirs("src-test/" .. target_type .. "/")
         add_headerfiles("src-test/" .. target_type .. "/**.h")
+    end
+
+    if has_config("fakes") then
+        add_defines("ILA_FAKES")
+        add_files("src-fakes/**.cpp")
+        add_includedirs("src-fakes/")
+        add_headerfiles("src-fakes/**.h")
     end
 
     on_load(function (target)
