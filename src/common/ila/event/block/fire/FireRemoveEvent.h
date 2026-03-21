@@ -7,11 +7,12 @@ namespace ila::block::inline fire {
 class FireRemoveEvent : public FireEvent {
 public:
     enum class Reason {
-        Unknown    = 0x0,
-        InvalidPos = 0x1,
-        GameRule   = 0x2,
-        Rain       = 0x3,
-        Naturally  = 0x4,
+        Unknown     = 0x0,
+        Unsupported = 0x1,
+        GameRule    = 0x2,
+        Rain        = 0x3,
+        Water       = 0x4,
+        BurntOut    = 0x5,
     };
 
 private:

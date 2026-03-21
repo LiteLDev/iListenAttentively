@@ -1,5 +1,4 @@
 #include "ila/event/block/fire/FireSpreadEvent.h"
-#include "FireEvent.h"
 #include "ila/base/Gloabl.i.h"
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
