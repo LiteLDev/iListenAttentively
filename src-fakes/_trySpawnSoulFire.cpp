@@ -1,4 +1,4 @@
-#include <mc/common/WeakPtr.h>
+/*#include <mc/common/WeakPtr.h>
 #include <mc/util/BaseGameVersion.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
@@ -38,3 +38,4 @@ bool FireBlock::_trySpawnSoulFire(BlockSource& region, BlockPos const& pos) cons
         BlockChangeContext{false}
     );
 }
+*/
