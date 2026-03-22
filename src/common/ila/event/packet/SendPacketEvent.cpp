@@ -31,9 +31,7 @@ LL_TYPE_INSTANCE_HOOK(
     SubClientId              recipientSubId
 ) {
     auto&              pkt = const_cast<Packet&>(packet);
-    SendingPacketEvent event{*this, id, recipientSubId, pkt};
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) return;
+    if (eventPromise(SendingPacketEvent{*this, id, recipientSubId, pkt}).publish()) return;
     gSendPacketInfo.emplace(std::tuple{this, id, recipientSubId, &pkt});
     origin(id, pkt, recipientSubId);
     gSendPacketInfo.reset();
@@ -54,7 +52,7 @@ LL_TYPE_INSTANCE_HOOK(
     if (!gSendPacketInfo || length == mOutgoingData->mOwnedBuffer.size()) return;
     auto& [net, id, subId, pkt] = *gSendPacketInfo;
     if (net->getConnectionFromId(id)->mPeer.get() != this) return;
-    getLLEventBus().publish(SentPacketEvent{*net, id, subId, *pkt});
+    eventPromise(SentPacketEvent{*net, id, subId, *pkt}).publish();
 }
 
 EventHook(SendingPacketEvent, SentPacketEvent, <SendPacketEventHook1, SendPacketEventHook2>);

@@ -60,11 +60,10 @@ handleReceive(NetEventCallback& self, NetworkIdentifierWithSubId const& id, bool
     connect->mLastPacketTime  = now;
     packet->mReceiveTimepoint = now;
 
-    ReceivingPacketEvent event{*networkSystem, id.id, id.subClientId, *packet};
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) return IncomingPacketFilterResult::RejectedSilently;
-    packet->mHandler->handle(id.id, self, packet);
-    getLLEventBus().publish(ReceivedPacketEvent{*networkSystem, id.id, id.subClientId, *packet});
+    eventPromise(ReceivingPacketEvent{*networkSystem, id.id, id.subClientId, *packet})
+        .onSuccess([&] { packet->mHandler->handle(id.id, self, packet); })
+        .onSuccessEvent(ReceivedPacketEvent{*networkSystem, id.id, id.subClientId, *packet})
+        .publish();
 
     return IncomingPacketFilterResult::RejectedSilently;
 }

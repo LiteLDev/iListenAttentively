@@ -1,5 +1,6 @@
 #include "WeatherUpdateEvent.h"
 #include "ila/event/world/WeatherUpdateEvent.i.h"
+#include "ila/utils/EventUtils.i.h"
 #include <algorithm>
 #include <ila/base/Gloabl.i.h>
 #include <ll/api/chrono/GameChrono.h>
@@ -71,17 +72,21 @@ LL_TYPE_INSTANCE_HOOK(
     auto prevLightningTime  = mWeatherManagerProxy->getLightningTime();
     auto prevTime           = ll::chrono::ticks{std::max(prevRainTime, prevLightningTime)};
 
-    auto beforeEvent = WeatherUpdatingEvent(
-        {getTypeFromLevels(prevRainLevel, prevLightningLevel), prevTime},
-        {getTypeFromLevels(nextRainLevel, nextLightningLevel), nextTime}
-    );
-    getLLEventBus().publish(beforeEvent);
-    if (beforeEvent.isCancelled()) return;
+    // clang-format off
+    auto beforeEvent = eventPromise(
+        WeatherUpdatingEvent{
+            {getTypeFromLevels(prevRainLevel, prevLightningLevel), prevTime},
+            {getTypeFromLevels(nextRainLevel, nextLightningLevel), nextTime}
+        }
+    ).publish();
+    // clang-format on
+    if (beforeEvent) return;
+
     origin(
-        getRainLevelFromType(beforeEvent, WeatherUpdateEvent::Type::Rain),
-        static_cast<int>(beforeEvent.nextDuration().count()),
-        getRainLevelFromType(beforeEvent, WeatherUpdateEvent::Type::Thunder),
-        static_cast<int>(beforeEvent.nextDuration().count())
+        getRainLevelFromType(*beforeEvent, WeatherUpdateEvent::Type::Rain),
+        static_cast<int>(beforeEvent->nextDuration().count()),
+        getRainLevelFromType(*beforeEvent, WeatherUpdateEvent::Type::Thunder),
+        static_cast<int>(beforeEvent->nextDuration().count())
     );
 
     {
@@ -96,11 +101,12 @@ LL_TYPE_INSTANCE_HOOK(
             return;
         }
 
-        auto afterEvent = WeatherUpdatedEvent(
+        // clang-format off
+        eventPromise(WeatherUpdatedEvent{
             {getTypeFromLevels(prevRainLevel, prevLightningLevel), prevTime},
             {getTypeFromLevels(newRainLevel, newLightningLevel), newTime}
-        );
-        getLLEventBus().publish(afterEvent);
+        }).publish();
+        // clang-format on
     }
 }
 

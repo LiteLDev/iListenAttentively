@@ -1,5 +1,6 @@
 #pragma once
 #include "ila/utils/MemoryUtils.i.h"
+#include "ila/utils/EventUtils.i.h"
 #include <atomic>
 #include <ll/api/event/Emitter.h>
 #include <ll/api/event/EmitterBase.h>
@@ -20,11 +21,11 @@ using ll::event::serializePtrObj;
 using ll::event::serializeRefObj;
 using ll::memory::dAccess;
 using namespace ila::memory_utils;
+using ila::event_utils::eventPromise;
 namespace reflection {
 using namespace ll::reflection;
 }
 
-ll::event::EventBus& getLLEventBus();
 ll::mod::NativeMod&  getSelfMod();
 ll::io::Logger&      getLogger();
 

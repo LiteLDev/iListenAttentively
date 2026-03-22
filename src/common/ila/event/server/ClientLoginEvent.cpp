@@ -76,10 +76,10 @@ LL_TYPE_INSTANCE_HOOK(
     auto result = origin(source, packet);
     if (!result || isDisconnect(source)) return result;
 
-    auto event = ClientLoginingEvent{source, *result};
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) {
+    if (eventPromise(ClientLoginingEvent{source, *result})
+            .onCancel([&] {
         thisFor<NetEventCallback>()->disconnectPrimaryClient(source, Connection::DisconnectFailReason::Kicked);
+    }).publish()) {
         return std::nullopt;
     }
 
@@ -98,7 +98,7 @@ LL_TYPE_INSTANCE_HOOK(
     origin(source, playerInfo);
 
     if (!isDisconnect(source)) {
-        getLLEventBus().publish(ClientLoginedEvent{source, const_cast<PlayerAuthenticationInfo&>(playerInfo)});
+        eventPromise(ClientLoginedEvent{source, const_cast<PlayerAuthenticationInfo&>(playerInfo)}).publish();
     }
 }
 

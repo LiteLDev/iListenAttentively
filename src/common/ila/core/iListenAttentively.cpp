@@ -55,7 +55,6 @@ void iListenAttentively::printLogo() const {
 } // namespace ila::inline mod
 
 namespace ila::inline base {
-ll::event::EventBus& getLLEventBus() { return ll::event::EventBus::getInstance(); }
 ll::mod::NativeMod&  getSelfMod() { return iListenAttentively::getInstance().getSelf(); }
 ll::io::Logger&      getLogger() { return getSelfMod().getLogger(); }
 } // namespace ila::inline base

@@ -8,6 +8,7 @@
 #include "ila/event/block/fire/FireLightCampfireEvent.h"
 #include "ila/event/block/fire/FireEvictBeehiveEvent.h"
 #include "ila/event/block/fire/FireIgniteTNTEvent.h"
+#include "ila/utils/EventUtils.i.h"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -78,12 +79,10 @@ LL_TYPE_INSTANCE_HOOK(
         return false;
     }
 
-    auto event = SoulFireSpawningEvent{region, pos};
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) return false;
+    if (eventPromise(SoulFireSpawningEvent{region, pos}).publish()) return false;
 
     if (region.setBlock(pos, *soulFireBlock->mDefaultState, 3, nullptr, BlockChangeContext{false})) {
-        getLLEventBus().publish(SoulFireSpawnedEvent{region, pos});
+        eventPromise(SoulFireSpawnedEvent{region, pos}).publish();
         return true;
     }
     return false;
@@ -97,7 +96,6 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     BlockEvents::BlockQueuedTickEvent& eventData
 ) {
-    auto&     eventBus   = getLLEventBus();
     auto&     region     = eventData.mRegion;
     auto&     pos        = *eventData.mPos;
     auto&     random     = eventData.mRandom;
@@ -130,11 +128,10 @@ LL_TYPE_INSTANCE_HOOK(
     }();
 
     if (!mayPlace(region, pos)) {
-        auto event = FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Unsupported};
-        eventBus.publish(event);
-        if (!event.isCancelled()) {
-            region.removeBlock(pos, BlockChangeContext{false});
-            eventBus.publish(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Unsupported});
+        if (!eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Unsupported})
+                 .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                 .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Unsupported})
+                 .publish()) {
             return;
         }
     }
@@ -144,14 +141,12 @@ LL_TYPE_INSTANCE_HOOK(
         return;
     }
 
-    if (!getGameRule(GameRules::GameRulesIndex::AllowDestructiveObjects, true)) {
-        auto event = FireRemovingEvent{region, pos, FireRemoveEvent::Reason::GameRule};
-        eventBus.publish(event);
-        if (!event.isCancelled()) {
-            region.removeBlock(pos, BlockChangeContext{false});
-            eventBus.publish(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::GameRule});
-            return;
-        }
+    if (!getGameRule(GameRules::GameRulesIndex::AllowDestructiveObjects, true)
+        && !eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::GameRule})
+                .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::GameRule})
+                .publish()) {
+        return;
     }
 
     static std::array<std::function<bool(BlockSource&, Weather&, BlockPos const&)>, 5> vscNearbyRainfallCheck =
@@ -171,22 +166,19 @@ LL_TYPE_INSTANCE_HOOK(
 
     if (!infiniBurn && region.mDimension.mHasWeather && weather.mRainLevel > 0.2f
         && std::ranges::any_of(vscNearbyRainfallCheck, [&](auto&& check) { return check(region, weather, pos); })) {
-        auto event = FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Rain};
-        eventBus.publish(event);
-        if (!event.isCancelled()) {
-            region.removeBlock(pos, BlockChangeContext{false});
-            eventBus.publish(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Rain});
+        if (!eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Rain})
+                 .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                 .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Rain})
+                 .publish()) {
             return;
         }
     }
 
     auto tryRemoveFire = [&](FireRemoveEvent::Reason reason) -> bool {
-        auto event = FireRemovingEvent{region, pos, reason};
-        eventBus.publish(event);
-        if (event.isCancelled()) return false;
-        region.removeBlock(pos, BlockChangeContext{false});
-        eventBus.publish(FireRemovedEvent{region, pos, reason});
-        return true;
+        return !eventPromise(FireRemovingEvent{region, pos, reason})
+                    .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                    .onSuccessEvent(FireRemovedEvent{region, pos, reason})
+                    .publish();
     };
 
     if (![&]() { // 返回值代表是否蔓延火焰
@@ -196,10 +188,9 @@ LL_TYPE_INSTANCE_HOOK(
             auto prevAge = fireAge;
 
             if (auto newAge = fireAge + random.nextInt(3) / 2; newAge != fireAge) {
-                auto event = FireAgingEvent{region, pos, fireAge, newAge};
-                eventBus.publish(event);
-                if (!event.isCancelled() && event.newAge() != fireAge) {
-                    fireAge = event.newAge();
+                if (auto event = eventPromise(FireAgingEvent{region, pos, fireAge, newAge}).publish();
+                    !event && event->newAge() != fireAge) {
+                    fireAge = event->newAge();
                     if (auto newFireBlock = fireBlock->setState(VanillaStates::Age(), fireAge); newFireBlock) {
                         fireBlock = newFireBlock.as_ptr();
                     }
@@ -207,7 +198,7 @@ LL_TYPE_INSTANCE_HOOK(
             }
 
             if (region.setBlock(pos, *fireBlock, 1, nullptr, BlockChangeContext{false})) {
-                eventBus.publish(FireAgedEvent{region, pos, prevAge, fireAge});
+                eventPromise(FireAgedEvent{region, pos, prevAge, fireAge}).publish();
             }
         }
 
@@ -287,12 +278,12 @@ LL_TYPE_INSTANCE_HOOK(
                         return weather.isPrecipitatingAt(region, checkPos)
                             && region.getBiome(checkPos).getTemperature(region, checkPos) > 0.15000001f;
                     })) {
-                        auto event = FireSpreadingEvent{region, pos, spreadPos};
-                        eventBus.publish(event);
-                        if (!event.isCancelled()) {
+                        eventPromise(FireSpreadingEvent{region, pos, spreadPos})
+                            .onSuccess([&] {
                             region.setBlock(spreadPos, *fireBlock, 3, nullptr, BlockChangeContext{false});
-                            eventBus.publish(FireSpreadedEvent{region, pos, spreadPos});
-                        }
+                        })
+                            .onSuccessEvent(FireSpreadedEvent{region, pos, spreadPos})
+                            .publish();
                     }
                 }
             }
@@ -320,12 +311,10 @@ LL_TYPE_INSTANCE_HOOK(
 
     if (*blockType.mNameInfo->mFullName == VanillaBlockTypeIds::Beehive()
         || *blockType.mNameInfo->mFullName == VanillaBlockTypeIds::BeeNest()) {
-        auto event = FireEvictingBeehiveEvent{region, firePos, pos};
-        getLLEventBus().publish(event);
-        if (!event.isCancelled()) {
-            static_cast<BeehiveBlock&>(blockType).evictAll(region, pos, false);
-            getLLEventBus().publish(FireEvictedBeehiveEvent{region, firePos, pos});
-        }
+        eventPromise(FireEvictingBeehiveEvent{region, firePos, pos})
+            .onSuccess([&] { static_cast<BeehiveBlock&>(blockType).evictAll(region, pos, false); })
+            .onSuccessEvent(FireEvictedBeehiveEvent{region, firePos, pos})
+            .publish();
     }
 
     if (nextInt(chance - 1) < std::to_underlying(block.mDirectData->mBurnOdds)) {
@@ -334,46 +323,39 @@ LL_TYPE_INSTANCE_HOOK(
                        || (*blockType.mNameInfo->mFullName == VanillaBlockTypeIds::SoulCampfire());
 
         if (nextInt(age + 9) >= 5 || region.mDimension.mWeather->isRainingAt(region, pos)) {
-            if (!isCampfire) {
-                auto event = FireBurningBlockEvent{region, firePos, pos};
-                getLLEventBus().publish(event);
+            if (!isCampfire && !eventPromise(FireBurningBlockEvent{region, firePos, pos}).publish()) {
                 if (isTnt) {
                     if (region.mLevel.mLevelData->get()->mGameRules->getBool(
                             GameRuleId{std::to_underlying(GameRules::GameRulesIndex::DoNaturalRegeneration)},
                             false
                         )) {
-                        if (!event.isCancelled()) {
-                            region.removeBlock(pos, BlockChangeContext{false});
-                            getLLEventBus().publish(FireBurnedBlockEvent{region, firePos, pos});
-                        }
+                        region.removeBlock(pos, BlockChangeContext{false});
+                        eventPromise(FireBurnedBlockEvent{region, firePos, pos}).publish();
                         return;
                     }
-                } else if (!event.isCancelled()) {
+                } else {
                     region.removeBlock(pos, BlockChangeContext{false});
-                    getLLEventBus().publish(FireBurnedBlockEvent{region, firePos, pos});
+                    eventPromise(FireBurnedBlockEvent{region, firePos, pos}).publish();
                 }
             }
         } else {
-            auto fireBlockWithAge = mDefaultState->setState<bool>(VanillaStates::Age(), std::min(age + nextInt(4) / 4, 15));
+            auto fireBlockWithAge =
+                mDefaultState->setState<bool>(VanillaStates::Age(), std::min(age + nextInt(4) / 4, 15));
 
             if (!isCampfire) {
                 if (!isTnt) {
-                    {
-                        auto event = FireBurningBlockEvent{region, firePos, pos};
-                        getLLEventBus().publish(event);
-                        if (!event.isCancelled()) {
-                            region.removeBlock(pos, BlockChangeContext{false});
-                            getLLEventBus().publish(FireBurnedBlockEvent{region, firePos, pos});
-                        }
-                    }
+                    eventPromise(FireBurningBlockEvent{region, firePos, pos})
+                        .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                        .onSuccessEvent(FireBurnedBlockEvent{region, firePos, pos})
+                        .publish();
                     if (isValidFireLocation(region, pos) && fireBlockWithAge) {
                         auto spreadPos = pos;
-                        auto event     = FireSpreadingEvent{region, firePos, spreadPos};
-                        getLLEventBus().publish(event);
-                        if (!event.isCancelled()) {
+                        eventPromise(FireSpreadingEvent{region, firePos, spreadPos})
+                            .onSuccess([&] {
                             region.setBlock(spreadPos, *fireBlockWithAge, 3, nullptr, BlockChangeContext{false});
-                            getLLEventBus().publish(FireSpreadedEvent{region, firePos, spreadPos});
-                        }
+                        })
+                            .onSuccessEvent(FireSpreadedEvent{region, firePos, spreadPos})
+                            .publish();
                     }
                     return;
                 }
@@ -381,19 +363,18 @@ LL_TYPE_INSTANCE_HOOK(
         }
 
         if (isCampfire) {
-            auto event = FireLightingCampfireEvent{region, firePos, pos};
-            getLLEventBus().publish(event);
-            if (!event.isCancelled()) {
-                if(CampfireBlock::tryLightFire(region, pos, nullptr)){
-                    getLLEventBus().publish(FireLightedCampfireEvent{region, firePos, pos});
+            eventPromise(FireLightingCampfireEvent{region, firePos, pos})
+                .onSuccess([&] {
+                if (CampfireBlock::tryLightFire(region, pos, nullptr)
+                    && region.getBlock(pos).getState<bool>(VanillaStates::Extinguished())) {
+                    eventPromise(FireLightedCampfireEvent{region, firePos, pos}).publish();
                 }
-            }
+            }).publish();
         }
 
         if (isTnt) {
-            auto event = FireIgnitingTNTEvent{region, firePos, pos};
-            getLLEventBus().publish(event);
-            if (!event.isCancelled()) {
+            eventPromise(FireIgnitingTNTEvent{region, firePos, pos})
+                .onSuccess([&] {
                 auto tntWithExplode = block.setState<int>(VanillaStates::ExplodeBit(), true);
                 tntWithExplode.value_or(block).mBlockType->destroy(region, pos, block, nullptr);
 
@@ -403,8 +384,9 @@ LL_TYPE_INSTANCE_HOOK(
                     )) {
                     region.removeBlock(pos, BlockChangeContext{false});
                 }
-                getLLEventBus().publish(FireIgnitedTNTEvent{region, firePos, pos});
-            }
+            })
+                .onSuccessEvent(FireIgnitedTNTEvent{region, firePos, pos})
+                .publish();
         }
     }
 }

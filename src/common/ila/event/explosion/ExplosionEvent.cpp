@@ -1,4 +1,5 @@
 // clang-format off
+#include "ila/utils/EventUtils.i.h"
 #pragma include_alias("mc/world/level/block/ResourceDropsContext.h", "patch_mc/world/level/block/ResourceDropsContext.i.h")
 #pragma include_alias(<mc/world/level/block/ResourceDropsContext.h>, <patch_mc/world/level/block/ResourceDropsContext.i.h>)
 #pragma include_alias("mc/world/level/ParticlesBlockExplosionEvent.h", "patch_mc/world/level/ParticlesBlockExplosionEvent.i.h")
@@ -140,11 +141,7 @@ void ExplosionEvent::deserialize(CompoundTag const& nbt) {
 LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosion::explode, bool, IRandom& random) {
     if (mRadius == 0.0f) return false;
 
-    {
-        auto event = ExplodingEvent{*this};
-        getLLEventBus().publish(event);
-        if (event.isCancelled()) return false;
-    }
+    if (eventPromise(ExplodingEvent{*this}).publish()) return false;
 
     auto& level   = mRegion.mLevel;
     auto  source  = optional_ref{level.fetchEntity(mSourceID, false)};
@@ -178,15 +175,14 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 currentPos -= normalizedDelta;
                 return !mRegion.getBlock({currentPos}).mBlockType->mMaterial.mSolid;
             })) {
-                auto event = ExplosionCollidingEvent{*this, mPos, currentPos};
-                getLLEventBus().publish(event);
-                if (!event.isCancelled()) {
+                eventPromise(ExplosionCollidingEvent{*this, mPos, currentPos})
+                    .onSuccess([&] {
                     std::swap(*mPos, currentPos);
                     inWater =
                         mRegion.getLiquidBlock(BlockPos{currentPos}).mBlockType->mMaterial.mType == MaterialType::Water;
-
-                    getLLEventBus().publish(ExplosionCollidedEvent{*this, currentPos, mPos});
-                }
+                })
+                    .onSuccessEvent(ExplosionCollidedEvent{*this, currentPos, mPos})
+                    .publish();
             }
         }
     }
@@ -261,11 +257,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
     }).value_or(mPos);
     // clang-format on
     for (auto entity : _getActorsInRange(source, doubleRadius)) { // 处理实体
-        if (entity->isSpectator() || [&]() {
-            auto event = ExplosionProcessEntityingEvent{*this, *entity};
-            getLLEventBus().publish(event);
-            return event.isCancelled();
-        }()) {
+        if (entity->isSpectator() || eventPromise(ExplosionProcessEntityingEvent{*this, *entity}).publish()) {
             continue;
         }
 
@@ -344,14 +336,18 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 damageSource.mCause = ActorDamageCause::BlockExplosion;
                 return {damageSource, true, false};
             }();
-            ExplosionDamageEntityingEvent event{*this, *entity, damageSource, totalDamage, damaging, knockback};
-            getLLEventBus().publish(event);
-            if (!event.isCancelled() && totalDamage > 0.0f) {
+            // clang-format off
+            if (!eventPromise(
+                    ExplosionDamageEntityingEvent{*this, *entity, damageSource, totalDamage, damaging, knockback}
+                ).publish() && totalDamage > 0.0f
+            ) {
+                // clang-format on
                 entity->hurt(damageSource, totalDamage, damaging, knockback);
 
-                getLLEventBus().publish(
+                eventPromise(
                     ExplosionDamageEntityedEvent{*this, *entity, damageSource, totalDamage, damaging, knockback}
-                );
+                )
+                    .publish();
             }
         }
 
@@ -375,11 +371,9 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
 
             Vec3 knockback = direction * KnockbackRules::getScaledKnockbackForce(*entity, pow);
 
-            {
-                auto event = ExplosionKnockbackEntityingEvent{*this, *entity, knockback};
-                getLLEventBus().publish(event);
-                if (event.isCancelled()) knockback = {};
-            }
+            eventPromise(ExplosionKnockbackEntityingEvent{*this, *entity, knockback}).onCancel([&] {
+                knockback = {};
+            }).publish();
 
             if (knockback.x != 0.0f || knockback.y != 0.0f || knockback.z != 0.0f) {
                 if (type == ActorType::Player && source) {
@@ -395,31 +389,22 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 *entity->mBuiltInComponents->mStateVectorComponent->mPosDelta += knockback;
                 ServerMovement::notifyOfServerInitiatedMotion(entity->mEntityContext);
 
-                getLLEventBus().publish(ExplosionKnockbackEntityedEvent{*this, *entity, knockback});
+                eventPromise(ExplosionKnockbackEntityedEvent{*this, *entity, knockback}).publish();
             }
         }
 
-        getLLEventBus().publish(ExplosionProcessEntityedEvent{*this, *entity});
+        eventPromise(ExplosionProcessEntityedEvent{*this, *entity}).publish();
     }
 
     if (mRadius > 0.0f) { // 粒子效果和声音
-        {                 // 声音
-            auto event = ExplosionSoundingEvent{*this};
-            getLLEventBus().publish(event);
-            if (!event.isCancelled()) {
-                level.broadcastSoundEvent(mRegion, mSoundExplosionType, mPos, -1, {}, false);
-                getLLEventBus().publish(ExplosionSoundedEvent{*this});
-            }
-        }
-        { // 爆炸粒子效果
-            auto pos   = mPos;
-            auto event = ExplosionParticlingEvent{*this, pos, mParticleType};
-            getLLEventBus().publish(event);
-            if (!event.isCancelled()) {
-                level.broadcastLocalEvent(mRegion, mParticleType, pos, static_cast<int>(mRadius));
-                getLLEventBus().publish(ExplosionParticledEvent{*this, pos, mParticleType});
-            }
-        }
+        eventPromise(ExplosionSoundingEvent{*this})
+            .onSuccess([&] { level.broadcastSoundEvent(mRegion, mSoundExplosionType, mPos, -1, {}, false); })
+            .onSuccessEvent(ExplosionSoundedEvent{*this})
+            .publish();
+        eventPromise(ExplosionParticlingEvent{*this, mPos, mParticleType})
+            .onSuccess([&] { level.broadcastLocalEvent(mRegion, mParticleType, mPos, static_cast<int>(mRadius)); })
+            .onSuccessEvent(ExplosionParticledEvent{*this, mPos, mParticleType})
+            .publish();
     }
 
     mRegion.postGameEvent(source, GameEventRegistry::explode(), mPos, nullptr);
@@ -447,12 +432,12 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
             if (mBreaking) { // 方块被爆炸破坏
                 if (!random.nextInt(8)) {
                     auto pos = Vec3{blockPos};
-                    auto event =
-                        ExplosionParticlingEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion};
-                    getLLEventBus().publish(event);
-                    if (!event.isCancelled()) {
+                    eventPromise(
+                        ExplosionParticlingEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion}
+                    )
+                        .onSuccess([&] {
                         particlesEvent.mPositions.emplace_back(pos);
-                    }
+                    }).publish();
                 }
 
                 if (!block.isAir()) {
@@ -469,18 +454,23 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                         Randomize randomize(level.getRandom());
 
                         auto destroy = [&](Block const& block, bool isExtraBlock) {
-                            if (block.isAir()) return;
-                            {
-                                auto event = ExplosionProcessBlockingEvent{*this, blockPos, block, isExtraBlock};
-                                getLLEventBus().publish(event);
-                                if (event.isCancelled()) return;
-                            }
+                            // clang-format off
+                            if (block.isAir() || eventPromise(ExplosionProcessBlockingEvent{*this, blockPos, block, isExtraBlock}).publish()) return;
+                            // clang-format on
                             auto resources = block.mBlockType->getResourceDrops(block, randomize, resourceDropsContext);
                             { // 获取并保存方块掉落物
-                                auto event =
-                                    ExplosionLootingBlockEvent{*this, blockPos, block, isExtraBlock, *resources.mItems};
-                                getLLEventBus().publish(event);
-                                if (!event.isCancelled() && !resources.mItems->empty()) {
+                                // clang-format off
+                                auto event = !eventPromise(
+                                    ExplosionLootingBlockEvent{
+                                        *this,
+                                        blockPos,
+                                        block,
+                                        isExtraBlock,
+                                        *resources.mItems
+                                    }
+                                ).publish();
+                                // clang-format on
+                                if (!event && !resources.mItems->empty()) {
                                     blockDrops.insert({
                                         {blockPos, isExtraBlock                },
                                         {&block,   std::move(*resources.mItems)}
@@ -488,15 +478,18 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                 }
                             }
                             { // 生成经验球
-                                auto event = ExplosionExperienceBlockingEvent{
-                                    *this,
-                                    blockPos,
-                                    block,
-                                    isExtraBlock,
-                                    resources.mExperienceCount
-                                };
-                                getLLEventBus().publish(event);
-                                if (!event.isCancelled() && resources.mExperienceCount > 0) {
+                                // clang-format off
+                                auto event = eventPromise(
+                                    ExplosionExperienceBlockingEvent{
+                                        *this,
+                                        blockPos,
+                                        block,
+                                        isExtraBlock,
+                                        resources.mExperienceCount
+                                    }
+                                ).publish();
+                                // clang-format on
+                                if (!event && resources.mExperienceCount > 0) {
                                     ExperienceOrb::spawnOrbs(
                                         mRegion,
                                         blockPos,
@@ -505,7 +498,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                         nullptr
                                     );
 
-                                    getLLEventBus().publish(
+                                    eventPromise(
                                         ExplosionExperienceBlockedEvent{
                                             *this,
                                             blockPos,
@@ -513,13 +506,11 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                             isExtraBlock,
                                             resources.mExperienceCount
                                         }
-                                    );
+                                    ).publish();
                                 }
                             }
                             {
-                                auto event = ExplosionDestroyBlockingEvent{*this, blockPos, block, isExtraBlock};
-                                getLLEventBus().publish(event);
-                                if (!event.isCancelled()) {
+                                if (!eventPromise(ExplosionDestroyBlockingEvent{*this, blockPos, block, isExtraBlock}).publish()) {
                                     if (isExtraBlock) {
                                         mRegion.setExtraBlock(blockPos, airBlock, 3);
                                     } else {
@@ -529,13 +520,13 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                         isAirBlock = true;
                                     }
                                     block.mBlockType->spawnAfterBreak(mRegion, block, blockPos, resourceDropsContext);
-                                    getLLEventBus().publish(
+                                    eventPromise(
                                         ExplosionDestroyBlockedEvent{*this, blockPos, block, isExtraBlock}
-                                    );
+                                    ).publish();
                                 }
                             }
                             block.mBlockType->onExploded(mRegion, blockPos, source);
-                            getLLEventBus().publish(ExplosionProcessBlockedEvent{*this, blockPos, block, isExtraBlock});
+                            eventPromise(ExplosionProcessBlockedEvent{*this, blockPos, block, isExtraBlock}).publish();
                         };
 
                         destroy(block, false);
@@ -561,9 +552,10 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                      std::move(*particlesEvent.save())}
                 }.sendTo(*mPos, mRegion.mDimension.mId);
                 for (auto& pos : particlesEvent.mPositions) {
-                    getLLEventBus().publish(
+                    eventPromise(
                         ExplosionParticledEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion}
-                    );
+                    )
+                        .publish();
                 }
             }
 
@@ -575,7 +567,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                         BlockChangeContext changeCtx{false};
                         changeCtx.mContextSource = ActorChangeContext{source};
                         mRegion.setBlock(pos, fireBlock, 3, nullptr, changeCtx);
-                        getLLEventBus().publish(ExplosionFlamedEvent{*this, pos});
+                        eventPromise(ExplosionFlamedEvent{*this, pos}).publish();
                     }
 
                     minPos = std::min(minPos, pos);
@@ -607,9 +599,8 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 BlockType::popResource(mRegion, pos, itemStack);
             }
             for (auto& [key, value] : blockDrops) {
-                getLLEventBus().publish(
-                    ExplosionLootedBlockEvent{*this, key.first, *value.first, key.second, value.second}
-                );
+                eventPromise(ExplosionLootedBlockEvent{*this, key.first, *value.first, key.second, value.second})
+                    .publish();
             }
         }
     }
@@ -623,7 +614,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         }
     }
 
-    getLLEventBus().publish(ExplodedEvent{*this});
+    eventPromise(ExplodedEvent{*this}).publish();
     return true;
 }
 

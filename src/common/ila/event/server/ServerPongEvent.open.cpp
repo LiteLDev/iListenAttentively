@@ -133,9 +133,7 @@ LL_TYPE_INSTANCE_HOOK(
         // clang-format on
     }({pongData + 2, pongLength - 2});
 
-    auto event = SendingServerPongEvent(address, pong);
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) return;
+    if (eventPromise(SendingServerPongEvent(address, pong)).publish()) return;
 
     RakNet::BitStream is(reinterpret_cast<uchar*>(recvStruct->mData.data()), recvStruct->mBytesRead, false);
     is.IgnoreBits(8);
@@ -172,7 +170,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto location     = std::source_location::current();
     recvStruct->mSocket->Send(&bsp, location.file_name(), location.line());
 
-    getLLEventBus().publish(SentServerPongEvent{address, pong});
+    eventPromise(SentServerPongEvent(address, pong)).publish();
 }
 
 EventHook(SendingServerPongEvent, SentServerPongEvent, <ServerPongEventHook>);

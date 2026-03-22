@@ -67,12 +67,11 @@ LL_TYPE_INSTANCE_HOOK(
         std::make_move_iterator(ids.end())
     );
 
-    BroadcastingPacketEvent event{*this, idsSet, pkt};
-    getLLEventBus().publish(event);
-    if (event.isCancelled() || idsSet.empty()) return;
+    auto event = eventPromise(BroadcastingPacketEvent{*this, idsSet, pkt}).publish();
+    if (event || idsSet.empty()) return;
 
     gBroadcastPacketInfo.emplace(ll::DenseSet<NetworkPeer*>{});
-    origin(std::vector<NetworkIdentifierWithSubId>{event.targets().begin(), event.targets().end()}, packet);
+    origin(std::vector<NetworkIdentifierWithSubId>{event->targets().begin(), event->targets().end()}, packet);
     for (auto it = idsSet.begin(); it != idsSet.end();) {
         if (auto* connect = getConnectionFromId(it->id);
             !connect || !gBroadcastPacketInfo->contains(connect->mPeer.get())) {
@@ -81,7 +80,7 @@ LL_TYPE_INSTANCE_HOOK(
             ++it;
         }
     }
-    if (!idsSet.empty()) getLLEventBus().publish(BroadcastedPacketEvent{*this, idsSet, pkt});
+    if (!idsSet.empty()) eventPromise(BroadcastedPacketEvent{*this, idsSet, pkt}).publish();
     gBroadcastPacketInfo.reset();
 }
 

@@ -69,15 +69,11 @@ LL_TYPE_INSTANCE_HOOK(
         auto  face  = block.getState<FacingID>(VanillaStates::FacingDirection()).value_or(FacingID::Down);
 
         if (extending) {
-            BlockPistonExtendEvent event{region, *this, block, face};
-            getLLEventBus().publish(event);
-            if (event.isCancelled()) {
+            if (!eventPromise(BlockPistonExtendEvent{region, *this, block, face}).publish()) {
                 mNewState = static_cast<PistonState>(PistonStateEx::ExpandingCancelled);
             }
         } else {
-            BlockPistonRetractEvent event{region, *this, block, face};
-            getLLEventBus().publish(event);
-            if (event.isCancelled()) {
+            if (!eventPromise(BlockPistonRetractEvent{region, *this, block, face}).publish()) {
                 mNewState = static_cast<PistonState>(PistonStateEx::RetractingCancelled);
             }
         }

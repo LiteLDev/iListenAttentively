@@ -42,11 +42,12 @@ LL_TYPE_INSTANCE_HOOK(
         auto typeAfterDelay = getTypeFromLevels(mTargetRainLevel, mTargetLightningLevel);
 
         if (typeBeforeUpdate != typeAfterDelay && typeAfterDelay == typeImmediatelyAfterUpdate) {
-            WeatherUpdatedEvent event(
-                {typeBeforeUpdate, ll::chrono::ticks::zero()},
-                {typeAfterDelay, ll::chrono::ticks::zero()}
-            );
-            getLLEventBus().publish(event);
+            eventPromise(
+                WeatherUpdatedEvent{
+                    {typeBeforeUpdate, ll::chrono::ticks::zero()},
+                    {typeAfterDelay,   ll::chrono::ticks::zero()}
+            }
+            ).publish();
         }
     },
         ll::chrono::ticks(1)

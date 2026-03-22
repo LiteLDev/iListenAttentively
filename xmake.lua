@@ -61,7 +61,6 @@ target("iListenAttentively")
         ( is_config("target_type", "server") and "LL_PLAT_S" or "LL_PLAT_C" ),
         ( is_mode("debug") and "ILA_DEBUG" or "ILA_RELEASE" )
     )
-    set_optimize("aggressive")
     set_configdir("$(builddir)/config")
     add_files("src/**.rc")
     add_includedirs("$(builddir)/config")
@@ -73,6 +72,7 @@ target("iListenAttentively")
     add_syslinks("ws2_32")
     if is_mode("release") then
         set_strip("all")
+        set_optimize("aggressive")
     else
         remove_files("src/common/ila/core/SymbolProvider.cpp")
     end

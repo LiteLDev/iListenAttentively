@@ -30,9 +30,7 @@ LL_TYPE_INSTANCE_HOOK(
 ) {
     if (getCurrentActiveShield().isNull()) return origin(source, damage);
 
-    auto event = PlayerShieldBlockingEvent{*this, source, damage};
-    getLLEventBus().publish(event);
-    if (event.isCancelled()) return false;
+    if (eventPromise(PlayerShieldBlockingEvent{*this, source, damage}).publish()) return false;
 
     if (auto result = origin(source, damage); result) {
         gBlockedPlayers.insert(this);
@@ -56,7 +54,7 @@ LL_TYPE_INSTANCE_HOOK(
     gBlockedPlayers.erase(this);
     auto result = origin(source, damage, knock, ignite);
     if (gBlockedPlayers.contains(this) && !result) {
-        getLLEventBus().publish(PlayerShieldBlockedEvent{*this, source, damage});
+        eventPromise(PlayerShieldBlockedEvent{*this, source, damage}).publish();
     }
     gBlockedPlayers.erase(this);
     return result;

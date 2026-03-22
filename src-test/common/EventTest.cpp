@@ -5,6 +5,7 @@
 #include "ila/event/block/fire/FireBurnBlockEvent.h"
 #include "ila/event/block/fire/FireSpreadEvent.h"
 #include "ll/api/event/Cancellable.h"
+#include "ll/api/event/EventBus.h"
 #include "ll/api/event/EventId.h"
 #include "ll/api/event/Listener.h"
 #include "ll/api/event/ListenerBase.h"
@@ -27,17 +28,18 @@ inline struct EventTest {
 } test;
 
 EventTest::EventTest() {
-    ila::getLLEventBus().emplaceListener<ll::event::ServerStartedEvent>([](auto&) {
-        auto ids = ila::getLLEventBus().events()
+    static auto& eventBus = ll::event::EventBus::getInstance();
+    eventBus.emplaceListener<ll::event::ServerStartedEvent>([](auto&) {
+        auto ids = eventBus.events()
                  | std::views::filter([](std::pair<std::string_view, ll::event::EventIdView> const& id) {
             return id.second.name.contains("Fire") && id.second.name.contains("ila") && !id.second.name.contains("Ag");
         }) | std::ranges::to<std::vector>();
 
-        ila::getLLEventBus().emplaceListener<ila::block::FireBurningBlockEvent>(
+        eventBus.emplaceListener<ila::block::FireBurningBlockEvent>(
             [](ila::block::FireBurningBlockEvent& event) { event.cancel(); },
             ll::event::EventPriority::Low
         );
-        ila::getLLEventBus().emplaceListener<ila::block::FireSpreadingEvent>(
+        eventBus.emplaceListener<ila::block::FireSpreadingEvent>(
             [](ila::block::FireSpreadingEvent& event) { event.cancel(); },
             ll::event::EventPriority::Low
         );
@@ -60,7 +62,7 @@ EventTest::EventTest() {
         });
 
         for (auto& id : ids) {
-            ila::getLLEventBus().addListener(listener, id.second);
+            eventBus.addListener(listener, id.second);
         }
     });
 }
