@@ -20,8 +20,11 @@
 
 #pragma warning(disable : 4267)
 
+#include "ila/core/SymbolProviderConfig.h"
+
 #include <cstdint>
 #include <cstdio>
+#include <memory>
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -41,6 +44,9 @@ extern FuncPtr resolveSymbol(const char* symbol);
 } // namespace ll::memory
 
 using namespace ll::memory;
+
+constexpr uint8_t kSymbolProviderKey = ILA_SYMBOL_PROVIDER_KEY;
+static_assert(kSymbolProviderKey > 0 && kSymbolProviderKey < 255, "ILA_SYMBOL_PROVIDER_KEY must be in [1, 254]");
 
 static size_t __strlen(const char* sz) {
     const char* szEnd = sz;
@@ -65,6 +71,18 @@ static void* __memcpy(void* pvDst, const void* pvSrc, size_t cb) {
         pvSrc         = ((char*)pvSrc) + 1;
     }
     return pvRet;
+}
+
+static uint8_t decodeNonZeroSymbolByte(uint8_t value) {
+    return static_cast<uint8_t>(
+        ((static_cast<unsigned>(value) + 255u - static_cast<unsigned>(kSymbolProviderKey) - 1u) % 255u) + 1u
+    );
+}
+
+static void decodeSymbolNameInPlace(char* symbol, size_t length) {
+    for (size_t i = 0; i < length; ++i) {
+        symbol[i] = static_cast<char>(decodeNonZeroSymbolByte(static_cast<uint8_t>(symbol[i])));
+    }
 }
 
 static unsigned IndexFromPImgThunkData(PCImgThunkData pitdCur, PCImgThunkData pitdBase) {
@@ -195,14 +213,22 @@ ExternC FARPROC WINAPI __delayLoadHelper2(PCImgDelayDescr pidd, FARPROC* ppfnIAT
     if (!pImgDelayDescr_BDS && !strcmp(dli.szDll, BDSAPI_FAKEDLL_NAME)) { pImgDelayDescr_BDS = pidd; }
 
     if (pImgDelayDescr_BDS == pidd) {
-        auto length = __strlen(dli.dlp.szProcName) + 1;
-        auto symbol = new char[length];
-        __memcpy(symbol, dli.dlp.szProcName, length);
-        constexpr uint8_t mXorKey = 105;
-        for (size_t i = 0; i < length; ++i) symbol[i] ^= mXorKey;
-        symbol[length - 1] = '\0';
-        pfnRet = (FARPROC)resolveSymbol(symbol);
-        delete[] symbol;
+        auto length = __strlen(dli.dlp.szProcName);
+        auto symbol = std::make_unique<char[]>(length + 1);
+        __memcpy(symbol.get(), dli.dlp.szProcName, length);
+        decodeSymbolNameInPlace(symbol.get(), length);
+        symbol[length]     = '\0';
+        dli.dlp.szProcName = symbol.get();
+        pfnRet             = (FARPROC)resolveSymbol(symbol.get());
+        if (!pfnRet) {
+            dli.dwLastError = ERROR_PROC_NOT_FOUND;
+            if (__pfnDliFailureHook2) pfnRet = (*__pfnDliFailureHook2)(dliFailGetProc, &dli);
+            if (!pfnRet) {
+                PDelayLoadInfo rgpdli[1] = {&dli};
+                RaiseException(VcppException(ERROR_SEVERITY_ERROR, ERROR_PROC_NOT_FOUND), 0, 1, (PULONG_PTR)(rgpdli));
+                pfnRet = dli.pfnCur;
+            }
+        }
         goto SetEntryHookBypass;
     }
 

@@ -3,6 +3,20 @@ import sys
 import itertools
 import pefile
 
+NON_ZERO_BYTE_MODULUS = 255
+
+
+def encode_non_zero_byte(value, key):
+    return ((value + key - 1) % NON_ZERO_BYTE_MODULUS) + 1
+
+
+def encode_symbol_name(func_name, key):
+    encrypted_name = bytes(encode_non_zero_byte(byte, key) for byte in func_name)
+    if any(byte == 0 for byte in encrypted_name):
+        raise ValueError("encrypted import name unexpectedly contains a NUL byte")
+    return encrypted_name
+
+
 def encrypt_imports_for_dll(pe, dll_name_target, xor_key, is_delay):
     """加密指定DLL的所有导入函数名字符串（支持标准导入和延迟导入），不加密DLL名称"""
     if is_delay:
@@ -45,10 +59,12 @@ def encrypt_imports_for_dll(pe, dll_name_target, xor_key, is_delay):
             func_name = pe.get_string_at_rva(name_rva + 2)
             if func_name:
                 name_offset = pe.get_offset_from_rva(name_rva + 2)
-                encrypted_name = bytes(b ^ xor_key for b in func_name)
+                encrypted_name = encode_symbol_name(func_name, xor_key)
                 pe.set_bytes_at_offset(name_offset, encrypted_name)
 
 def encrypt_imports(pe_path, xor_key):
+    if xor_key <= 0 or xor_key >= NON_ZERO_BYTE_MODULUS:
+        raise ValueError("xor_key must be in the range [1, 254]")
     pe = pefile.PE(pe_path)
     target_dll = b"bedrock_runtime.dll"
     encrypt_imports_for_dll(pe, target_dll, xor_key, is_delay=True)
@@ -62,7 +78,7 @@ if __name__ == "__main__":
         print("Example: encrypt_imports.py plugin.dll 0xAB")
         sys.exit(1)
     try:
-        xor_key = int(sys.argv[2], 10)
+        xor_key = int(sys.argv[2], 0)
     except ValueError:
         print("Error: xor_key must be an integer")
         sys.exit(1)

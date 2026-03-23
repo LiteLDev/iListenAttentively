@@ -76,7 +76,12 @@ target("iListenAttentively")
     else
         remove_files("src/common/ila/core/SymbolProvider.cpp")
     end
-    local XorKey = math.random(1, 255)
+    local function compute_symbol_provider_key(version_info)
+        local seed = tonumber((version_info.commit_hash or ""):sub(1, 2), 16)
+        if not seed then return 105 end
+        return (seed % 254) + 1
+    end
+    local symbolProviderKey = 105
 
     add_files("src/common/**.cpp")
     add_includedirs("src/common")
@@ -109,30 +114,15 @@ target("iListenAttentively")
 
     on_load(function (target)
         local version_info = import("scripts.get-version-info", { rootdir = os.projectdir() }).get_version_info()
+        symbolProviderKey = compute_symbol_provider_key(version_info)
         target:set("configvar", "ILA_VERSION_MAJOR", version_info.major)
         target:set("configvar", "ILA_VERSION_MINOR", version_info.minor)
         target:set("configvar", "ILA_VERSION_PATCH", version_info.patch)
+        target:set("configvar", "ILA_SYMBOL_PROVIDER_KEY", symbolProviderKey)
         if version_info.prerelease then
             target:set("configvar", "ILA_VERSION_PRERELEASE", version_info.prerelease)
         end
     end)
-
-    if is_mode("release") then
-        before_build(function (target) 
-            io.gsub(
-                path.join(
-                    os.projectdir(),
-                    "src",
-                    "common",
-                    "ila",
-                    "core",
-                    "SymbolProvider.cpp"
-                ),
-                "constexpr uint8_t mXorKey = %d+;",
-                "constexpr uint8_t mXorKey = " .. XorKey .. ";"
-            )
-        end)
-    end
 
     before_link(function(target)
         import("lib.detect.find_file")
@@ -161,26 +151,27 @@ target("iListenAttentively")
 
     after_build(function (target)
         local output_dir = path.join(os.projectdir(), "bin", "dll", target:name())
+        local artifact_file = target:targetfile()
 
         os.rm(output_dir)
-
-        os.vcp(target:targetfile(), format("%s/", output_dir))
-        os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
-        if has_config("lite_pdb") then
-            os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
-        else 
-            os.vcp(target:symbolfile(), output_dir)
-        end
 
         if is_mode("release") then
             os.runv(
                 "python.exe",
                 {
                     path.join(os.projectdir(), "tools", "iEncryptImports.py"),
-                    path.join(os.projectdir(), "bin", "dll", target:name(), path.filename(target:targetfile())),
-                    XorKey
+                    artifact_file,
+                    symbolProviderKey
                 }
             )
+        end
+
+        os.vcp(artifact_file, format("%s/", output_dir))
+        os.vcp(target:symbolfile(), format("%s/../../pdb/", output_dir))
+        if has_config("lite_pdb") then
+            os.run(path.join(os.projectdir(), "tools", "iLitePDB.exe"))
+        else 
+            os.vcp(target:symbolfile(), output_dir)
         end
 
         import("scripts.generate-manifest", { rootdir = os.projectdir() }).generate_manifest(

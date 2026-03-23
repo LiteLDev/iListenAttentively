@@ -1,0 +1,3 @@
+#pragma once
+
+#define ILA_SYMBOL_PROVIDER_KEY ${ILA_SYMBOL_PROVIDER_KEY}
