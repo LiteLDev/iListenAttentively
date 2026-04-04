@@ -8,8 +8,8 @@
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BedrockBlockNames.h>
 #include <mc/world/level/block/Block.h>
-#include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/BlockChangeContext.h>
+#include <mc/world/level/block/DragonEggBlock.h>
 #include <mc/world/level/block/VanillaBlockTypeIds.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
@@ -97,9 +97,9 @@ LL_STATIC_HOOK(
         BlockTypeRegistry::get().getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
         3 /* BlockUpdateFlag::All */,
         nullptr,
-        BlockChangeContext{false}
+        BlockChangeContext {}
     );
-    pRegion.removeBlock(pPos, BlockChangeContext{false});
+    pRegion.removeBlock(pPos, BlockChangeContext {});
     LLEventBus.publish(DragonEggBlockTeleportAfterEvent(pRegion, pPos, pRandom, targetPos));
 }
 

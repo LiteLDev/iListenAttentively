@@ -78,7 +78,7 @@ LL_TYPE_INSTANCE_HOOK(
     actor->mLevel = &pRegion.getLevel();
     auto syncMsg =
         ActorBlockSyncMessage { actor->getOrCreateUniqueID(), ActorBlockSyncMessage::MessageId::None };
-    BlockChangeContext context { false };
+    BlockChangeContext context {};
     context.mContextSource = { ActorChangeContext { actor } };
     pRegion.setBlock(
         pPos,

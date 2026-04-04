@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/actor/player/PlayerInteractEntityEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
+#include <mc/world/gamemode/InteractionResult.h>
 
 namespace ila::mc::inline world::inline actor::inline player
 {
@@ -35,16 +36,16 @@ LL_TYPE_INSTANCE_HOOK(
     HookPriority::Normal,
     Player,
     &Player::interact,
-    bool,
+    InteractionResult,
     Actor&      pActor,
     Vec3 const& pLocation
 )
 {
     auto beforeEvent = PlayerInteractEntityBeforeEvent(*this, pActor, const_cast<Vec3&>(pLocation));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) { return InteractionResult { false, false }; }
     auto result = origin(pActor, pLocation);
-    if (result) { LLEventBus.publish(PlayerInteractEntityAfterEvent(*this, pActor, pLocation)); }
+    if (result.mSuccess) { LLEventBus.publish(PlayerInteractEntityAfterEvent(*this, pActor, pLocation)); }
     return result;
 }
 

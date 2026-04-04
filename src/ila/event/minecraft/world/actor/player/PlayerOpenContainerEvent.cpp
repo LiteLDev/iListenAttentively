@@ -2,7 +2,6 @@
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/server/SendPacketEvent.h"
 #include <mc/legacy/ActorUniqueID.h>
-#include <mc/network/NetworkBlockPosition.h>
 #include <mc/network/packet/ContainerOpenPacket.h>
 
 namespace ila::mc::inline world::inline actor::inline player

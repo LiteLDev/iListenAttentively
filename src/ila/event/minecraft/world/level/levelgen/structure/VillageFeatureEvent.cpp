@@ -32,24 +32,27 @@ uint&                     VillageFeatureConstructionEvent::seed() const { return
 int&                      VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
 int& VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
 
-LL_TYPE_INSTANCE_HOOK(
-    VillageFeatureConstructorHook,
-    HookPriority::Normal,
-    VillageFeature,
-    &VillageFeature::$ctor,
-    void*,
-    uint pSeed,
-    int  pTownSpacing,
-    int  pMinTownSeparation
-)
-{
-    // clang-format off
-    LLEventBus.publish(VillageFeatureConstructionEvent(allowedBiomes, pSeed, pTownSpacing, pMinTownSeparation));
-    // clang-format on
-    return origin(pSeed, pTownSpacing, pMinTownSeparation);
-}
+// todo: replace hook
+//  LL_TYPE_INSTANCE_HOOK(
+//      VillageFeatureConstructorHook,
+//      HookPriority::Normal,
+//      VillageFeature,
+//      &VillageFeature::$ctor,
+//      void*,
+//      uint                   pSeed,
+//      int                    pTownSpacing,
+//      int                    pMinTownSeparation,
+//      const ::BiomeRegistry& pBiomeRegistry
+//  )
+//  {
+//      // clang-format off
+//      LLEventBus.publish(VillageFeatureConstructionEvent(mAllowedBiomes, pSeed, pTownSpacing,
+//      pMinTownSeparation));
+//      // clang-format on
+//      return origin(pSeed, pTownSpacing, pMinTownSeparation, pBiomeRegistry);
+//  }
 
-Event_Hook_Factory_Base(VillageFeatureConstruction, <VillageFeatureConstructorHook>);
+// Event_Hook_Factory_Base(VillageFeatureConstruction, <VillageFeatureConstructorHook>);
 
 void CheckIfItIsAVillageGenerationChunkEvent::serialize(CompoundTag& nbt) const
 {

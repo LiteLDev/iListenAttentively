@@ -25,15 +25,14 @@ LL_TYPE_INSTANCE_HOOK(
     PickupItemsGoal,
     &PickupItemsGoal::_pickItemUp,
     void,
-    ItemActor* pItem
+    ItemActor& pItem
 )
 {
-    if (pItem == nullptr) { return origin(pItem); }
-    auto beforeEvent = ActorPickupItemBeforeEvent(mMob, *pItem);
+    auto beforeEvent = ActorPickupItemBeforeEvent(mMob, pItem);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pItem);
-    LLEventBus.publish(ActorPickupItemAfterEvent(mMob, *pItem));
+    LLEventBus.publish(ActorPickupItemAfterEvent(mMob, pItem));
 }
 
 Event_Hook_Factory(ActorPickupItem, <ActorPickupItemEventHook>);

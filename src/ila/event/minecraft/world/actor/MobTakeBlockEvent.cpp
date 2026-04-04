@@ -5,7 +5,6 @@
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
 #include <mc/util/Random.h>
-#include <mc/util/Randomize.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
 #include <mc/world/actor/ai/goal/TakeBlockGoal.h>
 #include <mc/world/events/ActorEventCoordinator.h>
@@ -53,13 +52,13 @@ BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
 LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void)
 {
     using namespace ll::memory_literals;
-    constexpr static auto ramdonPos = [](Randomize& random, int& value, IntRange& ranage) -> void {
+    constexpr static auto ramdonPos = [](Random& random, int& value, IntRange& ranage) -> void {
         auto min = ranage.rangeMin, max = ranage.rangeMax;
-        value += min < max && *random.mRandom ? random.mRandom->mPointer->nextInt(max + 1 - min) : min;
+        value += min < max && random.nextInt(max + 1 - min);
     };
 
-    Randomize random { mMob.mLevel->getThreadRandom() };
-    auto      targetPos = BlockPos { mMob.mBuiltInComponents->mStateVectorComponent->mPos };
+    Random& random    = mMob.mLevel->getThreadRandom();
+    auto    targetPos = BlockPos { mMob.mBuiltInComponents->mStateVectorComponent->mPos };
 
     ramdonPos(random, targetPos.x, mDefinition->mXZRange);
     ramdonPos(random, targetPos.y, mDefinition->mYRange);
@@ -92,7 +91,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             ) == CoordinatorResult::Continue
         ) {
             mMob.setCarriedItem(ItemStack{*block.mBlockType->mDefaultState, 1,nullptr});
-            BlockChangeContext context{false};
+            BlockChangeContext context{};
             context.mContextSource = {ActorChangeContext{&mMob}};
             region.removeBlock(targetPos, context);
             region.postGameEvent(&mMob, GameEventRegistry::blockDestroy(), targetPos, &block);

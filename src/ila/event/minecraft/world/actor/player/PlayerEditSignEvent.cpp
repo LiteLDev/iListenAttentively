@@ -1,6 +1,5 @@
 #include "ila/event/minecraft/world/actor/player/PlayerEditSignEvent.h"
 #include "ila/base/Gloabl.h"
-#include <mc/network/NetworkBlockPosition.h>
 #include <mc/network/Packet/BlockActorDataPacket.h>
 #include <mc/network/ServerNetworkHandler.h>
 #include <mc/world/level/BlockSource.h>

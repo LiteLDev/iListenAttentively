@@ -1,10 +1,11 @@
 #include "ila/event/minecraft/world/actor/DeathMessageEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/deps/nbt/CompoundTagVariant.h>
 #include <mc/legacy/ActorUniqueID.h>
-#include <mc/nbt/CompoundTagVariant.h>
 #include <mc/world/actor/ActorDamageByActorSource.h>
 #include <mc/world/actor/ActorDamageByBlockSource.h>
 #include <mc/world/actor/ActorDamageByChildActorSource.h>
+
 
 namespace ila::mc::inline world::inline actor
 {
@@ -70,6 +71,9 @@ DeathMessageHookMacro(DeathMessageEventHook3, ActorDamageByBlockSource);
 
 DeathMessageHookMacro(DeathMessageEventHook4, ActorDamageByChildActorSource);
 
-Event_Hook_Factory(DeathMessage, <DeathMessageEventHook1, DeathMessageEventHook2, DeathMessageEventHook3, DeathMessageEventHook4>);
+Event_Hook_Factory(
+    DeathMessage,
+    <DeathMessageEventHook1, DeathMessageEventHook2, DeathMessageEventHook3, DeathMessageEventHook4>
+);
 
 } // namespace ila::mc::inline world::inline actor

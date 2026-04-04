@@ -90,7 +90,7 @@ LL_TYPE_INSTANCE_HOOK(
     Actor*       pActor
 )
 {
-    if (pActor == nullptr || !pActor->isPlayer() || !pActor->isCreative())
+    if (pActor == nullptr || pActor->getEntityTypeId() != ActorType::Player || !pActor->isCreative())
     {
         return origin(pRegion, pIsSurvival, pActor);
     }
@@ -99,10 +99,14 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
     origin(pRegion, pIsSurvival, pActor);
-    LLEventBus.publish(PlayerOperatedItemFrameAfterEvent(static_cast<Player&>(*pActor), mPosition, Type::Take)
+    LLEventBus.publish(
+        PlayerOperatedItemFrameAfterEvent(static_cast<Player&>(*pActor), mPosition, Type::Take)
     );
 }
 
-Event_Hook_Factory(PlayerOperatedItemFrame, <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>);
+Event_Hook_Factory(
+    PlayerOperatedItemFrame,
+    <PlayerOperatedItemFrameEventHook1, PlayerOperatedItemFrameEventHook2, PlayerOperatedItemFrameEventHook3>
+);
 
 } // namespace ila::mc::inline world::inline actor::inline player

@@ -3,8 +3,8 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
 #include <ll/api/memory/Hook.h>
-#include <mc/nbt/CompoundTag.h>
-#include <mc/nbt/ListTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
+#include <mc/deps/nbt/ListTag.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/ObserverBlock.h>
@@ -118,7 +118,10 @@ LL_TYPE_INSTANCE_HOOK(
         {
             comp->mNeedsUpdate = false;
             if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
-            else { processComponent(comp, item.mPos); }
+            else
+            {
+                processComponent(comp, item.mPos);
+            }
         }
     }
 

@@ -66,7 +66,7 @@ LL_TYPE_INSTANCE_HOOK(
     HookPriority::Normal,
     HealthAttributeDelegate,
     &HealthAttributeDelegate::$change,
-    float,
+    std::optional<float>,
     float                oldValue,
     float                newValue,
     AttributeBuff const& buff
@@ -76,7 +76,10 @@ LL_TYPE_INSTANCE_HOOK(
     LLEventBus.publish(before);
     if (before.isCancelled()) { return oldValue; }
     auto result = origin(oldValue, newValue, buff);
-    LLEventBus.publish(MobHealthChangeAfterEvent(*mMob, oldValue, result, const_cast<AttributeBuff&>(buff)));
+    if (result)
+        LLEventBus.publish(
+            MobHealthChangeAfterEvent(*mMob, oldValue, *result, const_cast<AttributeBuff&>(buff))
+        );
     return result;
 }
 
