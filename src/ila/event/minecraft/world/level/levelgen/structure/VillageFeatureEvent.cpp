@@ -1,6 +1,11 @@
 #include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include "ila/base/Gloabl.h"
+#include "mc/world/level/Level.h"
 #include <mc/world/level/ChunkPos.h>
+#include <mc/world/level/dimension/OverworldDimension.h>
+#include <mc/world/level/levelgen/WorldGenerator.h>
+#include <mc/world/level/levelgen/structure/StructureFeatureRegistry.h>
+#include <mc/world/level/levelgen/structure/VanillaStructureFeatureType.h>
 #include <mc/world/level/levelgen/structure/VillageFeature.h>
 
 namespace ila::mc::inline world::inline level::inline levelgen::inline structure
@@ -32,27 +37,30 @@ uint&                     VillageFeatureConstructionEvent::seed() const { return
 int&                      VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
 int& VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
 
-// todo: replace hook
-//  LL_TYPE_INSTANCE_HOOK(
-//      VillageFeatureConstructorHook,
-//      HookPriority::Normal,
-//      VillageFeature,
-//      &VillageFeature::$ctor,
-//      void*,
-//      uint                   pSeed,
-//      int                    pTownSpacing,
-//      int                    pMinTownSeparation,
-//      const ::BiomeRegistry& pBiomeRegistry
-//  )
-//  {
-//      // clang-format off
-//      LLEventBus.publish(VillageFeatureConstructionEvent(mAllowedBiomes, pSeed, pTownSpacing,
-//      pMinTownSeparation));
-//      // clang-format on
-//      return origin(pSeed, pTownSpacing, pMinTownSeparation, pBiomeRegistry);
-//  }
+LL_TYPE_INSTANCE_HOOK(
+    OverworldDimensionCreateGeneratorHook,
+    HookPriority::Normal,
+    OverworldDimension,
+    &OverworldDimension::$createGenerator,
+    ::std::unique_ptr<::WorldGenerator>,
+    ::br::worldgen::StructureSetRegistry const& pStructureSetRegistry
+)
+{
+    auto result         = origin(pStructureSetRegistry);
+    auto villageFeature = static_cast<VillageFeature*>(
+        result->mStructureFeatureRegistry->getStructureFeatureOfType(VanillaStructureFeatureType::Village())
+    );
+    auto seed = static_cast<Level&>(mLevel).getSeed();
+    LLEventBus.publish(VillageFeatureConstructionEvent(
+        villageFeature->mAllowedBiomes.get(),
+        seed,
+        villageFeature->mTownSpacing,
+        villageFeature->mMinTownSeparation
+    ));
+    return result;
+}
 
-// Event_Hook_Factory_Base(VillageFeatureConstruction, <VillageFeatureConstructorHook>);
+Event_Hook_Factory_Base(VillageFeatureConstruction, <OverworldDimensionCreateGeneratorHook>);
 
 void CheckIfItIsAVillageGenerationChunkEvent::serialize(CompoundTag& nbt) const
 {
