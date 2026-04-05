@@ -38,18 +38,16 @@ constexpr FuncPtr resolveIdentifier(ila::memory_utils::internal::Address const& 
 }
 } // namespace ll::memory
 
-#define EventHookFactory(eventName, ...)                                                                               \
-    static std::unique_ptr<ll::event::EmitterBase> eventName##EmitterFactory();                                        \
-    class eventName##Emitter : public ll::event::Emitter<eventName##EmitterFactory, eventName> {                       \
-        ll::memory::HookRegistrar __VA_ARGS__ hook;                                                                    \
+#define EventHookFactory(emitterName, eventName, ...)                                                                  \
+    static std::unique_ptr<ll::event::EmitterBase> emitterName##Factory();                                             \
+    class emitterName : public ll::event::Emitter<emitterName##Factory, eventName> {                                   \
+        ll::memory::HookRegistrar __VA_ARGS__ mHooks;                                                                  \
     };                                                                                                                 \
-    static std::unique_ptr<ll::event::EmitterBase> eventName##EmitterFactory() {                                       \
-        return std::make_unique<eventName##Emitter>();                                                                 \
-    }
+    static std::unique_ptr<ll::event::EmitterBase> emitterName##Factory() { return std::make_unique<emitterName>(); }
 
 #define EventHook(before, after, ...)                                                                                  \
-    EventHookFactory(before, __VA_ARGS__);                                                                             \
-    EventHookFactory(after, __VA_ARGS__);
+    EventHookFactory(before##Emitter, before, __VA_ARGS__);                                                            \
+    EventHookFactory(after##Emitter, after, __VA_ARGS__);
 
 #define HookAliasDef(hookAlias)                                                                                        \
     struct hookAlias {                                                                                                 \
