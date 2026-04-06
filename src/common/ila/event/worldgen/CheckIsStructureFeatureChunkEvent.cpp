@@ -20,7 +20,7 @@
 
 namespace ila::worldgen {
 
-void ICheckIsStructureFeatureChunkEvent::serialize(CompoundTag& nbt) const {
+void CheckIsStructureFeatureChunkEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
     nbt["feature"]                   = serializeRefObj(mFeature);
     nbt["preliminary_surface_level"] = serializeRefObj(mPreliminarySurfaceLevel);
@@ -28,11 +28,17 @@ void ICheckIsStructureFeatureChunkEvent::serialize(CompoundTag& nbt) const {
     reflection::serialize_to(nbt["chunk_pos"], mChunkPos).value();
     nbt["random"] = serializeRefObj(mRandom);
     reflection::serialize_to(nbt["level_seed"], mLevelSeed).value();
+}
+
+template <std::derived_from<StructureFeature> T>
+void CheckedIsStructureFeatureChunkEvent<T>::serialize(CompoundTag& nbt) const {
+    CheckIsStructureFeatureChunkEvent::serialize(nbt);
     reflection::serialize_to(nbt["result"], mResult).value();
 }
 
-void ICheckIsStructureFeatureChunkEvent::deserialize(CompoundTag const& nbt) {
-    WorldEvent::deserialize(nbt);
+template <std::derived_from<StructureFeature> T>
+void CheckedIsStructureFeatureChunkEvent<T>::deserialize(CompoundTag const& nbt) {
+    CheckIsStructureFeatureChunkEvent::deserialize(nbt);
     reflection::deserialize(mResult, nbt["result"]).value();
 }
 
@@ -51,9 +57,35 @@ void ICheckIsStructureFeatureChunkEvent::deserialize(CompoundTag const& nbt) {
         IPreliminarySurfaceProvider const& preliminarySurfaceLevel,                                                    \
         Dimension const&                   dimension                                                                   \
     ) {                                                                                                                \
+        if (                                                                                                           \
+            eventPromise(                                                                                              \
+                CheckingIsStructureFeatureChunkEvent{                                                                  \
+                    **dimension.mBlockSource,                                                                          \
+                    *this,                                                                                             \
+                    preliminarySurfaceLevel,                                                                           \
+                    biomeSource,                                                                                       \
+                    chunkPos,                                                                                          \
+                    random,                                                                                            \
+                    levelSeed                                                                                          \
+                }                                                                                                      \
+            ).publish()                                                                                                \
+            || eventPromise(                                                                                           \
+                CheckingIsStructureFeatureChunkEvent<FeatureClass>{                                                    \
+                    **dimension.mBlockSource,                                                                          \
+                    *this,                                                                                             \
+                    preliminarySurfaceLevel,                                                                           \
+                    biomeSource,                                                                                       \
+                    chunkPos,                                                                                          \
+                    random,                                                                                            \
+                    levelSeed                                                                                          \
+                }                                                                                                      \
+            ).publish()                                                                                                \
+        ) {                                                                                                            \
+            return false;                                                                                              \
+        }                                                                                                              \
         auto result = origin(biomeSource, random, chunkPos, levelSeed, preliminarySurfaceLevel, dimension);            \
         eventPromise(                                                                                                  \
-            CheckIsStructureFeatureChunkEvent{                                                                         \
+            CheckedIsStructureFeatureChunkEvent{                                                                       \
                 **dimension.mBlockSource,                                                                              \
                 *this,                                                                                                 \
                 preliminarySurfaceLevel,                                                                               \
@@ -64,7 +96,7 @@ void ICheckIsStructureFeatureChunkEvent::deserialize(CompoundTag const& nbt) {
                 result                                                                                                 \
             }                                                                                                          \
         ).onAfterEvent(                                                                                                \
-            CheckIsStructureFeatureChunkEvent<FeatureClass>{                                                           \
+            CheckedIsStructureFeatureChunkEvent<FeatureClass>{                                                         \
                 **dimension.mBlockSource,                                                                              \
                 *this,                                                                                                 \
                 preliminarySurfaceLevel,                                                                               \
@@ -78,8 +110,13 @@ void ICheckIsStructureFeatureChunkEvent::deserialize(CompoundTag const& nbt) {
         return result;                                                                                                 \
     }                                                                                                                  \
     EventHookFactory(                                                                                                  \
-        CheckIs##FeatureClass##StructureFeatureChunkEventEmitter,                                                      \
-        CheckIsStructureFeatureChunkEvent<FeatureClass>,                                                               \
+        CheckingIs##FeatureClass##StructureFeatureChunkEventEmitter,                                                   \
+        CheckingIsStructureFeatureChunkEvent<FeatureClass>,                                                            \
+        <CheckIs##FeatureClass##StructureFeatureChunkEventHook>                                                        \
+    );                                                                                                                 \
+    EventHookFactory(                                                                                                  \
+        CheckedIs##FeatureClass##StructureFeatureChunkEventEmitter,                                                    \
+        CheckedIsStructureFeatureChunkEvent<FeatureClass>,                                                             \
         <CheckIs##FeatureClass##StructureFeatureChunkEventHook>                                                        \
     );
 // clang-format on
@@ -104,8 +141,29 @@ CheckIsStructureFeatureChunkHook(StrongholdFeature);
 
 // clang-format off
 EventHookFactory(
-    CheckIsStructureFeatureChunkEventEmitter,
-    CheckIsStructureFeatureChunkEvent<>,
+    CheckingIsStructureFeatureChunkEventEmitter,
+    CheckingIsStructureFeatureChunkEvent<>,
+    <
+        CheckIsVillageFeatureStructureFeatureChunkEventHook,
+        CheckIsWoodlandMansionFeatureStructureFeatureChunkEventHook,
+        CheckIsAncientCityFeatureStructureFeatureChunkEventHook,
+        CheckIsBastionFeatureStructureFeatureChunkEventHook,
+        CheckIsBuriedTreasureFeatureStructureFeatureChunkEventHook,
+        CheckIsEndCityFeatureStructureFeatureChunkEventHook,
+        CheckIsMineshaftFeatureStructureFeatureChunkEventHook,
+        CheckIsNetherFortressFeatureStructureFeatureChunkEventHook,
+        CheckIsOceanMonumentFeatureStructureFeatureChunkEventHook,
+        CheckIsOceanRuinFeatureStructureFeatureChunkEventHook,
+        CheckIsPillagerOutpostFeatureStructureFeatureChunkEventHook,
+        CheckIsRandomScatteredLargeFeatureStructureFeatureChunkEventHook,
+        CheckIsRuinedPortalFeatureStructureFeatureChunkEventHook,
+        CheckIsShipwreckFeatureStructureFeatureChunkEventHook,
+        CheckIsStrongholdFeatureStructureFeatureChunkEventHook
+    >
+)
+EventHookFactory(
+    CheckedIsStructureFeatureChunkEventEmitter,
+    CheckedIsStructureFeatureChunkEvent<>,
     <
         CheckIsVillageFeatureStructureFeatureChunkEventHook,
         CheckIsWoodlandMansionFeatureStructureFeatureChunkEventHook,

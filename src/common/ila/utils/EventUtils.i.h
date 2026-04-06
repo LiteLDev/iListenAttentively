@@ -358,6 +358,14 @@ public:
         return mEvent.isCancelled();
     }
 
+    [[nodiscard]] inline constexpr bool operator||(auto&& b) const noexcept {
+        return static_cast<bool>(*this) || static_cast<bool>(b);
+    }
+
+    [[nodiscard]] inline constexpr bool operator&&(auto&& b) const noexcept {
+        return static_cast<bool>(*this) && static_cast<bool>(b);
+    }
+
     inline constexpr RawEventType&       operator*() noexcept { return mEvent; }
     inline constexpr const RawEventType& operator*() const noexcept { return mEvent; }
     inline constexpr RawEventType*       operator->() noexcept { return &mEvent; }

@@ -6,7 +6,7 @@
 
 namespace ila::worldgen {
 
-class ICheckIsStructureFeatureChunkEvent : public ll::event::WorldEvent {
+class CheckIsStructureFeatureChunkEvent : public ll::event::WorldEvent {
 private:
     StructureFeature&                  mFeature;
     IPreliminarySurfaceProvider const& mPreliminarySurfaceLevel;
@@ -14,18 +14,16 @@ private:
     ChunkPos const&                    mChunkPos;
     Random&                            mRandom;
     uint&                              mLevelSeed;
-    bool&                              mResult;
 
 public:
-    constexpr explicit ICheckIsStructureFeatureChunkEvent(
+    constexpr explicit CheckIsStructureFeatureChunkEvent(
         BlockSource&                       region,
         StructureFeature&                  feature,
         IPreliminarySurfaceProvider const& preliminarySurfaceLevel,
         BiomeSource const&                 biomeSource,
         ChunkPos const&                    chunkPos,
         Random&                            random,
-        uint&                              levelSeed,
-        bool&                              result
+        uint&                              levelSeed
     )
     : WorldEvent(region),
       mFeature(feature),
@@ -33,12 +31,10 @@ public:
       mBiomeSource(biomeSource),
       mChunkPos(chunkPos),
       mRandom(random),
-      mLevelSeed(levelSeed),
-      mResult(result) {}
+      mLevelSeed(levelSeed) {}
 
 public:
     ILAPI void serialize(CompoundTag& nbt) const override;
-    ILAPI void deserialize(CompoundTag const& nbt) override;
 
 public:
     StructureFeature&                  feature() const { return mFeature; }
@@ -48,14 +44,49 @@ public:
     ChunkPos const&                    chunkPos() const { return mChunkPos; }
     Random&                            random() const { return mRandom; }
     uint&                              levelSeed() const { return mLevelSeed; }
-    bool&                              result() const { return mResult; }
 };
 
 /** @warning This event is not available on the client side. */
 template <std::derived_from<StructureFeature> T = StructureFeature>
-class CheckIsStructureFeatureChunkEvent final : public ICheckIsStructureFeatureChunkEvent {
+class CheckingIsStructureFeatureChunkEvent final : public ll::event::Cancellable<CheckIsStructureFeatureChunkEvent> {
 public:
-    using ICheckIsStructureFeatureChunkEvent::ICheckIsStructureFeatureChunkEvent;
+    using Cancellable::Cancellable;
+};
+
+/** @warning This event is not available on the client side. */
+template <std::derived_from<StructureFeature> T = StructureFeature>
+class CheckedIsStructureFeatureChunkEvent final : public CheckIsStructureFeatureChunkEvent {
+private:
+    bool& mResult;
+
+public:
+    constexpr explicit CheckedIsStructureFeatureChunkEvent(
+        BlockSource&                       region,
+        StructureFeature&                  feature,
+        IPreliminarySurfaceProvider const& preliminarySurfaceLevel,
+        BiomeSource const&                 biomeSource,
+        ChunkPos const&                    chunkPos,
+        Random&                            random,
+        uint&                              levelSeed,
+        bool&                              result
+    )
+    : CheckIsStructureFeatureChunkEvent(
+          region,
+          feature,
+          preliminarySurfaceLevel,
+          biomeSource,
+          chunkPos,
+          random,
+          levelSeed
+      ),
+      mResult(result) {}
+
+public:
+    ILAPI void serialize(CompoundTag& nbt) const override;
+    ILAPI void deserialize(CompoundTag const& nbt) override;
+
+public:
+    bool& result() const { return mResult; }
 };
 
 } // namespace ila::worldgen
