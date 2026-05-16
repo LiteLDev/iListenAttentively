@@ -20,11 +20,13 @@ public:
     BlockPos const& tntPos() const { return mTNTPos; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireLightingCampfireEvent final : public ll::event::Cancellable<FireLightCampfireEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireLightedCampfireEvent final : public FireLightCampfireEvent {
 public:
     using FireLightCampfireEvent::FireLightCampfireEvent;

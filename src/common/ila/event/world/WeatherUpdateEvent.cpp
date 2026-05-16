@@ -1,4 +1,4 @@
-#include "WeatherUpdateEvent.h"
+#include "ila/event/world/WeatherUpdateEvent.h"
 #include "ila/event/world/WeatherUpdateEvent.i.h"
 #include "ila/utils/EventUtils.i.h"
 #include <algorithm>

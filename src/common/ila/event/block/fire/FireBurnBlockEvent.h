@@ -20,11 +20,13 @@ public:
     BlockPos const& blockPos() const { return mBlockPos; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireBurningBlockEvent final : public ll::event::Cancellable<FireBurnBlockEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireBurnedBlockEvent final : public FireBurnBlockEvent {
 public:
     using FireBurnBlockEvent::FireBurnBlockEvent;

@@ -20,11 +20,13 @@ public:
     BlockPos const& beehivePos() const { return mBeehivePos; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireEvictingBeehiveEvent final : public ll::event::Cancellable<FireEvictBeehiveEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireEvictedBeehiveEvent final : public FireEvictBeehiveEvent {
 public:
     using FireEvictBeehiveEvent::FireEvictBeehiveEvent;

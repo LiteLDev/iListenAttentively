@@ -28,11 +28,13 @@ public:
     int& newAge() { return mNewAge; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireAgingEvent final : public ll::event::Cancellable<FireAgeEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireAgedEvent final : public FireAgeEvent {
 public:
     using FireAgeEvent::FireAgeEvent;

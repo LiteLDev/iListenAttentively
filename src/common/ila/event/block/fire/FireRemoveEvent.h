@@ -30,11 +30,13 @@ public:
     Reason reason() const { return mReason; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireRemovingEvent final : public ll::event::Cancellable<FireRemoveEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireRemovedEvent final : public FireRemoveEvent {
 public:
     using FireRemoveEvent::FireRemoveEvent;

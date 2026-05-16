@@ -14,11 +14,15 @@ function generate_manifest(output_file, info)
         type = function(v) return type(v) == "string" and v ~= "" end,
 
         -- 可选字段验证
-        passive = function(v) return type(v) == "boolean" end,
-        platform = function(v) return type(v) == "string" end,
-        version = function(v) return type(v) == "string" end,
-        author = function(v) return type(v) == "string" end,
-        description = function(v) return type(v) == "string" end,
+        passive = function(v) return v == nil or type(v) == "boolean" end,
+        version = function(v) return v == nil or type(v) == "string" end,
+        author = function(v) return v == nil or type(v) == "string" end,
+        description = function(v) return v == nil or type(v) == "string" end,
+        platform = function(v) 
+            if v == nil then return true end
+            if type(v) ~= "string" then return false end
+            return v == "universal" or v == "client" or v == "server"
+        end,
 
         -- 复杂类型验证
         extraInfo = function(v)

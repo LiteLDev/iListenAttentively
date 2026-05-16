@@ -25,11 +25,13 @@ public:
     BlockPos& spreadPos() { return mSpreadPos; }
 };
 
+/** @warning This event is not available on the client side. */
 class FireSpreadingEvent final : public ll::event::Cancellable<FireSpreadEvent> {
 public:
     using Cancellable::Cancellable;
 };
 
+/** @warning This event is not available on the client side. */
 class FireSpreadedEvent final : public FireSpreadEvent {
 public:
     using FireSpreadEvent::FireSpreadEvent;
