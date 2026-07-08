@@ -559,3 +559,8 @@ fabric.properties
 /vsxmake2026
 
 src/common/ila/core/SymbolProvider.cpp
+/src-fakes/fixres
+/docs/addon.md
+/docs/bedrock_resource_pack_order_texture_analysis.md
+/.ida-mcp
+/.codex
