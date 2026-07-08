@@ -565,3 +565,8 @@ fabric.properties
 /site/
 /AGENTS.md
 /vsxmake2026
+/.codex
+/.ida-mcp
+/src-fakes/fixres
+/docs/addon.md
+/docs/bedrock_resource_pack_order_texture_analysis.md
