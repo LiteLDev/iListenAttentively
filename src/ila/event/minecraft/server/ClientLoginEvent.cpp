@@ -98,8 +98,7 @@ LL_TYPE_INSTANCE_HOOK(
             pPacket->mSenderSubId,
             Connection::DisconnectFailReason::Kicked,
             fmt::to_string(fmt::join(*kickReasons, "§r\n")),
-            std::nullopt,
-            false
+            std::nullopt
         );
     }
 }

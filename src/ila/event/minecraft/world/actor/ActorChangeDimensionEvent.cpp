@@ -24,9 +24,9 @@ DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { re
 void ActorChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
 {
     ActorEvent::serialize(nbt);
-    nbt["fromDimensionId"] = fromDimensionId().id;
+    nbt["fromDimensionId"] = fromDimensionId().mValue;
     nbt["fromPos"]         = ListTag { getFromPos().x, getFromPos().y, getFromPos().z };
-    nbt["toDimensionId"]   = toDimensionId().id;
+    nbt["toDimensionId"]   = toDimensionId().mValue;
 }
 DimensionType const& ActorChangeDimensionAfterEvent::fromDimensionId() const { return mFromDimensionId; };
 Vec3 const&          ActorChangeDimensionAfterEvent::getFromPos() const { return mFromPos; };

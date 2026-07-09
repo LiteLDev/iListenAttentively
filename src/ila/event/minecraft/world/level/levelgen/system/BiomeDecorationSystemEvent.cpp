@@ -19,31 +19,31 @@ void               BiomeDecorationSystemEvent::serialize(CompoundTag& nbt) const
 }
 
 // DecorateEvent
-BlockSource&                       DecorateEvent::blockSource() const { return mBlockSource; }
-std::vector<::Biome const*>&       DecorateEvent::uniqueBiomes() const { return mUniqueBiomes; }
-IPreliminarySurfaceProvider const& DecorateEvent::preliminarySurfaceProvider() const
+BlockSource&                            DecorateEvent::blockSource() const { return mBlockSource; }
+gsl::span<gsl::not_null<Biome const*>>& DecorateEvent::uniqueBiomes() const { return mUniqueBiomes; }
+IPreliminarySurfaceProvider const&      DecorateEvent::preliminarySurfaceProvider() const
 {
     return mPreliminarySurfaceProvider;
 }
 void DecorateEvent::serialize(CompoundTag& nbt) const
 {
-    ::ll::event::Cancellable<BiomeDecorationSystemEvent>::serialize(nbt);
+    Cancellable::serialize(nbt);
     nbt["blockSource"]                = serializeRefObj(blockSource());
     nbt["uniqueBiomes"]               = serializeRefObj(uniqueBiomes());
     nbt["preliminarySurfaceProvider"] = serializeRefObj(preliminarySurfaceProvider());
 }
 
 // DecorateBiomeEvent
-gsl::span<::BiomeDecorationFeature const>& DecorateBiomeEvent::featureList() const { return mFeatureList; }
-::Biome const*&                            DecorateBiomeEvent::biome() const { return mBiome; }
-IPreliminarySurfaceProvider const&         DecorateBiomeEvent::preliminarySurfaceProvider() const
+gsl::span<BiomeDecorationFeature const>& DecorateBiomeEvent::featureList() const { return mFeatureList; }
+Biome const*&                            DecorateBiomeEvent::biome() const { return mBiome; }
+IPreliminarySurfaceProvider const&       DecorateBiomeEvent::preliminarySurfaceProvider() const
 {
     return mPreliminarySurfaceProvider;
 }
 BlockSource& DecorateBiomeEvent::blockSource() const { return mBlockSource; }
 void         DecorateBiomeEvent::serialize(CompoundTag& nbt) const
 {
-    ::ll::event::Cancellable<BiomeDecorationSystemEvent>::serialize(nbt);
+    Cancellable::serialize(nbt);
     nbt["featureList"]                = serializeRefObj(featureList());
     nbt["biome"]                      = serializeRefObj(biome());
     nbt["preliminarySurfaceProvider"] = serializeRefObj(preliminarySurfaceProvider());
@@ -61,7 +61,7 @@ gsl::span<::BiomeDecorationFeature const>& DecorateLargeFeature1Event::featureLi
 ChunkPos const& DecorateLargeFeature1Event::chunkPos() const { return mChunkPos; }
 void            DecorateLargeFeature1Event::serialize(CompoundTag& nbt) const
 {
-    ::ll::event::Cancellable<BiomeDecorationSystemEvent>::serialize(nbt);
+    Cancellable::serialize(nbt);
     nbt["generatorType"] = serializeRefObj(generatorType());
     nbt["seed"]          = mSeed;
     nbt["target"]        = serializeRefObj(target());
@@ -75,24 +75,23 @@ BlockVolumeTarget& DecorateLargeFeature2Event::target() const { return mTarget; 
 ChunkPos const&    DecorateLargeFeature2Event::chunkPos() const { return mChunkPos; }
 void               DecorateLargeFeature2Event::serialize(CompoundTag& nbt) const
 {
-    ::ll::event::Cancellable<BiomeDecorationSystemEvent>::serialize(nbt);
+    Cancellable::serialize(nbt);
     nbt["biome"]    = serializeRefObj(biome());
     nbt["target"]   = serializeRefObj(target());
     nbt["chunkPos"] = ListTag { chunkPos().x, chunkPos().z };
 }
 
-
 LL_STATIC_HOOK(
     DecorateEventHook,
-    ll::memory::HookPriority::Normal,
+    HookPriority::Normal,
     &BiomeDecorationSystem::decorate,
     void,
-    ::LevelChunk&                        lc,
-    ::BlockSource&                       source,
-    ::Random&                            random,
-    ::std::vector<::Biome const*>&       uniqueBiomes,
-    ::std::string const&                 pass,
-    ::IPreliminarySurfaceProvider const& preliminarySurfaceProvider
+    LevelChunk&                            lc,
+    BlockSource&                           source,
+    Random&                                random,
+    gsl::span<gsl::not_null<Biome const*>> uniqueBiomes,
+    std::string const&                     pass,
+    IPreliminarySurfaceProvider const&     preliminarySurfaceProvider
 )
 {
     auto event = DecorateEvent(lc, source, random, uniqueBiomes, pass, preliminarySurfaceProvider);
@@ -102,16 +101,16 @@ LL_STATIC_HOOK(
 }
 LL_STATIC_HOOK(
     DecorateBiomeEventHook,
-    ll::memory::HookPriority::Normal,
+    HookPriority::Normal,
     &BiomeDecorationSystem::decorateBiome,
     bool,
-    ::LevelChunk&                               lc,
-    ::BlockSource&                              source,
-    ::Random&                                   random,
-    ::gsl::span<::BiomeDecorationFeature const> featureList,
-    ::std::string const&                        pass,
-    ::Biome const*                              biome,
-    ::IPreliminarySurfaceProvider const&        preliminarySurfaceProvider
+    LevelChunk&                             lc,
+    BlockSource&                            source,
+    Random&                                 random,
+    gsl::span<BiomeDecorationFeature const> featureList,
+    std::string const&                      pass,
+    Biome const*                            biome,
+    IPreliminarySurfaceProvider const&      preliminarySurfaceProvider
 )
 {
     auto event = DecorateBiomeEvent(lc, source, random, featureList, pass, biome, preliminarySurfaceProvider);
@@ -122,16 +121,16 @@ LL_STATIC_HOOK(
 
 LL_STATIC_HOOK(
     DecorateLargeFeature1EventHook,
-    ll::memory::HookPriority::Normal,
+    HookPriority::Normal,
     &BiomeDecorationSystem::decorateLargeFeature,
     bool,
-    ::GeneratorType                             generatorType,
-    uint const&                                 seed,
-    ::BlockVolumeTarget&                        target,
-    ::Random&                                   random,
-    ::gsl::span<::BiomeDecorationFeature const> featureList,
-    ::ChunkPos const&                           pos,
-    ::std::string const&                        pass
+    GeneratorType                           generatorType,
+    uint const&                             seed,
+    BlockVolumeTarget&                      target,
+    Random&                                 random,
+    gsl::span<BiomeDecorationFeature const> featureList,
+    ChunkPos const&                         pos,
+    std::string const&                      pass
 )
 {
     auto event = DecorateLargeFeature1Event(generatorType, seed, target, random, featureList, pos, pass);
@@ -142,15 +141,15 @@ LL_STATIC_HOOK(
 
 LL_STATIC_HOOK(
     DecorateLargeFeature2EventHook,
-    ll::memory::HookPriority::Normal,
+    HookPriority::Normal,
     &BiomeDecorationSystem::decorateLargeFeature,
     void,
-    ::Biome const&       biome,
-    ::LevelChunk&        lc,
-    ::BlockVolumeTarget& target,
-    ::Random&            random,
-    ::ChunkPos const&    pos,
-    ::std::string const& pass
+    Biome const&       biome,
+    LevelChunk&        lc,
+    BlockVolumeTarget& target,
+    Random&            random,
+    ChunkPos const&    pos,
+    std::string const& pass
 )
 {
     auto event = DecorateLargeFeature2Event(biome, lc, target, random, pos, pass);

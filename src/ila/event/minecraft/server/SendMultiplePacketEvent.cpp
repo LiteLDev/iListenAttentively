@@ -17,9 +17,10 @@ void ISendMultiplePacketBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["networkIdentifiers"] = ListTag {};
     for (auto& networkIdentifier : networkIdentifiers())
     {
-        nbt["networkIdentifiers"].push_back({ { "id", ll::event::serializeRefObj(networkIdentifier.id) },
-                                              { "subId",
-                                                magic_enum::enum_name(networkIdentifier.subClientId) } });
+        nbt["networkIdentifiers"].push_back(
+            { { "id", ll::event::serializeRefObj(networkIdentifier.id) },
+              { "subId", magic_enum::enum_name(networkIdentifier.subClientId) } }
+        );
     }
 }
 NetworkSystem& ISendMultiplePacketBeforeEvent::networkSystem() const { return mNetworkSystem; }
@@ -45,9 +46,10 @@ void ISendMultiplePacketAfterEvent::serialize(CompoundTag& nbt) const
     nbt["networkIdentifiers"] = ListTag {};
     for (auto& networkIdentifier : networkIdentifiers())
     {
-        nbt["networkIdentifiers"].push_back({ { "id", ll::event::serializeRefObj(networkIdentifier.id) },
-                                              { "subId",
-                                                magic_enum::enum_name(networkIdentifier.subClientId) } });
+        nbt["networkIdentifiers"].push_back(
+            { { "id", ll::event::serializeRefObj(networkIdentifier.id) },
+              { "subId", magic_enum::enum_name(networkIdentifier.subClientId) } }
+        );
     }
 }
 NetworkSystem& ISendMultiplePacketAfterEvent::networkSystem() const { return mNetworkSystem; }

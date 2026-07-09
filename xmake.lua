@@ -13,9 +13,9 @@ option_end()
 local is_server = is_config("target_type", "server")
 
 if is_server then
-    add_requires("levilamina 26.10.14", {configs = {target_type = "server"}})
+    add_requires("levilamina 26.20.0", {configs = {target_type = "server"}})
 else
-    add_requires("levilamina 26.10.14", {configs = {target_type = "client"}})
+    add_requires("levilamina 26.20.0", {configs = {target_type = "client"}})
 end
 add_requires("levibuildscript 0.4.1")
 
@@ -42,6 +42,20 @@ target("iListenAttentively")
         "/Ob3",
         "/Zo-"
     )
+    add_cxflags(
+        "/EHs",
+        "-Wno-microsoft-cast",
+        "-Wno-invalid-offsetof",
+        "-Wno-c++2b-extensions",
+        "-Wno-microsoft-include",
+        "-Wno-overloaded-virtual",
+        "-Wno-ignored-qualifiers",
+        "-Wno-missing-field-initializers",
+        "-Wno-potentially-evaluated-expression",
+        "-Wno-pragma-system-header-outside-header",
+        { tools = { "clang_cl" } }
+    )
+    set_toolchains("clang-cl")
     add_defines(
         "NOMINMAX", 
         "UNICODE",
@@ -53,7 +67,6 @@ target("iListenAttentively")
     set_configvar("IL_WORKSPACE_FOLDER", "$(projectdir)")
     add_configfiles("src/(ila/**.h.in)")
     add_files("src/ila/**.cpp")
-    add_files("src-fakes/PlaceBlockGoal__tick.cpp")
     add_files("src/ila/**.rc")
     add_headerfiles("src/(ila/**.h)")
     add_includedirs("src", "$(builddir)/config")

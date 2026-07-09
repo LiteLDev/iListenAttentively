@@ -11,8 +11,8 @@ void PlayerChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
     nbt["state"]           = magic_enum::enum_name(changeDimensionRequest().mState);
-    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->id;
-    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->id;
+    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->mValue;
+    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->mValue;
     nbt["fromLocation"]    = ListTag { changeDimensionRequest().mFromLocation->x,
                                     changeDimensionRequest().mFromLocation->y,
                                     changeDimensionRequest().mFromLocation->z };
@@ -33,8 +33,8 @@ void PlayerChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
 {
     PlayerEvent::serialize(nbt);
     nbt["state"]           = magic_enum::enum_name(changeDimensionRequest().mState);
-    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->id;
-    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->id;
+    nbt["fromDimensionId"] = changeDimensionRequest().mFromDimensionId->mValue;
+    nbt["toDimensionId"]   = changeDimensionRequest().mToDimensionId->mValue;
     nbt["fromLocation"]    = ListTag { changeDimensionRequest().mFromLocation->x,
                                     changeDimensionRequest().mFromLocation->y,
                                     changeDimensionRequest().mFromLocation->z };

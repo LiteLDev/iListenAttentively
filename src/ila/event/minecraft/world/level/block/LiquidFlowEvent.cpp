@@ -1,6 +1,7 @@
 #include "ila/event/minecraft/world/level/block/LiquidFlowEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
+#include <mc/deps/shared_types/v1_26_20/block/MaterialType.h>
 #include <mc/server/ServerInstance.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Level.h>
@@ -44,13 +45,6 @@ BlockPos const& LiquidFlowAfterEvent::pos() const { return mPos; }
 int const&      LiquidFlowAfterEvent::depth() const { return mDepth; }
 BlockPos const& LiquidFlowAfterEvent::flowFromPos() const { return mFlowFromPos; }
 
-bool operator==(Material const& lhs, Material const& rhs)
-{
-    return lhs.mType == rhs.mType && lhs.mNeverBuildable == rhs.mNeverBuildable && lhs.mLiquid == rhs.mLiquid
-           && lhs.mBlocksMotion == rhs.mBlocksMotion && lhs.mBlocksPrecipitation == rhs.mBlocksPrecipitation
-           && lhs.mSolid == rhs.mSolid && lhs.mSuperHot == rhs.mSuperHot;
-}
-
 LL_TYPE_INSTANCE_HOOK(
     LiquidFlowEventHook,
     HookPriority::Normal,
@@ -70,7 +64,7 @@ LL_TYPE_INSTANCE_HOOK(
     }
     if (pPos.y < pRegion.getMinHeight() || !pRegion.hasBlock(pPos)) { return; }
     if (auto& block = pRegion.getLiquidBlock(pPos).mBlockType;
-        block->mMaterial == mMaterial || block->mMaterial.mType == MaterialType::Lava
+        block->mMaterial == mMaterial || block->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Lava
         || _isLiquidBlocking(pRegion, pPos, pFlowFromPos, pFlowFromDirection))
     {
         return;

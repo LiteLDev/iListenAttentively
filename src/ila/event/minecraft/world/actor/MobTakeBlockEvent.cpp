@@ -1,9 +1,9 @@
 #pragma include_alias("mc/world/events/ActorGriefingBlockEvent.h", "ila/patch/ActorGriefingBlockEvent.hpp")
 #include "ila/event/minecraft/world/actor/MobTakeBlockEvent.h"
 #include "ila/base/Gloabl.h"
-#include "ila/patch/VariantParameterList.hpp"
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
+#include <mc/util/NamedMolangScript.h>
 #include <mc/util/Random.h>
 #include <mc/world/actor/ActorDefinitionDescriptor.h>
 #include <mc/world/actor/ai/goal/TakeBlockGoal.h>
@@ -95,11 +95,10 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             context.mContextSource = {ActorChangeContext{&mMob}};
             region.removeBlock(targetPos, context);
             region.postGameEvent(&mMob, GameEventRegistry::blockDestroy(), targetPos, &block);
-            ila::patch::VariantParameterList params{
-                .mSelf = &mMob,
-                .mTarget = mMob.mTargetId->rawID == -1 ? nullptr : mMob.mLevel->fetchEntity(mMob.mTargetId, false),
-                .mBlock = &targetPos
-            };
+            VariantParameterList params{};
+            params.mSelf = &mMob;
+            if (mMob.mTargetId->rawID != -1) params.mTarget = mMob.mLevel->fetchEntity(mMob.mTargetId, false);
+            params.mBlock = &targetPos;
             ActorDefinitionDescriptor::executeTrigger(mMob, mDefinition->mOnTake, reinterpret_cast<::VariantParameterList&>(params));
             LLEventBus.publish(MobTakeBlockAfterEvent(mMob, targetPos));
         }

@@ -103,7 +103,7 @@ LL_TYPE_INSTANCE_HOOK(
             { 1 },
             BedrockLog::LogRule::DefaultRules,
             LogAreaID::LogAreaNetwork,
-            static_cast<uint>(Bedrock::LogLevel::Error().mType),
+            static_cast<uint>(Bedrock::LogLevel::Type::Error),
             __FUNCTION__,
             __LINE__,
             header.error().mError.message().c_str(),
