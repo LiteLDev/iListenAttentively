@@ -8,7 +8,7 @@
 #include <ll/api/memory/Hook.h>
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/level/IWeatherManagerProxy.h>
 #include <mc/world/level/WeatherManager.h>
 

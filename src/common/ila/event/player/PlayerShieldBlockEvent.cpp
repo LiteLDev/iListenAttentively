@@ -5,8 +5,9 @@
 #include <ll/api/event/player/PlayerEvent.h>
 #include <ll/api/memory/Hook.h>
 #include <ll/api/reflection/Serialization.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/actor/Actor.h>
+#include <mc/world/actor/ActorHurtResult.h>
 #include <mc/world/actor/player/Player.h>
 
 namespace ila::player {
@@ -45,7 +46,7 @@ LL_TYPE_INSTANCE_HOOK(
     HookPriority::Normal,
     Player,
     &Player::$_hurt,
-    bool,
+    ActorHurtResult,
     ActorDamageSource const& source,
     float                    damage,
     bool                     knock,

@@ -32,7 +32,7 @@ LL_STATIC_HOOK(
     CircuitSystemConnectionEventHook2,
     HookPriority::Normal,
     // "addToFillQueue"_sym,
-    "4D 85 C0 0F 84 ?? ?? ?? ?? 4C 8B DC 55"_sig,
+    "41 57 41 56 56 57 55 53 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 31 E0 48 89 84 24 ?? ?? ?? ?? 4D 85 C0"_sig,
     void,
     CircuitSceneGraph&               graph,
     CircuitComponentList&            powerAssociationMap,
@@ -84,5 +84,3 @@ EventHook(
 );
 
 } // namespace ila::world
-
-CircuitTrackingInfo::CircuitTrackingInfo() = default;

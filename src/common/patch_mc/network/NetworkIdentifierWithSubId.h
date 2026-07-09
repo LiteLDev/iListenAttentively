@@ -10,7 +10,3 @@ struct std::hash<NetworkIdentifierWithSubId> {
         return std::hash<NetworkIdentifier>{}(id.id) ^ std::hash<SubClientId>{}(id.subClientId);
     }
 };
-
-inline bool operator==(NetworkIdentifierWithSubId const& a, NetworkIdentifierWithSubId const& b) {
-    return a.id == b.id && a.subClientId == b.subClientId;
-}

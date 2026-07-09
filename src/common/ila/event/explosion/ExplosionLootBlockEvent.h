@@ -3,7 +3,7 @@
 #include <ila/base/Macro.h>
 #include <ll/api/event/Cancellable.h>
 #include <mc/deps/vanilla_components/IConstBlockSource.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/actor/ActorDamageSource.h>
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/level/BlockPos.h>

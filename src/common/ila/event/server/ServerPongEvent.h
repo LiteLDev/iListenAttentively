@@ -3,7 +3,7 @@
 #include <ll/api/base/StdInt.h>
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/Event.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/level/GameType.h>
 #include <string>
 #include <utility>

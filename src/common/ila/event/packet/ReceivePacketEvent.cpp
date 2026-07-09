@@ -8,6 +8,7 @@
 #include <mc/client/network/ClientNetworkHandler.h>
 #include <mc/deps/core/debug/BedrockLog.h>
 #include <mc/deps/core/utility/ReadOnlyBinaryStream.h>
+#include <mc/diagnostics/LogAreaID.h>
 #include <mc/network/IPacketHandlerDispatcher.h>
 #include <mc/network/IncomingPacketFilterResult.h>
 #include <mc/network/MinecraftPacketIds.h>
@@ -15,7 +16,6 @@
 #include <mc/network/NetEventCallback.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
-#include <mc/platform/diagnostics/LogAreaID.h>
 #include <mc/platform/diagnostics/LogLevel.h>
 #include <mc/platform/diagnostics/bedrock_log/LogCategory.h>
 #include <mc/platform/diagnostics/bedrock_log/LogRule.h>
@@ -39,7 +39,7 @@ handleReceive(NetEventCallback& self, NetworkIdentifierWithSubId const& id, bool
             {1},
             BedrockLog::LogRule::DefaultRules,
             LogAreaID::LogAreaNetwork,
-            static_cast<uint>(Bedrock::LogLevel::Error().mType),
+            static_cast<uint>(Bedrock::LogLevel::Type::Error),
             __FUNCTION__,
             __LINE__,
             header.error().mError.message().c_str(),

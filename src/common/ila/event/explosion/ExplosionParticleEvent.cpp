@@ -4,7 +4,7 @@
 #include "patch_mc/deps/shared_types/legacy/LevelEvent.i.h"
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 
 namespace ila::explosion {
 

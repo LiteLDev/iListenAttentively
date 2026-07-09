@@ -10,6 +10,7 @@
 #include "ila/event/block/fire/SoulFireSpawnEvent.h"
 #include "ila/utils/EventUtils.i.h"
 #include "ila/utils/GameRuleUtils.i.h"
+#include "mc/deps/shared_types/legacy/Facing.h"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -20,9 +21,8 @@
 #include <ll/api/memory/Hook.h>
 #include <ll/api/reflection/Serialization.h>
 #include <ll/api/utils/ErrorUtils.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/util/Random.h>
-#include <mc/util/Randomize.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/ChunkBlockPos.h>
@@ -43,13 +43,11 @@
 #include <mc/world/level/dimension/Dimension.h>
 #include <mc/world/level/levelgen/structure/BoundingBox.h>
 #include <mc/world/level/material/Material.h>
-#include <mc/world/level/material/MaterialType.h>
 #include <mc/world/level/storage/GameRule.h>
 #include <mc/world/level/storage/GameRuleId.h>
 #include <mc/world/level/storage/GameRules.h>
 #include <mc/world/level/storage/LevelData.h>
 #include <utility>
-#include <variant>
 
 namespace ila::block::inline fire {
 
@@ -72,7 +70,6 @@ public:
     };
 
 private:
-    // 我就不加锁了，只有tick线程才会使用
     ll::SmallDenseMap<DimensionType, ll::SmallDenseMap<ChunkPos, ll::SmallDenseMap<ChunkBlockPos, State>>> mCache;
 
 public:
@@ -81,7 +78,6 @@ public:
         return instance;
     }
 
-public:
     optional_ref<State> getCache(Dimension& dimension, BlockPos const& pos) {
         if (auto it = mCache.find(dimension.mId); it != mCache.end()) {
             if (auto it2 = it->second.find(ChunkPos{pos.x >> 4, pos.z >> 4}); it2 != it->second.end()) {
@@ -154,7 +150,7 @@ LL_TYPE_INSTANCE_HOOK(
         return false;
     }
 
-    if (region.setBlock(pos, *soulFireBlock->mDefaultState, 3, nullptr, BlockChangeContext{false})) {
+    if (region.setBlock(pos, *soulFireBlock->mDefaultState, 3, nullptr, BlockChangeContext{})) {
         eventPromise(SoulFireSpawnedEvent{region, pos}).publish();
         return true;
     }
@@ -169,18 +165,24 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     BlockEvents::BlockQueuedTickEvent& eventData
 ) {
-    auto&     region     = eventData.mRegion;
-    auto&     pos        = *eventData.mPos;
-    auto&     random     = eventData.mRandom;
-    auto&     gameRules  = *region.mLevel.mLevelData->get()->mGameRules;
-    auto&     weather    = *region.mDimension.mWeather;
-    auto      fireBlock  = gsl::not_null<Block const*>{&region.getBlock(pos)};
-    auto      belowPos   = pos.add({0, -1, 0});
-    auto&     belowBlock = region.getBlock(belowPos);
-    auto      fireAge    = fireBlock->getState<int>(VanillaStates::Age()).value_or(0);
-    auto      isHumid    = region.getBiome(pos).isHumid();
-    Randomize randomize(random);
-    auto      cache = FireInterceptCache::getInstance().getCache(region.mDimension, pos);
+    auto& region     = eventData.mRegion;
+    auto& pos        = *eventData.mPos;
+    auto& random     = eventData.mRandom;
+    auto& gameRules  = *region.mLevel.mLevelData->get()->mGameRules;
+    auto& weather    = *region.mDimension.mWeather;
+    auto  fireBlock  = gsl::not_null<Block const*>{&region.getBlock(pos)};
+    auto  belowPos   = pos.add({0, -1, 0});
+    auto& belowBlock = region.getBlock(belowPos);
+    auto  fireAge    = fireBlock->getState<int>(VanillaStates::Age()).value_or(0);
+    auto  isHumid    = region.getBiome(pos).isHumid();
+    auto  cache      = FireInterceptCache::getInstance().getCache(region.mDimension, pos);
+
+    auto addToRandomTickingQueue = [&](BlockSource& region, BlockPos const& pos) {
+        if (!region.isInstaticking(pos) && !region.hasTickInPendingTicks(pos)) {
+            auto delay = random.nextInt(10) + 30;
+            region.addToRandomTickingQueue(pos, *fireBlock->mBlockType->mDefaultState, delay, 0, 0);
+        }
+    };
 
     if (_trySpawnSoulFire(region, pos)) return;
 
@@ -195,7 +197,7 @@ LL_TYPE_INSTANCE_HOOK(
         return cache.mRemovalReasons.contains(FireRemoveEvent::Reason::Unsupported);
     })) {
         if (!eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Unsupported})
-                 .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                 .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{}); })
                  .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Unsupported})
                  .onCancel([&] {
             FireInterceptCache::getInstance()
@@ -207,7 +209,7 @@ LL_TYPE_INSTANCE_HOOK(
     }
 
     if (!gamerule_utils::getGameRule(gameRules, GameRules::GameRulesIndex::DoFireTick, false)) {
-        _tryAddToTickingQueue(region, pos, random);
+        addToRandomTickingQueue(region, pos);
         return;
     }
 
@@ -215,49 +217,40 @@ LL_TYPE_INSTANCE_HOOK(
     if (
         !gamerule_utils::getGameRule(gameRules, GameRules::GameRulesIndex::AllowDestructiveObjects, true)
         && !cache.and_then([](auto&& cache) {
-            return cache.mRemovalReasons.contains(FireRemoveEvent::Reason::GameRule);
-        })
+        return cache.mRemovalReasons.contains(FireRemoveEvent::Reason::GameRule);
+    })
         && !eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::GameRule})
-            .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
-            .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::GameRule})
-            .onCancel([&] {
-                FireInterceptCache::getInstance()
-                    .getOrCreateCache(region.mDimension, pos)
-                    .mRemovalReasons.insert(FireRemoveEvent::Reason::GameRule);
+                .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{}); })
+                .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::GameRule})
+                .onCancel([&] {
+        FireInterceptCache::getInstance()
+            .getOrCreateCache(region.mDimension, pos)
+            .mRemovalReasons.insert(FireRemoveEvent::Reason::GameRule);
             }).publish()
     ) {
         return;
     }
-    // clang-format on
 
-    static std::array<std::function<bool(BlockSource&, Weather&, BlockPos const&)>, 5> vscNearbyRainfallCheck =
-        {[](BlockSource& region, Weather& weather, BlockPos const& pos) {
-        return weather.isPrecipitatingAt(region, pos) && region.getBiome(pos).getTemperature(region, pos) > 0.15000001f;
-    }, [](BlockSource& region, Weather& weather, BlockPos const& pos) {
-        auto nearby = pos.add({1, 0, 0});
-        return weather.isPrecipitatingAt(region, nearby)
-            && region.getBiome(nearby).getTemperature(region, nearby) > 0.15000001f;
-    }, [](BlockSource& region, Weather& weather, BlockPos const& pos) {
-        return weather.isRainingAt(region, pos.add({-1, 0, 0}));
-    }, [](BlockSource& region, Weather& weather, BlockPos const& pos) {
-        return weather.isRainingAt(region, pos.add({0, 0, -1}));
-    }, [](BlockSource& region, Weather& weather, BlockPos const& pos) {
-        return weather.isRainingAt(region, pos.add({0, 0, 1}));
-    }};
-
-    if (!infiniBurn && region.mDimension.mHasWeather && weather.mRainLevel > 0.2f
-        && std::ranges::any_of(vscNearbyRainfallCheck, [&](auto&& check) {
-        return check(region, weather, pos);
-    }) && !cache.and_then([](auto&& cache) { return cache.mRemovalReasons.contains(FireRemoveEvent::Reason::Rain); })) {
-        if (!eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Rain})
-                 .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
-                 .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Rain})
-                 .onCancel([&] {
-            FireInterceptCache::getInstance()
-                .getOrCreateCache(region.mDimension, pos)
-                .mRemovalReasons.insert(FireRemoveEvent::Reason::Rain);
-        }).publish()) {
-            return;
+    if (!infiniBurn && weather.isRaining()) {
+        // clang-format on
+        auto rainingNearby = weather.isRainingAt(region, pos)
+            || weather.isRainingAt(region, pos.add({1, 0, 0}))
+            || weather.isRainingAt(region, pos.add({-1, 0, 0}))
+            || weather.isRainingAt(region, pos.add({0, 0, -1}))
+            || weather.isRainingAt(region, pos.add({0, 0, 1}));
+        if (rainingNearby && !cache.and_then([](auto&& cache) {
+            return cache.mRemovalReasons.contains(FireRemoveEvent::Reason::Rain);
+        })) {
+            if (!eventPromise(FireRemovingEvent{region, pos, FireRemoveEvent::Reason::Rain})
+                     .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{}); })
+                     .onSuccessEvent(FireRemovedEvent{region, pos, FireRemoveEvent::Reason::Rain})
+                     .onCancel([&] {
+                FireInterceptCache::getInstance()
+                    .getOrCreateCache(region.mDimension, pos)
+                    .mRemovalReasons.insert(FireRemoveEvent::Reason::Rain);
+            }).publish()) {
+                return;
+            }
         }
     }
 
@@ -266,85 +259,68 @@ LL_TYPE_INSTANCE_HOOK(
             return false;
         }
         return !eventPromise(FireRemovingEvent{region, pos, reason})
-                    .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                    .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{}); })
                     .onSuccessEvent(FireRemovedEvent{region, pos, reason})
                     .onCancel([&] {
             FireInterceptCache::getInstance().getOrCreateCache(region.mDimension, pos).mRemovalReasons.insert(reason);
         }).publish();
     };
 
-    if (![&]() { // 返回值代表是否蔓延火焰
-        if (infiniBurn) return true;
-
-        if (fireAge < 15 && !cache.and_then([](auto&& cache) {
-            return cache.mAgingPrevented;
-        })) {
-            auto prevAge = fireAge;
-
-            if (auto newAge = fireAge + random.nextInt(3) / 2; newAge != fireAge) {
-                if (auto event = eventPromise(FireAgingEvent{region, pos, fireAge, newAge})
-                                     .onCancel([&] {
-                    FireInterceptCache::getInstance().getOrCreateCache(region.mDimension, pos).mAgingPrevented = true;
-                }).publish();
-                    !event && event->newAge() != fireAge) {
-                    fireAge = event->newAge();
-                    if (auto newFireBlock = fireBlock->setState(VanillaStates::Age(), fireAge); newFireBlock) {
-                        fireBlock = newFireBlock.as_ptr();
-                    }
+    if (!infiniBurn && fireAge < 15 && !cache.and_then([](auto&& cache) { return cache.mAgingPrevented; })) {
+        auto prevAge = fireAge;
+        auto newAge  = fireAge + random.nextInt(3) / 2;
+        if (newAge != fireAge) {
+            if (auto event = eventPromise(FireAgingEvent{region, pos, fireAge, newAge})
+                                 .onCancel([&] {
+                FireInterceptCache::getInstance().getOrCreateCache(region.mDimension, pos).mAgingPrevented = true;
+            }).publish();
+                !event && event->newAge() != fireAge) {
+                fireAge = event->newAge();
+                if (auto newFireBlock = fireBlock->setState(VanillaStates::Age(), fireAge); newFireBlock) {
+                    fireBlock = newFireBlock.as_ptr();
                 }
             }
-
-            if (region.setBlock(pos, *fireBlock, 1, nullptr, BlockChangeContext{false})) {
-                eventPromise(FireAgedEvent{region, pos, prevAge, fireAge}).publish();
-            }
         }
+        if (region.setBlock(pos, *fireBlock, 1, nullptr, BlockChangeContext{})) {
+            eventPromise(FireAgedEvent{region, pos, prevAge, fireAge}).publish();
+        }
+    }
 
+    addToRandomTickingQueue(region, pos);
+
+    if (!infiniBurn) {
         auto belowMaterialType = belowBlock.mBlockType->mMaterial.mType;
-        if (belowMaterialType == MaterialType::Explosive) {
-            bool doTntExplode = gamerule_utils::getGameRule(gameRules, GameRules::GameRulesIndex::DoTntExplode, false);
-            if (!doTntExplode) {
-                if (fireAge > 3) {
-                    tryRemoveFire(FireRemoveEvent::Reason::GameRule);
-                }
-                return false;
-            }
-        }
+        auto doTntExplode      = gamerule_utils::getGameRule(gameRules, GameRules::GameRulesIndex::DoTntExplode, false);
 
-        if (!isValidFireLocation(region, pos)) {
-            if (!isSolidToppedBlock(region, belowPos)) {
-                if (tryRemoveFire(FireRemoveEvent::Reason::Unsupported)) {
-                    return false;
-                }
+        if (belowMaterialType == SharedTypes::v1_26_20::MaterialType::Explosive && !doTntExplode) {
+            if (fireAge < 4) {
+                return;
             }
         }
 
         auto& liquidBelow = region.getLiquidBlock(belowPos);
-        if (liquidBelow.mBlockType->mMaterial.mType == MaterialType::Water) {
-            if (!isSolidToppedBlock(region, belowPos) && fireAge > 3) {
-                tryRemoveFire(FireRemoveEvent::Reason::Water);
-            }
-            return false;
-        }
-
-        if (belowBlock.mDirectData->mFlameOdds == FlameOdds::Never && fireAge == 15 && !random.nextInt(4)) {
-            if (tryRemoveFire(FireRemoveEvent::Reason::BurntOut)) {
-                return false;
+        bool  isWater     = liquidBelow.mBlockType->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Water;
+        if (!isValidFireLocation(region, pos) || isWater) {
+            if (fireAge <= 3 && canProvideFullSupport(liquidBelow, static_cast<uchar>(SharedTypes::Facing::Up))) {
+                return;
+            } else {
+                tryRemoveFire(isWater ? FireRemoveEvent::Reason::Water : FireRemoveEvent::Reason::Unsupported);
+                return;
             }
         }
 
-        return true;
-    }()) {
-        _tryAddToTickingQueue(region, pos, random);
-        return;
+        if (fireAge == 15 && belowBlock.mDirectData->mFlameOdds == FlameOdds::Never && !random.nextInt(4)) {
+            tryRemoveFire(FireRemoveEvent::Reason::BurntOut);
+            return;
+        }
     }
-    _tryAddToTickingQueue(region, pos, random);
 
-    checkBurn(region, pos.add({1, 0, 0}), isHumid ? 250 : 300, randomize, fireAge, pos);
-    checkBurn(region, pos.add({-1, 0, 0}), isHumid ? 250 : 300, randomize, fireAge, pos);
-    checkBurn(region, pos.add({0, -1, 0}), isHumid ? 200 : 250, randomize, fireAge, pos);
-    checkBurn(region, pos.add({0, 1, 0}), isHumid ? 200 : 250, randomize, fireAge, pos);
-    checkBurn(region, pos.add({0, 0, -1}), isHumid ? 250 : 300, randomize, fireAge, pos);
-    checkBurn(region, pos.add({0, 0, 1}), isHumid ? 250 : 300, randomize, fireAge, pos);
+    checkBurn(region, pos.add({1, 0, 0}), isHumid ? 250 : 300, random, fireAge, pos);
+    checkBurn(region, pos.add({-1, 0, 0}), isHumid ? 250 : 300, random, fireAge, pos);
+    checkBurn(region, pos.add({0, -1, 0}), isHumid ? 200 : 250, random, fireAge, pos);
+    checkBurn(region, pos.add({0, 1, 0}), isHumid ? 200 : 250, random, fireAge, pos);
+    checkBurn(region, pos.add({0, 0, -1}), isHumid ? 250 : 300, random, fireAge, pos);
+    checkBurn(region, pos.add({0, 0, 1}), isHumid ? 250 : 300, random, fireAge, pos);
 
     // clang-format off
     for (auto dPos : BoundingBox{-1, {1, 4, 1}}.forEachPos()) {
@@ -364,24 +340,18 @@ LL_TYPE_INSTANCE_HOOK(
                                  * 2.328306436538696e-10f;
                 auto spreadRate = dPos.y > 1 ? 100 * dPos.y : 100;
                 if (randomValue * static_cast<float>(spreadRate) <= spreadChance) {
-                    std::array<BlockPos, 5> spreadPositions = {
-                        spreadPos,
-                        spreadPos.add({-1, 0, 0}),
-                        spreadPos.add({1, 0, 0}),
-                        spreadPos.add({0, 0, -1}),
-                        spreadPos.add({0, 0, 1})
-                    };
-                    if (!region.getDimension().mHasWeather || weather.mRainLevel <= 0.2f
-                        || !std::ranges::any_of(spreadPositions, [&](BlockPos const& checkPos) {
-                        return weather.isPrecipitatingAt(region, checkPos)
-                            && region.getBiome(checkPos).getTemperature(region, checkPos) > 0.15000001f;
-                    })) {
+                    auto rainingNearby = weather.isRainingAt(region, spreadPos)
+                                      || weather.isRainingAt(region, spreadPos.add({-1, 0, 0}))
+                                      || weather.isRainingAt(region, spreadPos.add({1, 0, 0}))
+                                      || weather.isRainingAt(region, spreadPos.add({0, 0, -1}))
+                                      || weather.isRainingAt(region, spreadPos.add({0, 0, 1}));
+                    if (!weather.isRaining() || !rainingNearby) {
                         if (!cache.and_then([&](auto&& cache) {
                             return cache.mSpreadBlocksPrevented.contains(spreadPos);
                         })) {
                             eventPromise(FireSpreadingEvent{region, pos, spreadPos})
                                 .onSuccess([&] {
-                                region.setBlock(spreadPos, *fireBlock, 3, nullptr, BlockChangeContext{false});
+                                region.setBlock(spreadPos, *fireBlock, 3, nullptr, BlockChangeContext{});
                             })
                                 .onSuccessEvent(FireSpreadedEvent{region, pos, spreadPos})
                                 .onCancel([&] {
@@ -406,15 +376,15 @@ LL_TYPE_INSTANCE_HOOK(
     BlockSource&    region,
     BlockPos const& pos,
     int             chance,
-    Randomize&      randomize,
+    IRandom&        random,
     int             age,
     BlockPos const& firePos
 ) {
-    auto nextInt = [&randomize](int max) { return randomize.mRandom->mPointer->nextInt(max + 1); };
+    auto nextInt = [&random](int max) { return random.nextInt(max + 1); };
 
     auto& block     = region.getBlock(pos);
     auto& blockType = *block.mBlockType;
-    auto cache      = FireInterceptCache::getInstance().getCache(region.mDimension, firePos);
+    auto  cache     = FireInterceptCache::getInstance().getCache(region.mDimension, firePos);
 
     if (*blockType.mNameInfo->mFullName == VanillaBlockTypeIds::Beehive()
         || *blockType.mNameInfo->mFullName == VanillaBlockTypeIds::BeeNest()) {
@@ -436,7 +406,7 @@ LL_TYPE_INSTANCE_HOOK(
                        || (*blockType.mNameInfo->mFullName == VanillaBlockTypeIds::SoulCampfire());
 
         if (nextInt(age + 9) >= 5 || region.mDimension.mWeather->isRainingAt(region, pos)) {
-            if (!isCampfire && !cache.and_then([&](auto&& cache){
+            if (!isCampfire && !cache.and_then([&](auto&& cache) {
                 return cache.mBurntOutBlocksPrevented.contains(pos);
             }) && !eventPromise(FireBurningBlockEvent{region, firePos, pos}).publish()) {
                 if (isTnt) {
@@ -444,7 +414,7 @@ LL_TYPE_INSTANCE_HOOK(
                             GameRuleId{std::to_underlying(GameRules::GameRulesIndex::DoNaturalRegeneration)},
                             false
                         )) {
-                        region.removeBlock(pos, BlockChangeContext{false});
+                        region.removeBlock(pos, BlockChangeContext{});
                         eventPromise(FireBurnedBlockEvent{region, firePos, pos}).publish();
                         FireInterceptCache::getInstance()
                             .getOrCreateCache(region.mDimension, firePos)
@@ -452,7 +422,7 @@ LL_TYPE_INSTANCE_HOOK(
                         return;
                     }
                 } else {
-                    region.removeBlock(pos, BlockChangeContext{false});
+                    region.removeBlock(pos, BlockChangeContext{});
                     eventPromise(FireBurnedBlockEvent{region, firePos, pos}).publish();
                     FireInterceptCache::getInstance()
                         .getOrCreateCache(region.mDimension, firePos)
@@ -464,7 +434,7 @@ LL_TYPE_INSTANCE_HOOK(
                 mDefaultState->setState<bool>(VanillaStates::Age(), std::min(age + nextInt(4) / 4, 15));
             if (!cache.and_then([&](auto&& cache) { return cache.mBurntOutBlocksPrevented.contains(pos); })) {
                 eventPromise(FireBurningBlockEvent{region, firePos, pos})
-                    .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{false}); })
+                    .onSuccess([&] { region.removeBlock(pos, BlockChangeContext{}); })
                     .onSuccessEvent(FireBurnedBlockEvent{region, firePos, pos})
                     .onCancel([&] {
                     FireInterceptCache::getInstance()
@@ -476,9 +446,7 @@ LL_TYPE_INSTANCE_HOOK(
                 && !cache.and_then([&](auto&& cache) { return cache.mSpreadBlocksPrevented.contains(pos); })) {
                 auto spreadPos = pos;
                 eventPromise(FireSpreadingEvent{region, firePos, spreadPos})
-                    .onSuccess([&] {
-                    region.setBlock(spreadPos, *fireBlockWithAge, 3, nullptr, BlockChangeContext{false});
-                })
+                    .onSuccess([&] { region.setBlock(spreadPos, *fireBlockWithAge, 3, nullptr, BlockChangeContext{}); })
                     .onSuccessEvent(FireSpreadedEvent{region, firePos, spreadPos})
                     .onCancel([&] {
                     FireInterceptCache::getInstance()
@@ -514,7 +482,7 @@ LL_TYPE_INSTANCE_HOOK(
                         GameRuleId{std::to_underlying(GameRules::GameRulesIndex::DoNaturalRegeneration)},
                         false
                     )) {
-                    region.removeBlock(pos, BlockChangeContext{false});
+                    region.removeBlock(pos, BlockChangeContext{});
                 }
             })
                 .onSuccessEvent(FireIgnitedTNTEvent{region, firePos, pos})

@@ -4,7 +4,7 @@
 #include <ll/api/event/Event.h>
 #include <mc/certificates/identity/PlayerAuthenticationInfo.h>
 #include <mc/common/SubClientId.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/network/NetworkIdentifier.h>
 
 namespace ila::server {

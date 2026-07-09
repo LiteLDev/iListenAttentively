@@ -2,8 +2,6 @@
 #include "ila/utils/EventUtils.i.h"
 #pragma include_alias("mc/world/level/block/ResourceDropsContext.h", "patch_mc/world/level/block/ResourceDropsContext.i.h")
 #pragma include_alias(<mc/world/level/block/ResourceDropsContext.h>, <patch_mc/world/level/block/ResourceDropsContext.i.h>)
-#pragma include_alias("mc/world/level/ParticlesBlockExplosionEvent.h", "patch_mc/world/level/ParticlesBlockExplosionEvent.i.h")
-#pragma include_alias(<mc/world/level/ParticlesBlockExplosionEvent.h>, <patch_mc/world/level/ParticlesBlockExplosionEvent.i.h>)
 #pragma include_alias("mc/network/packet/LevelEventGenericPacketPayload.h", "patch_mc/network/packet/LevelEventGenericPacketPayload.i.h")
 #pragma include_alias(<mc/network/packet/LevelEventGenericPacketPayload.h>, <patch_mc/network/packet/LevelEventGenericPacketPayload.i.h>)
 // clang-format on
@@ -45,18 +43,18 @@
 #include <mc/deps/shared_types/legacy/LevelSoundEvent.h>
 #include <mc/deps/shared_types/legacy/actor/ActorDamageCause.h>
 #include <mc/entity/components/ServerMovement.h>
-#include <mc/entity/components/WindChargeKnockbackComponent.h>
+#include <mc/entity/components/PostImpulseFallDamagePreventionComponent.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/entity/components_json_legacy/ExplodeComponent.h>
 #include <mc/gameplayhandlers/CoordinatorResult.h>
-#include <mc/nbt/CompoundTag.h>
 #include <mc/network/packet/LevelEventGenericPacket.h>
 #include <mc/util/Random.h>
-#include <mc/util/Randomize.h>
 #include <mc/world/actor/Actor.h>
 #include <mc/world/actor/ActorCategory.h>
 #include <mc/world/actor/ActorDamageByActorSource.h>
 #include <mc/world/actor/ActorDamageByChildActorSource.h>
 #include <mc/world/actor/ActorDamageSource.h>
+#include <mc/world/actor/ActorHurtResult.h>
 #include <mc/world/actor/ActorSoundIdentifier.h>
 #include <mc/world/actor/ActorType.h>
 #include <mc/world/actor/KnockbackRules.h>
@@ -87,7 +85,6 @@
 #include <mc/world/level/dimension/Dimension.h>
 #include <mc/world/level/levelgen/structure/BoundingBox.h>
 #include <mc/world/level/material/Material.h>
-#include <mc/world/level/material/MaterialType.h>
 #include <mc/world/level/storage/GameRuleId.h>
 #include <mc/world/level/storage/GameRules.h>
 #include <optional>
@@ -148,7 +145,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
     auto  inWater = [&]() {
         if (*mInWaterOverride) return **mInWaterOverride;
         if (source) return source->isInWater();
-        return mRegion.getLiquidBlock(BlockPos{mPos}).mBlockType->mMaterial.mType == MaterialType::Water;
+        return mRegion.getLiquidBlock(BlockPos{mPos}).mBlockType->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Water;
     }();
     auto& airBlock       = *Block::tryGetFromRegistry(BedrockBlockNames::Air());
     auto& fireBlock      = *Block::tryGetFromRegistry(VanillaBlockTypeIds::Fire());
@@ -165,13 +162,19 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         return false;
     }();
 
+    // 碰撞偏移（使用手动归一化代替 Vec3::normalized）
     if (auto& block = mRegion.getBlock(BlockPos{mPos}); block.mBlockType->mMaterial.mSolid && source) {
         auto posDelta = *source->mBuiltInComponents->mStateVectorComponent->mPosDelta;
         if (auto numSteps = std::min(static_cast<int>(std::ceil(posDelta.length())), 5); numSteps > 0) {
-            Vec3 normalizedDelta = posDelta.normalized();
-            Vec3 currentPos      = mPos;
+            Vec3 normalizedDelta;
+            if (auto length = posDelta.length(); length >= 0.000099999997f) {
+                normalizedDelta = posDelta / length;
+            } else {
+                normalizedDelta = {};
+            }
+            Vec3 currentPos = mPos;
 
-            if (std::ranges::any_of(std::views::iota(numSteps), [&](auto) {
+            if (std::ranges::any_of(std::views::iota(0, numSteps), [&](auto) {
                 currentPos -= normalizedDelta;
                 return !mRegion.getBlock({currentPos}).mBlockType->mMaterial.mSolid;
             })) {
@@ -179,7 +182,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                     .onSuccess([&] {
                     std::swap(*mPos, currentPos);
                     inWater =
-                        mRegion.getLiquidBlock(BlockPos{currentPos}).mBlockType->mMaterial.mType == MaterialType::Water;
+                        mRegion.getLiquidBlock(BlockPos{currentPos}).mBlockType->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Water;
                 })
                     .onSuccessEvent(ExplosionCollidedEvent{*this, currentPos, mPos})
                     .publish();
@@ -187,6 +190,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         }
     }
 
+    // 收集受影响方块
     if ((mBreaking || mCanToggleBlocks) && (!inWater || mAllowUnderwater)) {
         constexpr float stepScale = 2.0f / 15.0f; // 0.13333334f
 
@@ -208,7 +212,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
 
                 if (!mAllowUnderwater) {
                     if (auto& extraBlock = mRegion.getExtraBlock(blockPos);
-                        extraBlock.mBlockType->mMaterial.mType == MaterialType::Water) {
+                        extraBlock.mBlockType->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Water) {
                         remainingStrength = 0.0f;
                     }
                 }
@@ -216,7 +220,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 auto& currentBlock = mRegion.getBlock(blockPos);
 
                 if (currentBlock.isAir()
-                    || (mAllowUnderwater ? currentBlock.mBlockType->mMaterial.mType == MaterialType::Water : false)) {
+                    || (mAllowUnderwater ? currentBlock.mBlockType->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Water : false)) {
                     if (mFire && mRegion.getBlock(blockPos.add({0, -1, 0})).mBlockType->mMaterial.mSolid) {
                         mAffectedBlocks->emplace(blockPos);
                     }
@@ -235,12 +239,13 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         }
     }
 
-    if (!level.isClientSide()) { // 给脚本层推送事件
+    // 脚本层推送事件
+    if (!level.isClientSide()) {
         struct {
             std::unordered_set<BlockPos> mBlocks;
             Dimension&                   mDimension;
             WeakRef<EntityContext>       mSource;
-        } event{mAffectedBlocks, mRegion.mDimension, source ? source->getWeakEntity() : WeakRef<EntityContext>{}};
+        } event{mAffectedBlocks, mRegion.mDimension, source ? source->mEntityContext->getWeakRef() : WeakRef<EntityContext>{}};
         static_assert(sizeof(event) == sizeof(ExplosionStartedEvent));
         EventRef<MutableBlockGameplayEvent<CoordinatorResult>> eventRef{
             reinterpret_cast<ExplosionStartedEvent&>(event)
@@ -250,13 +255,13 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
     }
 
     auto doubleRadius = mRadius * 2.0f;
-    // clang-format off
     auto sourcePos = source.transform([&](Actor& entity) {
         auto type = entity.getEntityTypeId();
         return type == ActorType::WindChargeProjectile || type == ActorType::BreezeWindChargeProjectile ? *mPos : entity.getEyePos();
     }).value_or(mPos);
-    // clang-format on
-    for (auto entity : _getActorsInRange(source, doubleRadius)) { // 处理实体
+
+    // 处理实体
+    for (auto entity : _getActorsInRange(source, doubleRadius)) {
         if (entity->isSpectator() || eventPromise(ExplosionProcessEntityingEvent{*this, *entity}).publish()) {
             continue;
         }
@@ -274,46 +279,39 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         if (normalizedDistance > 1.0f) continue;
         auto pow         = (1.0f - normalizedDistance) * mRegion.getSeenPercent(mPos, aabb) * mKnockbackScaling;
         auto totalDamage = *mTotalDamageOverride
-                             ? static_cast<float>(**mTotalDamageOverride)
-                             : ((pow * pow * 3.5f + pow * 0.5f * 7.0f) * doubleRadius + 1.0f) * mDamageScaling;
+                               ? static_cast<float>(**mTotalDamageOverride)
+                               : ((pow * pow * 3.5f + pow * 0.5f * 7.0f) * doubleRadius + 1.0f) * mDamageScaling;
 
-        { // 伤害实体
+        // 伤害实体
+        {
             auto [damageSource, damaging, knockback] = [&]() -> std::tuple<ActorDamageSource, bool, bool> {
                 using ActorDamageCause = SharedTypes::Legacy::ActorDamageCause;
 
-                // 情况1：实体正在格挡 → 伤害减半，原因取决于伤害来源
                 if (entity->isBlocking()) {
                     pow *= 0.5f;
-                    // clang-format off
-                    ActorDamageSource damageSource;
-                    damageSource.mCause = source.and_then([](Actor& source) -> std::optional<ActorDamageCause> {
-                        if (source.hasCategory(ActorCategory::Mob) || source.getEntityTypeId() == ActorType::PrimedTnt) {
-                            return ActorDamageCause::EntityExplosion;
-                        }
-                        return std::nullopt;
-                    }).value_or(ActorDamageCause::BlockExplosion);
-                    return {damageSource, false, false};   // 不造成伤害击退
-                    // clang-format on
+                    ActorDamageCause cause = ActorDamageCause::BlockExplosion;
+                    if (source && (source->hasCategory(ActorCategory::Mob) || source->getEntityTypeId() == ActorType::PrimedTnt)) {
+                        cause = ActorDamageCause::EntityExplosion;
+                    }
+                    ActorDamageSource ds;
+                    ds.mCause = cause;
+                    return {ds, false, false};
                 }
 
-                // 情况2：伤害缩放接近零 → 无伤害
                 if (std::abs(mDamageScaling) <= 0.0000099999997f) {
                     return {};
                 }
 
-                // 情况3：没有伤害来源 → 使用方块爆炸原因
                 if (!source) {
-                    ActorDamageSource damageSource;
-                    damageSource.mCause = ActorDamageCause::BlockExplosion;
-                    return {damageSource, true, false};
+                    ActorDamageSource ds;
+                    ds.mCause = ActorDamageCause::BlockExplosion;
+                    return {ds, true, false};
                 }
 
-                // 情况4：水中且禁止水下爆炸 → 伤害置零
                 if (inWater && !mAllowUnderwater) {
                     totalDamage = 0.0f;
                 }
 
-                // 情况5：存在子伤害来源（如点燃 TNT 的实体）
                 if (auto* childSource = level.fetchEntity(source->getSourceUniqueID(), false); childSource) {
                     return {
                         ActorDamageByChildActorSource{*source, *childSource, ActorDamageCause::EntityExplosion},
@@ -322,7 +320,6 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                     };
                 }
 
-                // 情况6：伤害来源是生物或点燃的 TNT → 使用实体爆炸原因
                 if (source->hasCategory(ActorCategory::Mob) || source->getEntityTypeId() == ActorType::PrimedTnt) {
                     return {
                         ActorDamageByActorSource{*source, ActorDamageCause::EntityExplosion},
@@ -331,36 +328,28 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                     };
                 }
 
-                // 情况7：默认 → 使用方块爆炸原因
-                ActorDamageSource damageSource;
-                damageSource.mCause = ActorDamageCause::BlockExplosion;
-                return {damageSource, true, false};
+                ActorDamageSource ds;
+                ds.mCause = ActorDamageCause::BlockExplosion;
+                return {ds, true, false};
             }();
-            // clang-format off
+
             if (!eventPromise(
                     ExplosionDamageEntityingEvent{*this, *entity, damageSource, totalDamage, damaging, knockback}
                 ).publish() && totalDamage > 0.0f
             ) {
-                // clang-format on
                 entity->hurt(damageSource, totalDamage, damaging, knockback);
-
                 eventPromise(
                     ExplosionDamageEntityedEvent{*this, *entity, damageSource, totalDamage, damaging, knockback}
-                )
-                    .publish();
+                ).publish();
             }
         }
 
-        if ([&]() { // 击退实体
-            if (auto attribute = entity->getAttribute(SharedAttributes::KNOCKBACK_RESISTANCE()); attribute.mPtr) {
-                return attribute.mPtr->mCurrentValue;
-            }
-            return 0.0f;
-        }() < 1.0f) {
+        // 击退实体（使用 isKnockbackResistant）
+        if (!KnockbackRules::isKnockbackResistant(*entity)) {
             auto type              = entity->getEntityTypeId();
             auto actorKnockbackPos = type == ActorType::PrimedTnt
-                                       ? *entity->mBuiltInComponents->mStateVectorComponent->mPos
-                                       : getEyePos(*entity);
+                                         ? *entity->mBuiltInComponents->mStateVectorComponent->mPos
+                                         : entity->getEyePos();
 
             auto direction = actorKnockbackPos - mPos;
             if (auto directionLength = direction.length(); directionLength >= 0.0001f) {
@@ -379,7 +368,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 if (type == ActorType::Player && source) {
                     auto explodeComp = source->mEntityContext->tryGetComponent<ExplodeComponent>();
                     if (explodeComp && explodeComp->mNegatesFallDamage) {
-                        auto& windComp = entity->mEntityContext->getOrAddComponent<WindChargeKnockbackComponent>();
+                        auto& windComp = entity->mEntityContext->getOrAddComponent<PostImpulseFallDamagePreventionComponent>();
                         windComp.mKnockbackStartYCoordinate =
                             entity->mBuiltInComponents->mStateVectorComponent->mPos->y;
                         windComp.mTicksAfterAddition = 0;
@@ -396,9 +385,10 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         eventPromise(ExplosionProcessEntityedEvent{*this, *entity}).publish();
     }
 
-    if (mRadius > 0.0f) { // 粒子效果和声音
+    // 粒子效果和声音
+    if (mRadius > 0.0f) {
         eventPromise(ExplosionSoundingEvent{*this})
-            .onSuccess([&] { level.broadcastSoundEvent(mRegion, mSoundExplosionType, mPos, -1, {}, false); })
+            .onSuccess([&] { level.broadcastSoundEvent(mRegion, mSoundExplosionType, mPos, -1, {}, false, std::nullopt); })
             .onSuccessEvent(ExplosionSoundedEvent{*this})
             .publish();
         eventPromise(ExplosionParticlingEvent{*this, mPos, mParticleType})
@@ -413,9 +403,9 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
     BlockPos maxPos{INT_MIN};
     bool     blockChangable{false};
 
-    { // 方块相关处理
+    // 方块处理
+    {
         ParticlesBlockExplosionEvent particlesEvent{mRadius, mPos, {}};
-        // key: blockPos, isExtraBlock  value: block, itemStacks
         ll::OrderedMap<std::pair<BlockPos, bool>, std::pair<Block const*, std::vector<ItemStack>>> blockDrops;
 
         for (auto& blockPos : *mAffectedBlocks) {
@@ -423,20 +413,20 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
             bool  isAirBlock = block.isAir();
             auto& extraBlock = mRegion.getExtraBlock(blockPos);
 
-            if (!level.isClientSide() && mCanToggleBlocks) { // 激活方块
+            if (!level.isClientSide() && mCanToggleBlocks) {
                 if (!source || source->getEntityTypeId() != ActorType::BreezeWindChargeProjectile) {
                     block.mBlockType->_onHitByActivatingAttack(mRegion, blockPos, source);
                 }
             }
 
-            if (mBreaking) { // 方块被爆炸破坏
+            if (mBreaking) {
                 if (!random.nextInt(8)) {
                     auto pos = Vec3{blockPos};
                     eventPromise(
                         ExplosionParticlingEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion}
                     )
                         .onSuccess([&] {
-                        particlesEvent.mPositions.emplace_back(pos);
+                        particlesEvent.mPositions->emplace_back(pos);
                     }).publish();
                 }
 
@@ -451,15 +441,10 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                             mRegion
                         };
 
-                        Randomize randomize(level.getRandom());
-
-                        auto destroy = [&](Block const& block, bool isExtraBlock) {
-                            // clang-format off
+                        auto destroy = [&, &random = level.getRandom()](Block const& block, bool isExtraBlock) {
                             if (block.isAir() || eventPromise(ExplosionProcessBlockingEvent{*this, blockPos, block, isExtraBlock}).publish()) return;
-                            // clang-format on
-                            auto resources = block.mBlockType->getResourceDrops(block, randomize, resourceDropsContext);
-                            { // 获取并保存方块掉落物
-                                // clang-format off
+                            auto resources = block.mBlockType->getResourceDrops(block, random, resourceDropsContext);
+                            {
                                 auto event = !eventPromise(
                                     ExplosionLootingBlockEvent{
                                         *this,
@@ -469,7 +454,6 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                         *resources.mItems
                                     }
                                 ).publish();
-                                // clang-format on
                                 if (!event && !resources.mItems->empty()) {
                                     blockDrops.insert({
                                         {blockPos, isExtraBlock                },
@@ -477,8 +461,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                     });
                                 }
                             }
-                            { // 生成经验球
-                                // clang-format off
+                            {
                                 auto event = eventPromise(
                                     ExplosionExperienceBlockingEvent{
                                         *this,
@@ -488,7 +471,6 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                         resources.mExperienceCount
                                     }
                                 ).publish();
-                                // clang-format on
                                 if (!event && resources.mExperienceCount > 0) {
                                     ExperienceOrb::spawnOrbs(
                                         mRegion,
@@ -514,7 +496,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                                     if (isExtraBlock) {
                                         mRegion.setExtraBlock(blockPos, airBlock, 3);
                                     } else {
-                                        BlockChangeContext changeCtx{false};
+                                        BlockChangeContext changeCtx{};
                                         changeCtx.mContextSource = ActorChangeContext{source};
                                         mRegion.setBlock(blockPos, airBlock, 3, nullptr, changeCtx);
                                         isAirBlock = true;
@@ -546,12 +528,12 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 }
             }
 
-            if (!level.isClientSide()) { // 生成方块被爆炸破坏粒子
+            if (!level.isClientSide()) {
                 LevelEventGenericPacket{
                     {std::to_underlying(SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion),
                      std::move(*particlesEvent.save())}
                 }.sendTo(*mPos, mRegion.mDimension.mId);
-                for (auto& pos : particlesEvent.mPositions) {
+                for (auto& pos : *particlesEvent.mPositions) {
                     eventPromise(
                         ExplosionParticledEvent{*this, pos, SharedTypes::Legacy::LevelEvent::ParticlesBlockExplosion}
                     )
@@ -559,12 +541,12 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
                 }
             }
 
-            if (mFire && isAirBlock) { // 生成火焰方块
+            if (mFire && isAirBlock) {
                 if (mRegion.getBlock(blockPos.add({0, -1, 0})).mBlockType->mMaterial.mSolid && !random.nextInt(3)) {
                     auto pos   = blockPos;
                     auto event = ExplosionFlamingEvent{*this, pos};
                     if (!event.isCancelled()) {
-                        BlockChangeContext changeCtx{false};
+                        BlockChangeContext changeCtx{};
                         changeCtx.mContextSource = ActorChangeContext{source};
                         mRegion.setBlock(pos, fireBlock, 3, nullptr, changeCtx);
                         eventPromise(ExplosionFlamedEvent{*this, pos}).publish();
@@ -576,18 +558,7 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
             }
         }
 
-        /*
-        生成方块掉落物
-        物品合并逻辑：
-            - 限制单个物品掉落物品数量 (计算公式为: 16 * (length / 10 + 1))
-            - 其中length为items当前的长度
-
-            - 然后就是正常的物品合并操作
-            - 只不过最大堆叠数量为 min(上面计算的限制, 物品堆叠上限)
-
-            - 最后一点，不检测坐标，无视距离的
-            - 也就是说哪个方块先被遍历，就掉落在哪
-        */
+        // 生成方块掉落物
         if (!blockDrops.empty()) {
             std::vector<std::pair<ItemStack, BlockPos>> items;
             for (auto& [key, value] : blockDrops) {
@@ -605,13 +576,9 @@ LL_TYPE_INSTANCE_HOOK(ExplosionEventHook, HookPriority::Low, Explosion, &Explosi
         }
     }
 
-
-    if (blockChangable) { // 触发方块更新事件
-        auto area = BoundingBox{minPos.add(-1), maxPos.add(1)};
-        for (auto* listener : *mRegion.mListeners) {
-            if (!listener) continue;
-            listener->onAreaChanged(mRegion, area.min, area.max);
-        }
+    // 方块更新（新版使用 fireAreaChanged）
+    if (blockChangable) {
+        mRegion.fireAreaChanged(minPos.add(-1), maxPos.add(1));
     }
 
     eventPromise(ExplodedEvent{*this}).publish();
@@ -632,3 +599,7 @@ EventHook(ExplosionProcessEntityingEvent, ExplosionProcessEntityedEvent, <Explos
 EventHook(ExplosionSoundingEvent, ExplosionSoundedEvent, <ExplosionEventHook>);
 
 } // namespace ila::explosion
+
+WindChargeImpulse::WindChargeImpulse() : mUnk75c12e() { mUnk75c12e.as<bool>() = false; }
+WindChargeImpulse::WindChargeImpulse(WindChargeImpulse const&)            = default;
+WindChargeImpulse& WindChargeImpulse::operator=(WindChargeImpulse const&) = default;

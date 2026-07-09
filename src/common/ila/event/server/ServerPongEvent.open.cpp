@@ -29,8 +29,8 @@
 #include <mc/deps/raknet/RakNetSocket2.h>
 #include <mc/deps/raknet/RakPeer.h>
 #include <mc/deps/raknet/SystemAddress.h>
-#include <mc/nbt/CompoundTag.h>
-#include <mc/nbt/CompoundTagVariant.h>
+#include <mc/deps/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTagVariant.h>
 #include <patch_mc/deps/raknet/BitStream.h>
 #include <ranges>
 #include <source_location>

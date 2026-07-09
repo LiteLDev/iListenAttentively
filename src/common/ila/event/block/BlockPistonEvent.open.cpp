@@ -6,7 +6,7 @@
 #include <ll/api/memory/Hook.h>
 #include <ll/api/reflection/Serialization.h>
 #include <mc/common/FacingID.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/PistonBlock.h>
 #include <mc/world/level/block/VanillaStates.h>

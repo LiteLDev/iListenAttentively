@@ -8,8 +8,8 @@
 #include <ll/api/service/Bedrock.h>
 #include <magic_enum.hpp>
 #include <mc/deps/core/utility/optional_ref.h>
-#include <mc/nbt/CompoundTag.h>
-#include <mc/nbt/ListTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
+#include <mc/deps/nbt/ListTag.h>
 #include <mc/network/BatchedNetworkPeer.h>
 #include <mc/network/Compressibility.h>
 #include <mc/network/NetworkConnection.h>

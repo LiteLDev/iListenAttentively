@@ -28,8 +28,7 @@ option("fakes")
     set_description("Enable fakes")
 option_end()
 
-add_requires("levilamina 1.9.5", { configs = { target_type = get_config("target_type") } })
-add_requires("levibuildscript 0.5.0")
+add_requires("levilamina 26.20.0", { configs = { target_type = get_config("target_type") } })
 
 if not has_config("vs_runtime") then
     set_runtimes("MD")

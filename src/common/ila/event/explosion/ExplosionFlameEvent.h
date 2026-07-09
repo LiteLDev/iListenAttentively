@@ -2,7 +2,7 @@
 #include "ila/event/explosion/ExplosionEvent.h"
 #include <ila/base/Macro.h>
 #include <ll/api/event/Cancellable.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/Explosion.h>
 

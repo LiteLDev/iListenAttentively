@@ -1,5 +1,5 @@
 #pragma once
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 
 struct LevelEventGenericPacketPayload {
 public:

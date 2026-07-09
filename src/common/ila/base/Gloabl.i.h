@@ -12,7 +12,7 @@
 #include <ll/api/mod/NativeMod.h>
 #include <ll/api/reflection/Deserialization.h>
 #include <ll/api/reflection/Serialization.h>
-#include <mc/nbt/CompoundTagVariant.h>
+#include <mc/deps/nbt/CompoundTagVariant.h>
 #include <memory>
 
 namespace ila::inline base {

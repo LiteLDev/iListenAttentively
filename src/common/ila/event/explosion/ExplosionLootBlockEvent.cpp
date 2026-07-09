@@ -1,9 +1,9 @@
 #include "ila/event/explosion/ExplosionLootBlockEvent.h"
 #include "ExplosionProcessBlockEvent.h"
 #include "ila/base/Gloabl.i.h"
-#include <mc/nbt/CompoundTag.h>
-#include <mc/nbt/CompoundTagVariant.h>
-#include <mc/nbt/ListTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTagVariant.h>
+#include <mc/deps/nbt/ListTag.h>
 #include <mc/world/item/Item.h>
 #include <mc/world/item/ItemStack.h>
 #include <mc/world/item/SaveContextFactory.h>

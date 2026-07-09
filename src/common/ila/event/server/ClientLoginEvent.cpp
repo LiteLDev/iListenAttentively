@@ -9,7 +9,7 @@
 #include <ll/api/reflection/Serialization.h>
 #include <ll/api/service/Bedrock.h>
 #include <mc/certificates/identity/PlayerAuthenticationInfo.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/network/NetEventCallback.h>
 #include <mc/network/NetworkConnection.h>
 #include <mc/network/NetworkIdentifier.h>
@@ -23,15 +23,18 @@
 namespace ila::server {
 
 struct PlayerAuthenticationInfoReflection {
-    std::string xuid;
-    std::string play_fab_id;
-    std::string nintendo_id;
-    std::string psn_id;
-    std::string xbox_live_name;
-    std::string nintendo_name;
-    std::string play_station_name;
-    std::string public_key;
-    mce::UUID   authenticated_uuid;
+    std::string                 xuid;
+    std::string                 play_fab_id;
+    std::string                 nintendo_id;
+    std::string                 psn_id;
+    std::string                 tenant_id;
+    std::string                 xbox_live_name;
+    std::string                 nintendo_name;
+    std::string                 play_station_name;
+    int64                       permissions;
+    std::string                 public_key;
+    mce::UUID                   authenticated_uuid;
+    bool                        is_host;
 };
 static_assert(
     sizeof(PlayerAuthenticationInfo) == sizeof(PlayerAuthenticationInfoReflection),

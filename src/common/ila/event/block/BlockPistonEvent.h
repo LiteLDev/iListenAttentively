@@ -3,7 +3,7 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
 #include <mc/common/FacingID.h>
-#include <mc/nbt/CompoundTag.h>
+#include <mc/deps/nbt/CompoundTag.h>
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/actor/PistonBlockActor.h>
