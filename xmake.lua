@@ -60,6 +60,20 @@ target("iListenAttentively")
         ( is_config("target_type", "server") and "LL_PLAT_S" or "LL_PLAT_C" ),
         ( is_mode("debug") and "ILA_DEBUG" or "ILA_RELEASE" )
     )
+     add_cxflags(
+        "/EHs",
+        "-Wno-microsoft-cast",
+        "-Wno-invalid-offsetof",
+        "-Wno-c++2b-extensions",
+        "-Wno-microsoft-include",
+        "-Wno-overloaded-virtual",
+        "-Wno-ignored-qualifiers",
+        "-Wno-missing-field-initializers",
+        "-Wno-potentially-evaluated-expression",
+        "-Wno-pragma-system-header-outside-header",
+        {tools = {"clang_cl"}}
+    )
+    set_toolchains("clang-cl")
     set_configdir("$(builddir)/config")
     add_files("src/**.rc")
     add_includedirs("$(builddir)/config")
