@@ -94,7 +94,8 @@ LL_STATIC_HOOK(
     );
     pRegion.setBlock(
         targetPos,
-        BlockTypeRegistry::get().getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
+        BlockTypeRegistry::mBlockTypeRegistry()
+            .mValue.getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
         3 /* BlockUpdateFlag::All */,
         nullptr,
         BlockChangeContext {}

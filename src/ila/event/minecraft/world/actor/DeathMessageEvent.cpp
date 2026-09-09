@@ -48,10 +48,10 @@ DEATH_MESSAGE const&     DeathMessageAfterEvent::result() const { return mResult
         name,                                                                                                \
         HookPriority::Normal,                                                                                \
         type,                                                                                                \
-        &type::$getDeathMessage,                                                                             \
+        &type::$_getDeathMessageInternal,                                                                    \
         DEATH_MESSAGE,                                                                                       \
-        std::string pDeadName,                                                                               \
-        Actor*      pDeadActor                                                                               \
+        std::string const& pDeadName,                                                                        \
+        Actor*             pDeadActor                                                                        \
     )                                                                                                        \
     {                                                                                                        \
         auto result = origin(pDeadName, pDeadActor);                                                         \

@@ -1,5 +1,6 @@
 #include "ila/event/minecraft/world/level/block/SculkCatalystAbsorbExperienceEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/world/events/gameevents/GameEventContext.h>
 
 namespace ila::mc::inline world::inline level::inline block
 {
@@ -26,17 +27,25 @@ LL_TYPE_INSTANCE_HOOK(
     SculkCatalystAbsorbExperienceEventHook,
     HookPriority::Normal,
     SculkCatalystBlockActor,
-    &SculkCatalystBlockActor::_tryConsumeOnDeathExperience,
+    &SculkCatalystBlockActor::$handleGameEvent,
     void,
-    Level& pLevel,
-    Actor& pActor
+    GameEvent const&        gameEvent,
+    GameEventContext const& gameEventContext,
+    BlockSource&            region
 )
 {
-    auto beforeEvent = SculkCatalystAbsorbExperienceBeforeEvent(pLevel, *this, pActor);
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pLevel, pActor);
-    LLEventBus.publish(SculkCatalystAbsorbExperienceAfterEvent(pLevel, *this, pActor));
+    if (Actor* const actor = gameEventContext.mSource)
+    {
+        auto beforeEvent = SculkCatalystAbsorbExperienceBeforeEvent(region.getLevel(), *this, *actor);
+        LLEventBus.publish(beforeEvent);
+        if (beforeEvent.isCancelled()) { return; }
+        origin(gameEvent, gameEventContext, region);
+        LLEventBus.publish(SculkCatalystAbsorbExperienceAfterEvent(region.getLevel(), *this, *actor));
+    }
+    else
+    {
+        origin(gameEvent, gameEventContext, region);
+    }
 }
 
 Event_Hook_Factory(SculkCatalystAbsorbExperience, <SculkCatalystAbsorbExperienceEventHook>);

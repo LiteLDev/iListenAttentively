@@ -62,18 +62,20 @@ optional_ref<ServerPlayer> IReceivePacketAfterEvent::player() const
 
 thread_local static NetworkConnection* mCurrentNetworkConnection = nullptr;
 
+// Only NetworkSystem::_sortAndPacketizeEvents calls NetworkConnection::receivePacket, so we can replace the
+// former with the latter.
 LL_TYPE_INSTANCE_HOOK(
     ReceivePacketEventHook1,
     HookPriority::Normal,
-    NetworkSystem,
-    &NetworkSystem::_sortAndPacketizeEvents,
-    bool,
-    NetworkConnection&                    connection,
-    std::chrono::steady_clock::time_point endTime
+    NetworkConnection,
+    &NetworkConnection::receivePacket,
+    NetworkPeer::DataStatus,
+    std::string&                                                    receiveBuffer,
+    std::shared_ptr<::std::chrono::steady_clock::time_point> const& timepointPtr
 )
 {
-    mCurrentNetworkConnection = &connection;
-    auto result               = origin(connection, endTime);
+    mCurrentNetworkConnection = this;
+    auto result               = origin(receiveBuffer, timepointPtr);
     mCurrentNetworkConnection = nullptr;
     return result;
 }
@@ -191,18 +193,10 @@ private:
     }();
 
 public:
-    ReceivePacketEventEventEmitter()
-    {
-        ll::memory::HookRegistrar<ReceivePacketEventHook1, ReceivePacketEventHook2>().hook();
-    }
-    ~ReceivePacketEventEventEmitter()
-    {
-        ll::memory::HookRegistrar<ReceivePacketEventHook1, ReceivePacketEventHook2>().unhook();
-    }
+    ReceivePacketEventEventEmitter() { ll::memory::HookRegistrar<ReceivePacketEventHook2>().hook(); }
+    ~ReceivePacketEventEventEmitter() { ll::memory::HookRegistrar<ReceivePacketEventHook2>().unhook(); }
 };
 static std::unique_ptr<ll::event::EmitterBase> ReceivePacketEventEmitterFactory()
-{
-    return std::make_unique<ReceivePacketEventEventEmitter>();
-}
+{ return std::make_unique<ReceivePacketEventEventEmitter>(); }
 
 } // namespace ila::mc::inline server

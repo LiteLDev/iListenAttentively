@@ -1,4 +1,3 @@
-#pragma include_alias("mc/world/level/block/states/BlockStateVariant.h", "ila/patch/BlockStateVariant.hpp")
 #include "ila/event/minecraft/world/actor/player/PlayerOperatedItemFrameEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/item/ItemInstance.h>
@@ -9,6 +8,7 @@
 #include <mc/world/level/block/actor/ItemFrameBlockActor.h>
 #include <mc/world/level/block/block_events/BlockPlaceEvent.h>
 #include <mc/world/level/block/block_events/BlockPlayerInteractEvent.h>
+#include <mc/world/level/block/states/BlockStateVariant.h>
 
 namespace ila::mc::inline world::inline actor::inline player
 {

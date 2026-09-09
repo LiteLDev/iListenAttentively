@@ -40,9 +40,9 @@ LL_TYPE_INSTANCE_HOOK(
     }
     static std::set<std::string> mItmemNames = { VanillaItemNames::Potion(),
                                                  VanillaItemNames::MilkBucket(),
-                                                 VanillaItemNames::Medicine() };
+                                                 "minecraft:medicine" };
     auto                         slot        = mItemInUse->mSlot->mSlot;
-    if (!mItemInUse->mItem->getItem()->isFood() && !mItmemNames.contains(mItemInUse->mItem->getTypeName()))
+    if (!mItemInUse->mItem->mItem->isFood() && !mItmemNames.contains(mItemInUse->mItem->getTypeName()))
     {
         return origin();
     }

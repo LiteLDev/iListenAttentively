@@ -1,22 +1,15 @@
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.vsxmake.autoupdate")
 
-add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
+add_repositories("levimc-repo https://github.com/LiteLDev/xmake-repo.git")
 
--- Dependencies from liteldev-repo.
 option("target_type")
     set_default("server")
     set_showmenu(true)
     set_values("server", "client")
 option_end()
 
-local is_server = is_config("target_type", "server")
-
-if is_server then
-    add_requires("levilamina 26.20.0", {configs = {target_type = "server"}})
-else
-    add_requires("levilamina 26.20.0", {configs = {target_type = "client"}})
-end
+add_requires("levilamina 26.40.2", {configs = {target_type = get_config("target_type")}})
 add_requires("levibuildscript 0.4.1")
 
 if not has_config("vs_runtime") then
@@ -84,12 +77,6 @@ target("iListenAttentively")
 
     if is_mode("debug") then
         add_defines("ILA_DEBUG")
-    end
-    
-    if is_server then
-        add_defines("LL_PLAT_S")
-    else
-        add_defines("LL_PLAT_C")
     end
 
     if has_config("tests") then

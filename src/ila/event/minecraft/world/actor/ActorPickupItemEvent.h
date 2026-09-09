@@ -9,13 +9,13 @@ class ItemActor;
 
 namespace ila::mc::inline world::inline actor
 {
-class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
+class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
 {
 protected:
     ItemActor& mItemActor;
 
 public:
-    constexpr explicit ActorPickupItemBeforeEvent(Mob& actor, ItemActor& itemActor)
+    constexpr explicit ActorPickupItemBeforeEvent(Actor& actor, ItemActor& itemActor)
         : Cancellable(actor)
         , mItemActor(itemActor)
     {
@@ -26,14 +26,14 @@ public:
     ILNDAPI ItemActor& itemActor() const;
 };
 
-class ActorPickupItemAfterEvent final : public ll::event::entity::MobEvent
+class ActorPickupItemAfterEvent final : public ll::event::entity::ActorEvent
 {
 protected:
     ItemActor const& mItemActor;
 
 public:
-    constexpr explicit ActorPickupItemAfterEvent(Mob& actor, ItemActor const& itemActor)
-        : MobEvent(actor)
+    constexpr explicit ActorPickupItemAfterEvent(Actor& actor, ItemActor const& itemActor)
+        : ActorEvent(actor)
         , mItemActor(itemActor)
     {
     }

@@ -8,7 +8,7 @@ namespace ila::mc::inline world::inline actor::inline player
 void PlayerStartSleepBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
 }
 void PlayerStartSleepBeforeEvent::deserialize(CompoundTag const& nbt)
 {
@@ -39,14 +39,16 @@ LL_TYPE_INSTANCE_HOOK(
     Player,
     &Player::$startSleepInBed,
     BedSleepingResult,
-    BlockPos const& bedBlockPos
+    BlockPos const& bedPos,
+    bool            setsRespawn,
+    float           sleepOffset
 )
 {
-    auto beforeEvent = PlayerStartSleepBeforeEvent(*this, const_cast<BlockPos&>(bedBlockPos));
+    auto beforeEvent = PlayerStartSleepBeforeEvent(*this, const_cast<BlockPos&>(bedPos));
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return BedSleepingResult::OtherProblem; }
-    auto result = origin(bedBlockPos);
-    LLEventBus.publish(PlayerStartSleepAfterEvent(*this, bedBlockPos, result));
+    auto result = origin(bedPos, setsRespawn, sleepOffset);
+    LLEventBus.publish(PlayerStartSleepAfterEvent(*this, bedPos, result));
     return result;
 }
 

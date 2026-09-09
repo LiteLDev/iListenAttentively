@@ -6,6 +6,8 @@
 #include <mc/entity/components_json_legacy/SplashPotionEffectSubcomponent.h>
 #include <mc/legacy/ActorUniqueID.h>
 #include <mc/world/actor/ActorDamageSource.h>
+#include <mc/world/attribute/AttributeBuff.h>
+#include <mc/world/attribute/HealthAttributeDelegate.h>
 #include <mc/world/effect/EffectDuration.h>
 #include <mc/world/level/Level.h>
 
@@ -41,71 +43,45 @@ optional_ref<Actor const>                    MobHurtEffectAfterEvent::source() c
 float const&                                 MobHurtEffectAfterEvent::value() const { return mValue; }
 SharedTypes::Legacy::ActorDamageCause const& MobHurtEffectAfterEvent::cause() const { return mCause; }
 
-static ll::DenseMap<Actor*, WeakRef<EntityContext>> mSplashPotionSources;
-
-LL_TYPE_INSTANCE_HOOK(
-    SplashPotionEffectSubcomponentApplyMobEffectsHook,
-    HookPriority::Normal,
-    SplashPotionEffectSubcomponent,
-    &SplashPotionEffectSubcomponent::applyMobEffects,
-    void,
-    MobEffectInstance const&             effectInst,
-    std::vector<Actor*> const&           actors,
-    Actor&                               projectile,
-    std::shared_ptr<Potion const> const& potion,
-    float                                splashRange,
-    float                                collisionMargin,
-    MobEffect*                           effect,
-    HitResult&                           res,
-    int                                  aux,
-    BaseGameVersion const&               currVer
-)
-{
-    for (auto actor : actors) { mSplashPotionSources[actor] = projectile.getEntityContext().getWeakRef(); }
-    origin(effectInst, actors, projectile, potion, splashRange, collisionMargin, effect, res, aux, currVer);
-}
-
 LL_TYPE_INSTANCE_HOOK(
     MobHurtEffectHook,
     HookPriority::Normal,
-    Mob,
-    &Mob::getDamageAfterResistanceEffect,
+    HealthAttributeDelegate,
+    &HealthAttributeDelegate::$getBuffValueWithModifiers,
     float,
-    ActorDamageSource const& source,
-    float                    damage
+    AttributeBuff const& buff
 )
 {
-    if (source.mCause == SharedTypes::Legacy::ActorDamageCause::Magic
-        || source.mCause == SharedTypes::Legacy::ActorDamageCause::Wither)
+    if (buff.mSource->mCause == SharedTypes::Legacy::ActorDamageCause::Magic
+        || buff.mSource->mCause == SharedTypes::Legacy::ActorDamageCause::Wither)
     {
         optional_ref<Actor> damageSource = std::nullopt;
 
-        if (source.isEntitySource())
+        if (buff.mSource->isEntitySource())
         {
             damageSource = ll::service::getLevel()->fetchEntity(
-                source.isChildEntitySource() ? source.getEntityUniqueID()
-                                             : source.getDamagingEntityUniqueID(),
+                buff.mSource->isChildEntitySource() ? buff.mSource->getEntityUniqueID()
+                                                    : buff.mSource->getDamagingEntityUniqueID(),
                 false
             );
         }
-        else if (mSplashPotionSources.contains(this))
-        {
-            damageSource = mSplashPotionSources[this].tryUnwrap();
-            mSplashPotionSources.erase(this);
-        }
+
+        auto& newBuff = const_cast<AttributeBuff&>(buff);
+
         auto beforeEvent = MobHurtEffectBeforeEvent(
-            *this,
+            *mMob,
             damageSource,
-            damage,
-            const_cast<SharedTypes::Legacy::ActorDamageCause&>(source.mCause)
+            newBuff.mAmount,
+            const_cast<SharedTypes::Legacy::ActorDamageCause&>(buff.mSource->mCause)
         );
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) { return 0.0f; }
-        LLEventBus.publish(MobHurtEffectAfterEvent(*this, damageSource, damage, source.mCause));
+        LLEventBus.publish(MobHurtEffectAfterEvent(*mMob, damageSource, buff.mAmount, buff.mSource->mCause));
+        return origin(newBuff);
     }
-    return origin(source, damage);
+    return origin(buff);
 }
 
-Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook, SplashPotionEffectSubcomponentApplyMobEffectsHook>);
+Event_Hook_Factory(MobHurtEffect, <MobHurtEffectHook>);
 
 } // namespace ila::mc::inline world::inline actor

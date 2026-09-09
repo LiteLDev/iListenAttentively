@@ -1,6 +1,6 @@
 #include "ila/event/minecraft/world/level/block/actor/BlockActorTick.h"
 #include "ila/base/Gloabl.h"
-#include <mc/world/level/block/actor/BlockActor.h>
+#include <mc/world/level/block/actor/VanillaBlockActor.h>
 
 namespace ila::mc::inline world::inline level::inline block::inline actor
 {
@@ -24,8 +24,8 @@ BlockActor& BlockActorTickAfterEvent::blockActor() const { return mBlockActor; }
 LL_TYPE_INSTANCE_HOOK(
     BlockActorTickEventHook,
     HookPriority::Normal,
-    BlockActor,
-    &BlockActor::$tick,
+    VanillaBlockActor,
+    &VanillaBlockActor::$tick,
     void,
     BlockSource& pRegion
 )

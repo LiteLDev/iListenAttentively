@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ll/api/Versions.h>
 #include <mc/deps/raknet/RNS2_SendParameters.h>
-#include <mc/deps/raknet/RNS2_Windows_Linux_360.h>
+#include <mc/deps/raknet/RNS2_Windows.h>
 #include <mc/deps/raknet/SystemAddress.h>
 
 namespace ila::mc::inline server
@@ -105,31 +105,31 @@ ushort ServerPongAfterEvent::port() const
     return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
 }
 
-LL_STATIC_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ServerPongEventHook,
     HookPriority::Normal,
-    &RakNet::RNS2_Windows_Linux_360::Send_Windows_Linux_360NoVDP,
+    RakNet::RNS2_Windows,
+    &RakNet::RNS2_Windows::$Send,
     int,
-    int                          pRns2Socket,
     RakNet::RNS2_SendParameters* pSendParameters,
     char const*                  pFile,
     uint                         pLine
 )
 try
 {
-    if (pSendParameters->data[0] != 28) { return origin(pRns2Socket, pSendParameters, pFile, pLine); }
+    if (pSendParameters->data[0] != 28) { return origin(pSendParameters, pFile, pLine); }
     constexpr static int head_size = sizeof(int8) + sizeof(uint64) + sizeof(uint64) + 16;
     auto*                data      = pSendParameters->data;
     size_t               strlen    = data[head_size] << 8 | data[head_size + 1];
     if (static_cast<int>(strlen) != pSendParameters->length - (head_size + 2))
     {
-        return origin(pRns2Socket, pSendParameters, pFile, pLine);
+        return origin(pSendParameters, pFile, pLine);
     }
     std::istringstream       iss(std::string({ data + head_size + 2, strlen }));
     std::string              tmp;
     std::vector<std::string> parts;
     while (std::getline(iss, tmp, ';')) { parts.push_back(tmp); }
-    if (parts.size() < 13) { return origin(pRns2Socket, pSendParameters, pFile, pLine); }
+    if (parts.size() < 13) { return origin(pSendParameters, pFile, pLine); }
 
     auto motd            = parts[1];
     auto protocolVersion = std::stoi(parts[2]);
@@ -140,7 +140,7 @@ try
     auto levelName       = parts[7];
     auto gameType        = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
     auto localPort       = static_cast<ushort>(std::stoi(parts[10]));
-    auto                     localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
+    auto localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
     std::vector<std::string> others;
     for (size_t i = 13; i < parts.size(); i++) { others.push_back(parts[i]); }
 
@@ -190,7 +190,7 @@ try
     pSendParameters->data   = packet.data();
     pSendParameters->length = static_cast<int>(packet.size());
 
-    auto result = origin(pRns2Socket, pSendParameters, pFile, pLine);
+    auto result = origin(pSendParameters, pFile, pLine);
     LLEventBus.publish(ServerPongAfterEvent(
         motd,
         protocolVersion,
@@ -209,7 +209,7 @@ try
 }
 catch (...)
 {
-    return origin(pRns2Socket, pSendParameters, pFile, pLine);
+    return origin(pSendParameters, pFile, pLine);
 }
 
 Event_Hook_Factory(ServerPong, <ServerPongEventHook>);

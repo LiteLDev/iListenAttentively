@@ -45,9 +45,7 @@ void BlockFallAfterEvent::serialize(CompoundTag& nbt) const
 }
 BlockPos const&    BlockFallAfterEvent::pos() const { return mPos; }
 FallingBlockActor& BlockFallAfterEvent::self() const
-{
-    return static_cast<FallingBlockActor&>(ActorEvent::self());
-}
+{ return static_cast<FallingBlockActor&>(ActorEvent::self()); }
 
 LL_TYPE_INSTANCE_HOOK(
     BlockFallEventHook,
@@ -82,7 +80,7 @@ LL_TYPE_INSTANCE_HOOK(
     context.mContextSource = { ActorChangeContext { actor } };
     pRegion.setBlock(
         pPos,
-        BlockTypeRegistry::get().getDefaultBlockState(BedrockBlockNames::Air()),
+        BlockTypeRegistry::mBlockTypeRegistry().mValue.getDefaultBlockState(BedrockBlockNames::Air()),
         3,
         &syncMsg,
         context

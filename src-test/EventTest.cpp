@@ -1,5 +1,6 @@
 #include "ila/base/Gloabl.h"
 #include "ila/event/minecraft/world/RedstoneUpdateEvent.h"
+#include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include <mc/world/level/BlockPos.h>
 
 inline struct EventTest
@@ -26,8 +27,12 @@ EventTest::EventTest()
         }
     );
 
+    ll::event::EventBus::getInstance().emplaceListener<ila::mc::levelgen::VillageFeatureConstructionEvent>(
+        []([[maybe_unused]] ila::mc::levelgen::VillageFeatureConstructionEvent& ev) {}
+    );
+
     // static std::vector<ll::event::EventId> mEventList;
-    // static auto const&                         callback =
+    // static auto const&                     callback =
     //     ll::event::Listener<ll::event::Event>::create([](ll::event::Event& event) -> void {
     //         auto const& it = std::find(mEventList.begin(), mEventList.end(), event.getId());
     //         if (it != mEventList.end())
@@ -44,7 +49,7 @@ EventTest::EventTest()
     //         }
     //     });
     // for (auto const& eventName : LLEventBus.events(ll::mod::NativeMod::current()->getName()))
-    //{
+    // {
     //     mEventList.emplace_back(eventName);
     //     if (!LLEventBus.addListener(callback, eventName))
     //     {

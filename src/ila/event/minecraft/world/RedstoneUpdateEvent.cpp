@@ -3,11 +3,16 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
 #include <ll/api/memory/Hook.h>
+#include <ll/api/memory/Symbol.h>
 #include <mc/deps/nbt/CompoundTag.h>
 #include <mc/deps/nbt/ListTag.h>
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/BlockSource.h>
+#include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/ObserverBlock.h>
+#include <mc/world/level/block/block_events/BlockEventExecutor.h>
+#include <mc/world/level/block/block_events/BlockEventManager.h>
+#include <mc/world/level/block/block_events/BlockRedstoneUpdateEvent.h>
 #include <mc/world/redstone/circuit/ChunkCircuitComponentList.h>
 #include <mc/world/redstone/circuit/CircuitSceneGraph.h>
 #include <mc/world/redstone/circuit/CircuitSystem.h>
@@ -50,23 +55,82 @@ BlockPos const& RedstoneUpdateAfterEvent::pos() const { return mPos; }
 int const&      RedstoneUpdateAfterEvent::strength() const { return mStrength; }
 bool const&     RedstoneUpdateAfterEvent::isFirstTime() const { return mIsFirstTime; }
 
+// ObserverBlock::_startSignal no longer exists since 1.26.40 (inlined into neighborChanged), the observer
+// emits its 15 strength pulse in _updateState instead, so hook it with turnOn as the pulse gate.
 LL_TYPE_INSTANCE_HOOK(
     RedstoneUpdateEventHook1,
     HookPriority::Normal,
     ObserverBlock,
-    &ObserverBlock::_startSignal,
+    &ObserverBlock::_updateState,
     void,
     BlockSource&    pRegion,
-    BlockPos const& pPos
+    BlockPos const& pPos,
+    PulseCapacitor& pComponent,
+    bool            pTurnOn
 )
 {
+    if (!pTurnOn) { return origin(pRegion, pPos, pComponent, pTurnOn); }
+
     int  strength    = 15;
     bool isFirstTime = false;
     auto beforeEvent = RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), strength, isFirstTime);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return; }
-    origin(pRegion, pPos);
+    origin(pRegion, pPos, pComponent, pTurnOn);
     LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pPos, strength, isFirstTime));
+}
+
+// Restored from Block::onRedstoneUpdate (client-only in the LeviLamina headers, inlined since 1.26.40).
+// It only forwards a BlockEvents::BlockRedstoneUpdateEvent to the block type's event executor.
+void Block_onRedstoneUpdate(
+    ::Block const&    block,
+    ::BlockSource&    region,
+    ::BlockPos const& pos,
+    short             strength,
+    short             oldStrength,
+    bool              isFirstTime
+)
+{
+    auto* executor = static_cast<BlockEvents::BlockEventExecutor<BlockEvents::BlockRedstoneUpdateEvent>*>(
+        block.mBlockType->mEventManager->_tryGetExecutor(BlockEvents::EventType::RedstoneUpdate)
+    );
+    if (executor == nullptr) { return; }
+
+    auto event = BlockEvents::BlockRedstoneUpdateEvent(pos, region, strength, oldStrength, isFirstTime);
+
+    executor->dispatch(event);
+}
+
+// Restored from CircuitSystem::updateIndividualBlock (private, undeclared in the headers).
+// The original ignores its 3rd parameter (pos) and uses the 4th one (region) as the block pos.
+void CircuitSystem_updateIndividualBlock(
+    CircuitSystem*                           sys,
+    ::gsl::not_null<::BaseCircuitComponent*> component,
+    ::BlockPos const&                        pos,
+    ::BlockPos const&                        region,
+    ::BlockSource&                           blockSource
+)
+{
+    int   strength    = component->getStrength();
+    short oldStrength = component->mOldStrength;
+    component->setOldStrength(static_cast<short>(strength));
+    if (static_cast<short>(strength) != -1)
+    {
+        ::Block const& block       = blockSource.getBlock(region);
+        bool           isFirstTime = component->mIsFirstTime;
+        if (!isFirstTime || !component->mIgnoreFirstUpdate)
+        {
+            Block_onRedstoneUpdate(
+                block,
+                blockSource,
+                region,
+                static_cast<short>(strength),
+                oldStrength,
+                isFirstTime
+            );
+        }
+        component->mIsFirstTime = false;
+    }
 }
 
 LL_TYPE_INSTANCE_HOOK(
@@ -104,7 +168,7 @@ LL_TYPE_INSTANCE_HOOK(
         }
 
         bool& usedIsFirstTime = comp->mIsFirstTime;
-        updateIndividualBlock(comp, pChunkPos, pos, pRegion);
+        CircuitSystem_updateIndividualBlock(this, comp, pChunkPos, pos, pRegion);
 
         if (doEvent)
         {

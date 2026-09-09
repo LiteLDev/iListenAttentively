@@ -15,22 +15,12 @@ class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::Wor
 protected:
     BlockPos& mPos;
     Random&   mRandom;
-    int&      mXRadius;
-    int&      mZRadius;
 
 public:
-    constexpr explicit MossGrowthBeforeEvent(
-        BlockSource& blockSource,
-        BlockPos&    pos,
-        Random&      random,
-        int&         xRadius,
-        int&         zRadius
-    )
+    constexpr explicit MossGrowthBeforeEvent(BlockSource& blockSource, BlockPos& pos, Random& random)
         : Cancellable(blockSource)
         , mPos(pos)
         , mRandom(random)
-        , mXRadius(xRadius)
-        , mZRadius(zRadius)
     {
     }
 
@@ -39,34 +29,26 @@ public:
 
     ILNDAPI BlockPos& pos() const;
     ILNDAPI Random&   random() const;
-    ILNDAPI int&      xRadius() const;
-    ILNDAPI int&      zRadius() const;
 };
 
 class MossGrowthAfterEvent final : public ll::event::WorldEvent
 {
 protected:
-    BlockPos const&        mPos;
-    Random const&          mRandom;
-    int const&             mXRadius;
-    int const&             mZRadius;
-    std::vector<BlockPos>& mTargetPoss;
+    BlockPos const&          mPos;
+    Random const&            mRandom;
+    std::optional<BlockPos>& mTargetPos;
 
 public:
     constexpr explicit MossGrowthAfterEvent(
-        BlockSource&           blockSource,
-        BlockPos const&        pos,
-        Random const&          random,
-        int const&             xRadius,
-        int const&             zRadius,
-        std::vector<BlockPos>& targetPoss
+        BlockSource&             blockSource,
+        BlockPos const&          pos,
+        Random const&            random,
+        std::optional<BlockPos>& targetPos
     )
         : WorldEvent(blockSource)
         , mPos(pos)
         , mRandom(random)
-        , mXRadius(xRadius)
-        , mZRadius(zRadius)
-        , mTargetPoss(targetPoss)
+        , mTargetPos(targetPos)
     {
     }
 
@@ -75,8 +57,6 @@ public:
 
     ILNDAPI BlockPos const& pos() const;
     ILNDAPI Random const&   random() const;
-    ILNDAPI int const&      xRadius() const;
-    ILNDAPI int const&      zRadius() const;
-    ILNDAPI std::vector<BlockPos>& getTargetPoss() const;
+    ILNDAPI std::optional<BlockPos>& getTargetPos() const;
 };
 } // namespace ila::mc::inline world::inline level::inline block

@@ -58,7 +58,7 @@ LL_TYPE_INSTANCE_HOOK(
         return origin(pPlayer, pIsSenderAuthority);
     }
     InventorySource source { InventorySourceType::ContainerInventory, ContainerID::Inventory };
-    auto&           actions = mTransaction->getActions(source);
+    auto&           actions = mTransaction->mActions->at(source);
     if (actions.size() != 1) { return origin(pPlayer, pIsSenderAuthority); }
     auto& item        = pPlayer.mInventory->mInventory->getItem(actions[0].mSlot);
     auto  beforeEvent = PlayerDropItemBeforeEvent(pPlayer, const_cast<ItemStack&>(item));

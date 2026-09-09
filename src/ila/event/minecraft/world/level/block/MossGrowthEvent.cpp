@@ -10,76 +10,57 @@ namespace ila::mc::inline world::inline level::inline block
 void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const
 {
     Cancellable::serialize(nbt);
-    nbt["pos"]     = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimId"]   = getDimensionName(blockSource());
-    nbt["random"]  = serializeRefObj(random());
-    nbt["xRadius"] = xRadius();
-    nbt["zRadius"] = zRadius();
+    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["dimId"]  = getDimensionName(blockSource());
+    nbt["random"] = serializeRefObj(random());
 }
 void MossGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 {
     Cancellable::deserialize(nbt);
-    pos().x   = nbt["pos"][0];
-    pos().y   = nbt["pos"][1];
-    pos().z   = nbt["pos"][2];
-    xRadius() = nbt["xRadius"];
-    zRadius() = nbt["zRadius"];
+    pos().x = nbt["pos"][0];
+    pos().y = nbt["pos"][1];
+    pos().z = nbt["pos"][2];
 }
 BlockPos& MossGrowthBeforeEvent::pos() const { return mPos; };
 Random&   MossGrowthBeforeEvent::random() const { return mRandom; };
-int&      MossGrowthBeforeEvent::xRadius() const { return mXRadius; };
-int&      MossGrowthBeforeEvent::zRadius() const { return mZRadius; };
 
 void MossGrowthAfterEvent::serialize(CompoundTag& nbt) const
 {
     WorldEvent::serialize(nbt);
-    nbt["pos"]        = ListTag { pos().x, pos().y, pos().z };
-    nbt["dimId"]      = getDimensionName(blockSource());
-    nbt["random"]     = serializeRefObj(random());
-    nbt["xRadius"]    = xRadius();
-    nbt["zRadius"]    = zRadius();
-    nbt["targetPoss"] = ListTag {};
-    for (auto const& pos : getTargetPoss()) { nbt["targetPoss"].push_back(ListTag { pos.x, pos.y, pos.z }); }
+    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["dimId"]     = getDimensionName(blockSource());
+    nbt["random"]    = serializeRefObj(random());
+    nbt["targetPos"] = ListTag { getTargetPos()->x, getTargetPos()->y, getTargetPos()->z };
 }
 void MossGrowthAfterEvent::deserialize(CompoundTag const& nbt)
 {
     WorldEvent::deserialize(nbt);
-    getTargetPoss().clear();
-    for (auto& pos : nbt["targetPoss"].get<ListTag>())
-    {
-        getTargetPoss().push_back(
-            { static_cast<int>(pos[0]), static_cast<int>(pos[1]), static_cast<int>(pos[2]) }
-        );
-    }
+    auto& pos      = nbt["targetPoss"].get<ListTag>();
+    getTargetPos() = { static_cast<int>(pos[0]), static_cast<int>(pos[1]), static_cast<int>(pos[2]) };
 }
-BlockPos const&        MossGrowthAfterEvent::pos() const { return mPos; };
-Random const&          MossGrowthAfterEvent::random() const { return mRandom; };
-int const&             MossGrowthAfterEvent::xRadius() const { return mXRadius; };
-int const&             MossGrowthAfterEvent::zRadius() const { return mZRadius; };
-std::vector<BlockPos>& MossGrowthAfterEvent::getTargetPoss() const { return mTargetPoss; };
+BlockPos const&          MossGrowthAfterEvent::pos() const { return mPos; };
+Random const&            MossGrowthAfterEvent::random() const { return mRandom; };
+std::optional<BlockPos>& MossGrowthAfterEvent::getTargetPos() const { return mTargetPos; };
 
 LL_TYPE_INSTANCE_HOOK(
     MossGrowthEventHook,
     HookPriority::Normal,
     VegetationPatchFeature,
-    &VegetationPatchFeature::_placeGroundPatch,
-    std::vector<BlockPos>,
-    IBlockWorldGenAPI& pTarget,
-    Random&            pRandom,
-    BlockPos const&    pPos,
-    int                pXRadius,
-    int                pZRadius
+    &VegetationPatchFeature::$place,
+    std::optional<::BlockPos>,
+    IFeature::PlacementContext const& context
 )
 {
-    auto& region = static_cast<WorldBlockTarget&>(pTarget).mBlockSource;
-    auto  beforeEvent =
-        MossGrowthBeforeEvent(region, const_cast<BlockPos&>(pPos), pRandom, pXRadius, pZRadius);
+    auto& region      = static_cast<WorldBlockTarget&>(context.mTarget).mBlockSource;
+    auto  beforeEvent = MossGrowthBeforeEvent(region, const_cast<BlockPos&>(*context.mPos), context.mRandom);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) { return {}; }
-    auto result = origin(pTarget, pRandom, pPos, pXRadius, pZRadius);
-    if (!result.empty())
+    auto result = origin(context);
+    if (result)
     {
-        LLEventBus.publish(MossGrowthAfterEvent(region, pPos, pRandom, pXRadius, pZRadius, result));
+        LLEventBus.publish(
+            MossGrowthAfterEvent(region, const_cast<BlockPos&>(*context.mPos), context.mRandom, result)
+        );
     }
     return result;
 }

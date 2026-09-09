@@ -12,18 +12,24 @@ LL_TYPE_INSTANCE_HOOK(
     DragonRespawnEventHook,
     HookPriority::Normal,
     EndDragonFight,
-    &EndDragonFight::_setRespawnStage,
+    &EndDragonFight::_createNewDragon,
     void,
-    RespawnAnimation pStage
 )
 {
-    auto beforeEvent = DragonRespawnBeforeEvent();
-    LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pStage);
-    if (auto* dragon = ll::service::getLevel()->fetchEntity(mDragonUUID, false))
+    if (mPreviouslyKilled)
     {
-        LLEventBus.publish(DragonRespawnAfterEvent(static_cast<EnderDragon&>(*dragon)));
+        auto beforeEvent = DragonRespawnBeforeEvent();
+        LLEventBus.publish(beforeEvent);
+        if (beforeEvent.isCancelled()) { return; }
+        origin();
+        if (auto* dragon = ll::service::getLevel()->fetchEntity(mDragonUUID, false))
+        {
+            LLEventBus.publish(DragonRespawnAfterEvent(static_cast<EnderDragon&>(*dragon)));
+        }
+    }
+    else
+    {
+        origin();
     }
 }
 

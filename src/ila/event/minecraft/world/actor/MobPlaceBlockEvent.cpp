@@ -26,6 +26,7 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/Level.h>
 #include <mc/world/level/block/BlockChangeContext.h>
+#include <mc/world/level/block/BlockDescriptor.h>
 #include <mc/world/level/dimension/Dimension.h>
 #include <string>
 #include <utility>
@@ -59,6 +60,46 @@ void MobPlaceBlockAfterEvent::serialize(CompoundTag& nbt) const
 BlockPos const& MobPlaceBlockAfterEvent::pos() const { return mPos; }
 Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 
+Block const* PlaceBlockGoal_tryGetRandomPlaceBlock(
+    PlaceBlockGoal*               goal,
+    ::VariantParameterList const& params,
+    ::Random&                     random
+)
+{
+    // 原版通过 VariantParameterList::operator VariantParameterListConst 转换,
+    // SDK 头文件未声明该转换运算符,这里手动构造等价结构
+    // clang-format off
+    ::VariantParameterListConst constParams {
+        params.mSelf,
+        params.mOther,
+        params.mPlayer,
+        params.mTarget,
+        params.mParent,
+        params.mBaby,
+        params.mBlock,
+        params.mDamager,
+        params.mHolder
+    };
+    // clang-format on
+
+    std::vector<PlaceBlockGoal::WeightedBlockDescriptor const*> candidates;
+    for (auto const& desc : *goal->mRandomlyPlaceableBlocks)
+    {
+        if (desc.mFilter->evaluateActor(goal->mMob, constParams)) { candidates.emplace_back(&desc); }
+    }
+
+    int totalWeight = 0;
+    for (auto* desc : candidates) { totalWeight += desc->mWeight; }
+
+    int weight = totalWeight != 0 ? random.nextInt(totalWeight) : 0;
+    for (auto* desc : candidates)
+    {
+        weight -= desc->mWeight;
+        if (weight < 0) { return desc->mBlock->tryGetBlock(); }
+    }
+    return nullptr;
+}
+
 LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void)
 {
     constexpr static auto ramdonPos = [](Random& random, int& value, IntRange& ranage) -> void {
@@ -69,9 +110,9 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
     auto& random    = mMob.getRandom();
     auto  targetPos = BlockPos { mMob.getPosition() };
 
-    ramdonPos(random, targetPos.x, mDefinition->mXZRange);
-    ramdonPos(random, targetPos.y, mDefinition->mYRange);
-    ramdonPos(random, targetPos.z, mDefinition->mXZRange);
+    ramdonPos(random, targetPos.x, mXZRange);
+    ramdonPos(random, targetPos.y, mYRange);
+    ramdonPos(random, targetPos.z, mXZRange);
 
     auto& region = mMob.getDimension().getBlockSourceFromMainChunkSource();
     if (!region.getBlock(targetPos).isAir()) { return; }
@@ -88,7 +129,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
         params.mTarget = mMob.mLevel->fetchEntity(mMob.mTargetId, false);
     }
     params.mBlock  = &targetPos;
-    if (mDefinition->mRandomlyPlaceableBlocks->empty())
+    if (mRandomlyPlaceableBlocks->empty())
     {
         if (auto& item = mMob.getCarriedItem(); item) {
             if (auto* block = item.mBlock; block && !block->isAir() && block->mBlockType->mayPlace(region, targetPos)) {
@@ -111,7 +152,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
                 region.setBlock(targetPos, *block, 3, nullptr, context);
                 region.postGameEvent(&mMob, GameEventRegistry::blockPlace(), targetPos, block);
                 std::vector<std::pair<std::string const, std::string const>> stack;
-                ActorDefinitionDescriptor::executeTrigger(mMob, mDefinition->mOnPlace, params);
+                ActorDefinitionDescriptor::executeTrigger(mMob, mOnPlace, params);
                 LLEventBus.publish(MobPlaceBlockAfterEvent {
                     mMob,
                     targetPos,
@@ -120,8 +161,8 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
             }
         }
     } else if (
-        auto* randomBlock = thisFor<PlaceBlockGoal>()->_tryGetRandomPlaceBlock(
-            static_cast<VariantParameterListConst>(params),
+        auto* randomBlock = PlaceBlockGoal_tryGetRandomPlaceBlock(thisFor<PlaceBlockGoal>(),
+            params,
             random
         ); randomBlock
     ) {
@@ -136,7 +177,7 @@ LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &Pla
         region.setBlock(targetPos, *randomBlock, 3, nullptr, context);
         region.postGameEvent(&mMob, GameEventRegistry::blockPlace(), targetPos, randomBlock);
         std::vector<std::pair<std::string const, std::string const>> eventStack;
-         ActorDefinitionDescriptor::executeTrigger(mMob, mDefinition->mOnPlace, params);
+         ActorDefinitionDescriptor::executeTrigger(mMob, mOnPlace, params);
         LLEventBus.publish(MobPlaceBlockAfterEvent {
             mMob,
             targetPos,

@@ -30,24 +30,34 @@ void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const
 }
 BlockPos const& SculkBlockGrowthAfterEvent::pos() const { return mPos; }
 
-LL_STATIC_HOOK(
+// TODO: Check the behavior
+LL_TYPE_INSTANCE_HOOK(
     SculkBlockGrowthEventHook,
     HookPriority::Normal,
-    &SculkBlockBehavior::_placeGrowthAt,
-    void,
-    IBlockWorldGenAPI& pTarget,
-    BlockSource*       pRegion,
-    BlockPos const&    pPos,
-    Random&            pRandom,
-    SculkSpreader&     pSculkSpreader
+    SculkBlockBehavior,
+    &SculkBlockBehavior::$attemptUseCharge,
+    int,
+    IBlockWorldGenAPI& target,
+    ::BlockSource*     region,
+    ::BlockPos const&  originPos,
+    ::BlockPos const&  pos,
+    int                charge,
+    int                idk1,
+    ::Random&          random,
+    ::SculkSpreader&   spreader,
+    bool const         idk2
 )
 {
-    if (pRegion == nullptr) { return origin(pTarget, pRegion, pPos, pRandom, pSculkSpreader); }
-    auto beforeEvent = SculkBlockGrowthBeforeEvent(*pRegion, const_cast<BlockPos&>(pPos));
+    if (region == nullptr)
+    {
+        return origin(target, region, originPos, pos, charge, idk1, random, spreader, idk2);
+    }
+    auto beforeEvent = SculkBlockGrowthBeforeEvent(*region, const_cast<BlockPos&>(pos));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
-    origin(pTarget, pRegion, pPos, pRandom, pSculkSpreader);
-    LLEventBus.publish(SculkBlockGrowthAfterEvent(*pRegion, pPos));
+    if (beforeEvent.isCancelled()) { return 0; }
+    int res = origin(target, region, originPos, pos, charge, idk1, random, spreader, idk2);
+    LLEventBus.publish(SculkBlockGrowthAfterEvent(*region, pos));
+    return res;
 }
 
 Event_Hook_Factory(SculkBlockGrowth, <SculkBlockGrowthEventHook>);
