@@ -558,4 +558,4 @@ fabric.properties
 /src-fakes/fixres
 /docs/addon.md
 /docs/bedrock_resource_pack_order_texture_analysis.md
-**/include_all.h
+**/include_all.cpp

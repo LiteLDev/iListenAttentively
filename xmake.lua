@@ -69,8 +69,15 @@ target("iListenAttentively")
     if has_config("tests") then
         add_defines("ILA_TESTS")
         add_includedirs("src-test/")
-        add_headerfiles("src-test/**.h")
         add_files("src-test/**.cpp")
+        before_build(function (target)
+            local include_all = "#pragma once\n"
+            for _, filepath in ipairs(os.files("src/ila/event/**.h")) do
+                include_all = include_all .. "\n#include \"" .. path.relative(filepath, "src") .. "\""
+            end
+            io.writefile("src-test/include_all.cpp", include_all)
+            io.gsub("src-test/include_all.cpp", "\\", "/")
+        end)
     end
 
     on_load(function (target)
@@ -91,13 +98,4 @@ target("iListenAttentively")
         target:set("configvar", "IL_VERSION_MAJOR", major)
         target:set("configvar", "IL_VERSION_MINOR", minor)
         target:set("configvar", "IL_VERSION_PATCH", patch)
-    end)
-
-    before_build(function (target)
-        local include_all = "#pragma once\n"
-        for _, filepath in ipairs(os.files("src/ila/event/**.h")) do
-            include_all = include_all .. "\n#include \"" .. path.relative(filepath, "src") .. "\""
-        end
-        io.writefile("src/ila/include_all.h", include_all)
-        io.gsub("src/ila/include_all.h", "\\", "/")
     end)
