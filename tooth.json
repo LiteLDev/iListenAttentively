@@ -1,0 +1,63 @@
+{
+    "format_version": 3,
+    "format_uuid": "289f771f-2c9a-4d73-9f3f-8492495a924d",
+    "tooth": "github.com/MiracleForest/iListenAttentively",
+    "version": "0.14.0",
+    "info": {
+        "name": "iListenAttentively",
+        "description": "iListenAttentively is a rich and modern LeviLamina Minecraft event library!",
+        "tags": [
+            "platform:levilamina",
+            "type:mod",
+            "event",
+            "library"
+        ],
+        "avatar_url": ""
+    },
+    "variants": [
+        {
+            "label": "",
+            "platform": "win-x64",
+            "dependencies": {
+                "github.com/LiteLDev/LeviLamina": ">=26.40.2 <26.50.0"
+            },
+            "assets": [
+                {
+                    "type": "zip",
+                    "urls": [
+                        "https://{{tooth}}/releases/download/v{{version}}/iListenAttentively-server-windows-x64.zip"
+                    ],
+                    "placements": [
+                        {
+                            "type": "dir",
+                            "src": "iListenAttentively/",
+                            "dest": "plugins/iListenAttentively/"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "client",
+            "platform": "win-x64",
+            "dependencies": {
+                "github.com/LiteLDev/LeviLamina#client": ">=26.40.2 <26.50.0"
+            },
+            "assets": [
+                {
+                    "type": "zip",
+                    "urls": [
+                        "https://{{tooth}}/releases/download/v{{version}}/iListenAttentively-client-windows-x64.zip"
+                    ],
+                    "placements": [
+                        {
+                            "type": "dir",
+                            "src": "iListenAttentively/",
+                            "dest": "mods/iListenAttentively/"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
