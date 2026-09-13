@@ -1,6 +1,6 @@
 # iListenAttentively
 
-![iListenAttentively](https://socialify.git.ci/MiracleForest/iListenAttentively/image?description=1&descriptionEditable=A%20rich%20and%20modern%20LeviLamina%20Minecraft%20event%20library&font=Raleway&forks=1&issues=1&language=1&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Auto)
+![iListenAttentively](https://socialify.git.ci/LiteLDev/iListenAttentively/image?description=1&descriptionEditable=A%20rich%20and%20modern%20LeviLamina%20Minecraft%20event%20library&font=Raleway&forks=1&issues=1&language=1&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Auto)
 
 ![English](https://img.shields.io/badge/English-inactive?style=for-the-badge)
 [![中文](https://img.shields.io/badge/简体中文-informational?style=for-the-badge)](README.zh.md)
@@ -13,9 +13,15 @@
 
 ## Install
 
-## Usage
+```bash
+lip install github.com/LiteLDev/iListenAttentively
+```
 
-### Config
+For versions older than v0.14.0:
+
+```bash
+lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
+```
 
 ## Star History
 
@@ -40,8 +46,8 @@
 
 This project exists thanks to all the people who contribute.
 
-![Contributors](https://contrib.rocks/image?repo=MiracleForest/iListenAttentively)
+![Contributors](https://contrib.rocks/image?repo=LiteLDev/iListenAttentively)
 
 ## License
 
-Copyright © 2024 MiracleForest, All rights reserved.
+Copyright © 2026 MiracleForest and LeviMC(LiteLDev), All rights reserved.
