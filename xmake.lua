@@ -9,8 +9,8 @@ option("target_type")
     set_values("server", "client")
 option_end()
 
-add_requires("levilamina 26.40.2", {configs = {target_type = get_config("target_type")}})
-add_requires("levibuildscript 0.4.1")
+add_requires("levilamina 26.40.*", {configs = {target_type = get_config("target_type")}})
+add_requires("levibuildscript")
 
 if not has_config("vs_runtime") then
     set_runtimes("MD")
@@ -22,39 +22,28 @@ option("tests")
     set_description("Enable tests")
 
 target("iListenAttentively")
-    add_cxflags(
-        "/EHa",
-        "/utf-8",
-        "/W4",
-        "/w44265",
-        "/w44289",
-        "/w44296",
-        "/w45263",
-        "/w44738",
-        "/w45204",
-        "/Ob3",
-        "/Zo-"
-    )
-    add_cxflags(
-        "/EHs",
-        "-Wno-microsoft-cast",
-        "-Wno-invalid-offsetof",
-        "-Wno-c++2b-extensions",
-        "-Wno-microsoft-include",
-        "-Wno-overloaded-virtual",
-        "-Wno-ignored-qualifiers",
-        "-Wno-missing-field-initializers",
-        "-Wno-potentially-evaluated-expression",
-        "-Wno-pragma-system-header-outside-header",
-        { tools = { "clang_cl" } }
-    )
-    set_toolchains("clang-cl")
-    add_defines(
-        "NOMINMAX", 
-        "UNICODE",
-        "ILA_EXPORT",
-        "_HAS_CXX23=1"
-    )
+    add_rules("@levibuildscript/linkrule")
+    add_rules("@levibuildscript/modpacker")
+    if is_plat("windows") then
+        add_defines("NOMINMAX", "UNICODE", "ILA_EXPORT",
+        "_HAS_CXX23=1")
+        set_exceptions("none") -- To avoid conflicts with /EHa.
+        add_cxflags( "/EHa", "/utf-8", "/W4", "/w44265", "/w44289", "/w44296", "/w45263", "/w44738", "/w45204")
+        add_cxflags(
+            "/EHs",
+            "-Wno-microsoft-cast",
+            "-Wno-invalid-offsetof",
+            "-Wno-c++2b-extensions",
+            "-Wno-microsoft-include",
+            "-Wno-overloaded-virtual",
+            "-Wno-ignored-qualifiers",
+            "-Wno-missing-field-initializers",
+            "-Wno-potentially-evaluated-expression",
+            "-Wno-pragma-system-header-outside-header",
+            {tools = {"clang_cl"}}
+        )
+        set_toolchains("clang-cl")
+    end
     set_optimize("aggressive")
     set_configdir("$(builddir)/config")
     set_configvar("IL_WORKSPACE_FOLDER", "$(projectdir)")
@@ -69,8 +58,6 @@ target("iListenAttentively")
         "magic_enum",
         "nlohmann_json"
     )
-    add_rules("@levibuildscript/linkrule")
-    set_exceptions("none")
     set_kind("shared")
     set_languages("cxx20")
     set_symbols("debug")
@@ -85,81 +72,6 @@ target("iListenAttentively")
         add_headerfiles("src-test/**.h")
         add_files("src-test/**.cpp")
     end
-
-    after_build(function (target)
-        local output_directory = path.join(os.projectdir(), "bin") -- total Output Path
-        local dll_directory = path.join(output_directory, "DLL", target:name()) -- Plugin Body Output Path
-        local pdb_directory = path.join(output_directory, "PDB") -- pdb output path
-        local sdk_directory = path.join(output_directory, "SDK") -- sdk output path
-        local library_directory = path.join(sdk_directory, "lib") -- lib output path
-        local includes_directory = path.join(sdk_directory, "include") -- sdk header file output path
-
-        local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
-        if not major then
-            major, minor, patch = 0, 0, 0
-            print("Failed to parse version tag, using 0.0.0")
-        end
-
-        -- delete old compilation results
-        if os.exists(output_directory) then
-            os.rm(output_directory)
-            cprint("${bright yellow}[Mod packed] ${bright green}old compilations have been removed.")
-        end
-
-        -- generate the manifest.json file
-        if not os.isfile(path.join(os.projectdir(), "manifest.json")) then
-            return cprint("${bright yellow}[Mod packed] ${bright red}manifest.json does not exist!")
-        end
-        local manifest_path = path.join(dll_directory, "manifest.json")
-        os.cp(path.join(os.projectdir(), "manifest.json"), manifest_path)
-        local mod_define = {
-            modName = target:name(),
-            modFile = path.filename(target:targetfile()),
-            modVersion = string.format("%d.%d.%d", major, minor, patch),
-            passive = not has_config("tests")
-        }
-        io.gsub(manifest_path, "%${(.-)}", function(var)
-            return tostring(mod_define[var]) or "${" .. var .. "}"
-        end)
-        cprint("${bright yellow}[Mod packed] ${bright green}has generated manifest.json to ${bright cyan}" .. manifest_path)
-
-        -- copy the plugin body
-        os.cp(target:targetfile(), path.join(dll_directory, target:name() .. ".dll"))
-        cprint("${bright yellow}[Mod packed] ${bright green}dll has copied to ${bright cyan}" .. path.join(dll_directory, target:name() .. ".dll"))
-
-        -- copy PDB
-        local pdb_path = path.join(pdb_directory, target:name() .. ".pdb")
-        if os.isfile(target:symbolfile()) then
-            os.cp(target:symbolfile(), pdb_path)
-            cprint("${bright yellow}[Mod packed] ${bright green}pdb has copied to ${bright cyan}" .. pdb_path)
-        end
-
-        -- copy lib
-        os.cp(
-            path.join(
-                path.directory(target:targetfile()),
-                path.basename(target:targetfile()) .. ".lib"
-            ), 
-            path.join(
-                library_directory, target:name() .. ".lib"
-            )
-        )
-        cprint("${bright yellow}[Mod packed] ${bright green}library has copied to ${bright cyan}" .. library_directory)
-
-        -- iterate over all header files
-        for _, headerfile in ipairs(target:headerfiles()) do
-            if not headerfile:endswith(".hpp") then 
-                os.cp(headerfile, path.join(includes_directory, path.relative(headerfile, "src")))
-            end
-        end 
-        for _, headerfile in ipairs(target:configfiles()) do
-            os.cp(
-                path.join("$(builddir)/config", path.relative(string.sub(headerfile, 0, -4), "src")), 
-                path.join(includes_directory, path.relative(string.sub(headerfile, 0, -4), "src"))
-            )
-        end
-        cprint("${bright yellow}[Mod packed] ${bright green}header files has copied to ${bright cyan}" .. includes_directory)
-    end)
 
     on_load(function (target)
         local major, minor, patch, suffix = os.iorun("git describe --tags --abbrev=0 --always"):match("v(%d+)%.(%d+)%.(%d+)(.*)")
