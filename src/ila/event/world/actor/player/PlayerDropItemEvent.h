@@ -17,7 +17,7 @@ public:
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
-    ILNDAPI ItemStack const& item() const;
+    ILNDAPI ItemStack& item() const;
 };
 
 class PlayerDropItemAfterEvent final : public ll::event::player::PlayerEvent {

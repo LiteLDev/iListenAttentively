@@ -14,7 +14,7 @@ void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["item"] = serializeRefObj(item());
 }
-ItemStack const& PlayerDropItemBeforeEvent::item() const { return mItem; }
+ItemStack& PlayerDropItemBeforeEvent::item() const { return mItem; }
 
 void PlayerDropItemAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
