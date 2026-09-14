@@ -1,4 +1,4 @@
-#include "ila/event/world/level/levelgen/structure/StructureFeatureChunkEvent.h"
+#include "ila/event/world/level/levelgen/StructureFeatureChunkEvent.h"
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/StructureFeature.h>

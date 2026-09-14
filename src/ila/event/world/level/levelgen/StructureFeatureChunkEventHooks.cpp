@@ -1,5 +1,5 @@
 #include "ila/base/Gloabl.h"
-#include "ila/event/world/level/levelgen/structure/StructureFeatureChunkEvent.h"
+#include "ila/event/world/level/levelgen/StructureFeatureChunkEvent.h"
 #include <fmt/format.h>
 #include <ll/api/event/EmitterBase.h>
 #include <mc/world/level/levelgen/structure/AncientCityFeature.h>

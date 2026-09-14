@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ila/base/Macro.h"
-#include "ila/event/world/level/levelgen/structure/StructureEvent.h"
+#include "ila/event/world/level/levelgen/StructureEvent.h"
 #include <ll/api/event/Cancellable.h>
 #include <mc/deps/core/string/HashedString.h>
 

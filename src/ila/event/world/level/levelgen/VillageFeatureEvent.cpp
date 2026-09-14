@@ -1,4 +1,4 @@
-#include "ila/event/world/level/levelgen/structure/VillageFeatureEvent.h"
+#include "ila/event/world/level/levelgen/VillageFeatureEvent.h"
 #include "ila/base/Gloabl.h"
 #include "mc/world/level/Level.h"
 #include <mc/world/level/ChunkPos.h>

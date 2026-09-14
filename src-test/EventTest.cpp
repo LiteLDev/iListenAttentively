@@ -1,6 +1,6 @@
 #include "ila/base/Gloabl.h"
 #include "ila/event/world/RedstoneUpdateEvent.h"
-#include "ila/event/world/level/levelgen/structure/VillageFeatureEvent.h"
+#include "ila/event/world/level/levelgen/VillageFeatureEvent.h"
 #include <mc/world/level/BlockPos.h>
 
 inline struct EventTest {
