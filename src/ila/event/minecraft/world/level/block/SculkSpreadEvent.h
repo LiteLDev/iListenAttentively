@@ -8,10 +8,8 @@ class Block;
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mSelfPos;
     Block&    mSelfBlock;
@@ -32,16 +30,14 @@ public:
         uchar&       targetFace,
         uchar&       facing
     )
-        : Cancellable(blockSource)
-        , mSelfPos(selfPos)
-        , mSelfBlock(selfBlock)
-        , mSelfFace(selfFace)
-        , mTargetPos(targetPos)
-        , mTargetBlock(targetBlock)
-        , mTargetFace(targetFace)
-        , mFacing(facing)
-    {
-    }
+    : Cancellable(blockSource),
+      mSelfPos(selfPos),
+      mSelfBlock(selfBlock),
+      mSelfFace(selfFace),
+      mTargetPos(targetPos),
+      mTargetBlock(targetBlock),
+      mTargetFace(targetFace),
+      mFacing(facing) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -55,8 +51,7 @@ public:
     ILNDAPI uchar&    facing() const;
 };
 
-class SculkSpreadAfterEvent final : public ll::event::WorldEvent
-{
+class SculkSpreadAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mSelfPos;
     Block const&    mSelfBlock;
@@ -77,16 +72,14 @@ public:
         uchar const&    targetFace,
         uchar const&    facing
     )
-        : WorldEvent(blockSource)
-        , mSelfPos(selfPos)
-        , mSelfBlock(selfBlock)
-        , mSelfFace(selfFace)
-        , mTargetPos(targetPos)
-        , mTargetBlock(targetBlock)
-        , mTargetFace(targetFace)
-        , mFacing(facing)
-    {
-    }
+    : WorldEvent(blockSource),
+      mSelfPos(selfPos),
+      mSelfBlock(selfBlock),
+      mSelfFace(selfFace),
+      mTargetPos(targetPos),
+      mTargetBlock(targetBlock),
+      mTargetFace(targetFace),
+      mFacing(facing) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

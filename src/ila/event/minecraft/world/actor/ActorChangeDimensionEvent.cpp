@@ -4,28 +4,24 @@
 #include <mc/world/level/ActorDimensionTransferManager.h>
 #include <mc/world/level/dimension/Dimension.h>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void ActorChangeDimensionBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["fromDimensionId"] = getDimensionName(fromDimensionId());
     nbt["toDimensionId"]   = getDimensionName(toDimensionId());
 }
-void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void ActorChangeDimensionBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     toDimensionId() = getDimensionId(nbt["toDimensionId"]);
 }
 DimensionType const& ActorChangeDimensionBeforeEvent::fromDimensionId() const { return mFromDimensionId; };
 DimensionType&       ActorChangeDimensionBeforeEvent::toDimensionId() const { return mToDimensionId; };
 
-void ActorChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const
-{
+void ActorChangeDimensionAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
     nbt["fromDimensionId"] = fromDimensionId().mValue;
-    nbt["fromPos"]         = ListTag { getFromPos().x, getFromPos().y, getFromPos().z };
+    nbt["fromPos"]         = ListTag{getFromPos().x, getFromPos().y, getFromPos().z};
     nbt["toDimensionId"]   = toDimensionId().mValue;
 }
 DimensionType const& ActorChangeDimensionAfterEvent::fromDimensionId() const { return mFromDimensionId; };
@@ -40,10 +36,11 @@ LL_TYPE_INSTANCE_HOOK(
     bool,
     Actor const&  pActor,
     DimensionType pToId
-)
-{
+) {
     auto result = origin(pActor, pToId);
-    if (!result) { return false; }
+    if (!result) {
+        return false;
+    }
     auto const formId      = *pActor.mDimension->lock()->mId;
     auto       beforeEvent = ActorChangeDimensionBeforeEvent(const_cast<Actor&>(pActor), formId, pToId);
     LLEventBus.publish(beforeEvent);
@@ -59,12 +56,13 @@ LL_TYPE_INSTANCE_HOOK(
     Actor&                     pActor,
     DimensionType              pToId,
     std::optional<Vec3> const& actorPosition
-)
-{
+) {
     auto const fromId  = *pActor.mDimension->lock()->mId;
     auto const fromPos = pActor.getPosition();
     origin(pActor, pToId, actorPosition);
-    if (fromId == pToId) { return; }
+    if (fromId == pToId) {
+        return;
+    }
     LLEventBus.publish(ActorChangeDimensionAfterEvent(const_cast<Actor&>(pActor), fromId, fromPos, pToId));
 }
 

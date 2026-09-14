@@ -2,24 +2,15 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/entity/ActorEvent.h>
 
-namespace ila::mc::inline world::inline actor
-{
-class ProjectileCreateBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
-{
+namespace ila::mc::inline world::inline actor {
+class ProjectileCreateBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 public:
-    constexpr explicit ProjectileCreateBeforeEvent(Actor& actor)
-        : Cancellable(actor)
-    {
-    }
+    constexpr explicit ProjectileCreateBeforeEvent(Actor& actor) : Cancellable(actor) {}
 };
 
-class ProjectileCreateAfterEvent final : public ll::event::entity::ActorEvent
-{
+class ProjectileCreateAfterEvent final : public ll::event::entity::ActorEvent {
 
 public:
-    constexpr explicit ProjectileCreateAfterEvent(Actor& actor)
-        : ActorEvent(actor)
-    {
-    }
+    constexpr explicit ProjectileCreateAfterEvent(Actor& actor) : ActorEvent(actor) {}
 };
 } // namespace ila::mc::inline world::inline actor

@@ -4,17 +4,14 @@
 #include <mc/world/level/WorldBlockTarget.h>
 #include <mc/world/level/block/SculkBlockBehavior.h>
 
-namespace ila::mc::inline world
-{
+namespace ila::mc::inline world {
 
-void SculkBlockGrowthBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void SculkBlockGrowthBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"] = getDimensionName(blockSource());
 }
-void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -22,10 +19,9 @@ void SculkBlockGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 }
 BlockPos& SculkBlockGrowthBeforeEvent::pos() const { return mPos; }
 
-void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const
-{
+void SculkBlockGrowthAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"] = getDimensionName(blockSource());
 }
 BlockPos const& SculkBlockGrowthAfterEvent::pos() const { return mPos; }
@@ -46,15 +42,15 @@ LL_TYPE_INSTANCE_HOOK(
     ::Random&          random,
     ::SculkSpreader&   spreader,
     bool const         idk2
-)
-{
-    if (region == nullptr)
-    {
+) {
+    if (region == nullptr) {
         return origin(target, region, originPos, pos, charge, idk1, random, spreader, idk2);
     }
     auto beforeEvent = SculkBlockGrowthBeforeEvent(*region, const_cast<BlockPos&>(pos));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return 0; }
+    if (beforeEvent.isCancelled()) {
+        return 0;
+    }
     int res = origin(target, region, originPos, pos, charge, idk1, random, spreader, idk2);
     LLEventBus.publish(SculkBlockGrowthAfterEvent(*region, pos));
     return res;

@@ -8,21 +8,17 @@ class Random;
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class BlockTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class BlockTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mPos;
     Random&   mRandom;
 
 public:
     constexpr explicit BlockTickBeforeEvent(BlockSource& blockSource, BlockPos& pos, Random& random)
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mRandom(random) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -31,23 +27,16 @@ public:
     ILNDAPI Random&   random() const;
 };
 
-class BlockTickAfterEvent final : public ll::event::WorldEvent
-{
+class BlockTickAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPos;
     Random const&   mRandom;
 
 public:
-    constexpr explicit BlockTickAfterEvent(
-        BlockSource&    blockSource,
-        BlockPos const& pos,
-        Random const&   random
-    )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-    {
-    }
+    constexpr explicit BlockTickAfterEvent(BlockSource& blockSource, BlockPos const& pos, Random const& random)
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mRandom(random) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

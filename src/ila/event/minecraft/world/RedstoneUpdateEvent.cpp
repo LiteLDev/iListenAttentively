@@ -19,19 +19,16 @@
 #include <mc/world/redstone/circuit/components/BaseCircuitComponent.h>
 #include <vector>
 
-namespace ila::mc::inline world
-{
+namespace ila::mc::inline world {
 
-void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void RedstoneUpdateBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]         = ListTag{pos().x, pos().y, pos().z};
     nbt["strength"]    = strength();
     nbt["isFirstTime"] = isFirstTime();
     nbt["dimId"]       = getDimensionName(blockSource());
 }
-void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void RedstoneUpdateBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x       = nbt["pos"][0];
     pos().y       = nbt["pos"][1];
@@ -43,10 +40,9 @@ BlockPos& RedstoneUpdateBeforeEvent::pos() const { return mPos; }
 int&      RedstoneUpdateBeforeEvent::strength() const { return mStrength; }
 bool&     RedstoneUpdateBeforeEvent::isFirstTime() const { return mIsFirstTime; }
 
-void RedstoneUpdateAfterEvent::serialize(CompoundTag& nbt) const
-{
+void RedstoneUpdateAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]         = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]         = ListTag{pos().x, pos().y, pos().z};
     nbt["strength"]    = strength();
     nbt["isFirstTime"] = isFirstTime();
     nbt["dimId"]       = getDimensionName(blockSource());
@@ -67,15 +63,18 @@ LL_TYPE_INSTANCE_HOOK(
     BlockPos const& pPos,
     PulseCapacitor& pComponent,
     bool            pTurnOn
-)
-{
-    if (!pTurnOn) { return origin(pRegion, pPos, pComponent, pTurnOn); }
+) {
+    if (!pTurnOn) {
+        return origin(pRegion, pPos, pComponent, pTurnOn);
+    }
 
     int  strength    = 15;
     bool isFirstTime = false;
     auto beforeEvent = RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), strength, isFirstTime);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(pRegion, pPos, pComponent, pTurnOn);
     LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pPos, strength, isFirstTime));
 }
@@ -89,12 +88,13 @@ void Block_onRedstoneUpdate(
     short             strength,
     short             oldStrength,
     bool              isFirstTime
-)
-{
+) {
     auto* executor = static_cast<BlockEvents::BlockEventExecutor<BlockEvents::BlockRedstoneUpdateEvent>*>(
         block.mBlockType->mEventManager->_tryGetExecutor(BlockEvents::EventType::RedstoneUpdate)
     );
-    if (executor == nullptr) { return; }
+    if (executor == nullptr) {
+        return;
+    }
 
     auto event = BlockEvents::BlockRedstoneUpdateEvent(pos, region, strength, oldStrength, isFirstTime);
 
@@ -109,25 +109,15 @@ void CircuitSystem_updateIndividualBlock(
     ::BlockPos const&                        pos,
     ::BlockPos const&                        region,
     ::BlockSource&                           blockSource
-)
-{
+) {
     int   strength    = component->getStrength();
     short oldStrength = component->mOldStrength;
     component->setOldStrength(static_cast<short>(strength));
-    if (static_cast<short>(strength) != -1)
-    {
+    if (static_cast<short>(strength) != -1) {
         ::Block const& block       = blockSource.getBlock(region);
         bool           isFirstTime = component->mIsFirstTime;
-        if (!isFirstTime || !component->mIgnoreFirstUpdate)
-        {
-            Block_onRedstoneUpdate(
-                block,
-                blockSource,
-                region,
-                static_cast<short>(strength),
-                oldStrength,
-                isFirstTime
-            );
+        if (!isFirstTime || !component->mIgnoreFirstUpdate) {
+            Block_onRedstoneUpdate(block, blockSource, region, static_cast<short>(strength), oldStrength, isFirstTime);
         }
         component->mIsFirstTime = false;
     }
@@ -141,57 +131,63 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     BlockSource&    pRegion,
     BlockPos const& pChunkPos
-)
-{
-    if (!mHasBeenEvaluated) { return; }
+) {
+    if (!mHasBeenEvaluated) {
+        return;
+    }
     auto& activeComponents = mSceneGraph->mActiveComponentsPerChunk;
-    if (activeComponents.empty()) { return; }
+    if (activeComponents.empty()) {
+        return;
+    }
 
     auto const& components = activeComponents.find(pChunkPos);
-    if (components == activeComponents.end()) { return; }
+    if (components == activeComponents.end()) {
+        return;
+    }
 
     std::vector<ChunkCircuitComponentList::Item> secondaryPoweredList;
     secondaryPoweredList.reserve(components->second.mComponents->size());
 
     auto processComponent = [&](BaseCircuitComponent* comp, BlockPos const& pos) -> void {
         int strength = comp->getStrength();
-        if (strength == -1) { return; }
+        if (strength == -1) {
+            return;
+        }
 
         bool doEvent = false;
-        if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate)
-        {
+        if (!comp->mIsFirstTime || !comp->mIgnoreFirstUpdate) {
             auto beforeEvent =
                 RedstoneUpdateBeforeEvent(pRegion, const_cast<BlockPos&>(pos), strength, comp->mIsFirstTime);
             LLEventBus.publish(beforeEvent);
-            if (beforeEvent.isCancelled()) { return; }
+            if (beforeEvent.isCancelled()) {
+                return;
+            }
             doEvent = true;
         }
 
         bool& usedIsFirstTime = comp->mIsFirstTime;
         CircuitSystem_updateIndividualBlock(this, comp, pChunkPos, pos, pRegion);
 
-        if (doEvent)
-        {
+        if (doEvent) {
             LLEventBus.publish(RedstoneUpdateAfterEvent(pRegion, pos, strength, usedIsFirstTime));
         }
     };
 
-    for (auto& item : *components->second.mComponents)
-    {
-        if (auto* comp = item.mComponent; comp && !comp->mRemoved && comp->mNeedsUpdate)
-        {
+    for (auto& item : *components->second.mComponents) {
+        if (auto* comp = item.mComponent; comp && !comp->mRemoved && comp->mNeedsUpdate) {
             comp->mNeedsUpdate = false;
-            if (comp->isSecondaryPowered()) { secondaryPoweredList.emplace_back(item); }
-            else
-            {
+            if (comp->isSecondaryPowered()) {
+                secondaryPoweredList.emplace_back(item);
+            } else {
                 processComponent(comp, item.mPos);
             }
         }
     }
 
-    for (auto const& item : secondaryPoweredList)
-    {
-        if (auto* comp = item.mComponent; comp) { processComponent(comp, item.mPos); }
+    for (auto const& item : secondaryPoweredList) {
+        if (auto* comp = item.mComponent; comp) {
+            processComponent(comp, item.mPos);
+        }
     }
 }
 

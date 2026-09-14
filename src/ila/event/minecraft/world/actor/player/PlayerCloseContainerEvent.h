@@ -2,10 +2,8 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/ServerPlayerEvent.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerCloseContainerBeforeEvent final : public ll::event::player::ServerPlayerEvent
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerCloseContainerBeforeEvent final : public ll::event::player::ServerPlayerEvent {
 protected:
     ContainerID&                        mContainerId;
     SharedTypes::Legacy::ContainerType& mContainerType;
@@ -18,12 +16,10 @@ public:
         SharedTypes::Legacy::ContainerType& containerType,
         bool&                               serverInitiatedClose
     )
-        : ServerPlayerEvent(player)
-        , mContainerId(containerId)
-        , mContainerType(containerType)
-        , mServerInitiatedClose(serverInitiatedClose)
-    {
-    }
+    : ServerPlayerEvent(player),
+      mContainerId(containerId),
+      mContainerType(containerType),
+      mServerInitiatedClose(serverInitiatedClose) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -33,8 +29,7 @@ public:
     ILNDAPI bool&                               serverInitiatedClose() const;
 };
 
-class PlayerCloseContainerAfterEvent final : public ll::event::player::ServerPlayerEvent
-{
+class PlayerCloseContainerAfterEvent final : public ll::event::player::ServerPlayerEvent {
 protected:
     ContainerID const&                        mContainerId;
     SharedTypes::Legacy::ContainerType const& mContainerType;
@@ -47,12 +42,10 @@ public:
         SharedTypes::Legacy::ContainerType const& containerType,
         bool const&                               serverInitiatedClose
     )
-        : ServerPlayerEvent(player)
-        , mContainerId(containerId)
-        , mContainerType(containerType)
-        , mServerInitiatedClose(serverInitiatedClose)
-    {
-    }
+    : ServerPlayerEvent(player),
+      mContainerId(containerId),
+      mContainerType(containerType),
+      mServerInitiatedClose(serverInitiatedClose) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

@@ -9,41 +9,28 @@
 #include <mc/world/item/PotionItem.h>
 #include <mc/world/item/VanillaItemNames.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerAteBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerAteBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["item"] = serializeRefObj(item());
 }
 ItemStack& PlayerAteBeforeEvent::item() const { return mItem; }
 
-void PlayerAteAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerAteAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
     nbt["slot"] = slot();
 }
 int PlayerAteAfterEvent::slot() const { return mSlot; }
 
-LL_TYPE_INSTANCE_HOOK(
-    PlayerCompleteUsingItemHook,
-    HookPriority::Normal,
-    Player,
-    &Player::completeUsingItem,
-    void
-)
-{
-    if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id())
-    {
+LL_TYPE_INSTANCE_HOOK(PlayerCompleteUsingItemHook, HookPriority::Normal, Player, &Player::completeUsingItem, void) {
+    if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id()) {
         return origin();
     }
-    static std::set<std::string> mItmemNames = { VanillaItemNames::Potion(),
-                                                 VanillaItemNames::MilkBucket(),
-                                                 "minecraft:medicine" };
-    auto                         slot        = mItemInUse->mSlot->mSlot;
-    if (!mItemInUse->mItem->mItem->isFood() && !mItmemNames.contains(mItemInUse->mItem->getTypeName()))
-    {
+    static std::set<std::string> mItmemNames =
+        {VanillaItemNames::Potion(), VanillaItemNames::MilkBucket(), "minecraft:medicine"};
+    auto slot = mItemInUse->mSlot->mSlot;
+    if (!mItemInUse->mItem->mItem->isFood() && !mItmemNames.contains(mItemInUse->mItem->getTypeName())) {
         return origin();
     }
     PlayerAteBeforeEvent before(*this, mItemInUse->mItem);

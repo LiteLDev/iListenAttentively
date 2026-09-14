@@ -3,20 +3,19 @@
 #include <mc/world/actor/boss/WitherBoss.h>
 #include <mc/world/phys/AABB.h>
 
-namespace ila::mc::inline world
-{
+namespace ila::mc::inline world {
 
-void WitherDestroyBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void WitherDestroyBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["level"]  = serializeRefObj(level());
-    nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
-                      { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
+    nbt["level"] = serializeRefObj(level());
+    nbt["box"]   = {
+        {"min", ListTag{box().min.x, box().min.y, box().min.z}},
+        {"max", ListTag{box().max.x, box().max.y, box().max.z}}
+    };
     nbt["radius"] = radius();
     nbt["dimId"]  = getDimensionName(blockSource());
 }
-void WitherDestroyBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void WitherDestroyBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     box().min.x = nbt["box"]["min"][0];
     box().min.y = nbt["box"]["min"][1];
@@ -30,12 +29,13 @@ Level& WitherDestroyBeforeEvent::level() const { return mLevel; }
 AABB&  WitherDestroyBeforeEvent::box() const { return mBox; };
 int&   WitherDestroyBeforeEvent::radius() const { return mRadius; };
 
-void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const
-{
+void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["level"]  = serializeRefObj(level());
-    nbt["box"]    = { { "min", ListTag { box().min.x, box().min.y, box().min.z } },
-                      { "max", ListTag { box().max.x, box().max.y, box().max.z } } };
+    nbt["level"] = serializeRefObj(level());
+    nbt["box"]   = {
+        {"min", ListTag{box().min.x, box().min.y, box().min.z}},
+        {"max", ListTag{box().max.x, box().max.y, box().max.z}}
+    };
     nbt["radius"] = radius();
     nbt["dimId"]  = getDimensionName(blockSource());
 }
@@ -54,11 +54,12 @@ LL_TYPE_INSTANCE_HOOK(
     BlockSource&                 pRegion,
     int                          pRange,
     WitherBoss::WitherAttackType pType
-)
-{
+) {
     auto beforeEvent = WitherDestroyBeforeEvent(pRegion, pLevel, const_cast<AABB&>(pBox), pRange);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(pLevel, pBox, pRegion, pRange, pType);
     LLEventBus.publish(WitherDestroyAfterEvent(pRegion, pLevel, pBox, pRange));
 }

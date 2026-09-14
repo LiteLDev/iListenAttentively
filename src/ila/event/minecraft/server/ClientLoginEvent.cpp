@@ -11,20 +11,17 @@
 #include <mc/platform/UUID.h>
 
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-void ClientLoginBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void ClientLoginBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
     nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
 }
-ServerNetworkHandler& ClientLoginBeforeEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
+ServerNetworkHandler&    ClientLoginBeforeEvent::serverNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const& ClientLoginBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
 
-void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const
-{
+void ClientLoginAfterEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
     nbt["serverNetworkHandler"] = serializeRefObj(serverNetworkHandler());
     nbt["networkIdentifier"]    = serializeRefObj(networkIdentifier());
@@ -41,18 +38,15 @@ std::string const&       ClientLoginAfterEvent::serverAuthXuid() const { return 
 std::string const&       ClientLoginAfterEvent::clientAuthXuid() const { return mClientAuthXuid; }
 std::string const&       ClientLoginAfterEvent::realName() const { return mRealName; }
 std::string const&       ClientLoginAfterEvent::ipAndPort() const { return mIpAndPort; }
-std::string              ClientLoginAfterEvent::ip() const
-{
+std::string              ClientLoginAfterEvent::ip() const {
     auto address = ipAndPort();
     return address.substr(0, address.find("|"));
 }
-std::string ClientLoginAfterEvent::port() const
-{
+std::string ClientLoginAfterEvent::port() const {
     auto address = ipAndPort();
     return address.substr(address.find("|") + 1);
 }
-void ClientLoginAfterEvent::disConnectClient(std::string const& reason) const
-{
+void ClientLoginAfterEvent::disConnectClient(std::string const& reason) const {
     if (!mKickReasons) mKickReasons.emplace();
     if (!reason.empty()) mKickReasons->emplace_back(reason);
 }
@@ -65,19 +59,19 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     NetworkIdentifier const&     pSource,
     std::shared_ptr<LoginPacket> pPacket
-)
-{
+) {
     auto beforeEvent = ClientLoginBeforeEvent(*thisFor<NetEventCallback>(), pSource);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled() || true)
-    {
+    if (beforeEvent.isCancelled() || true) {
         thisFor<NetEventCallback>()
             ->disconnectClient(pSource, pPacket->mSenderSubId, Connection::DisconnectFailReason::Kicked);
         return;
     }
     origin(pSource, pPacket);
     auto client = thisFor<NetEventCallback>()->mClients->find(pSource);
-    if (client == mClients->end()) { return; }
+    if (client == mClients->end()) {
+        return;
+    }
     auto&                                   info = *client->second->mPrimaryPlayerInfo;
     std::optional<std::vector<std::string>> kickReasons;
     auto                                    afterEvent = ClientLoginAfterEvent(
@@ -91,8 +85,7 @@ LL_TYPE_INSTANCE_HOOK(
         kickReasons
     );
     LLEventBus.publish(afterEvent);
-    if (kickReasons)
-    {
+    if (kickReasons) {
         thisFor<NetEventCallback>()->disconnectClientWithMessage(
             pSource,
             pPacket->mSenderSubId,

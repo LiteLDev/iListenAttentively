@@ -7,10 +7,8 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class LiquidFlowBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class LiquidFlowBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos&       mPos;
     int&            mDepth;
@@ -23,12 +21,10 @@ public:
         int&            depth,
         BlockPos const& flowFromPos
     )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mDepth(depth)
-        , mFlowFromPos(flowFromPos)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mDepth(depth),
+      mFlowFromPos(flowFromPos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -38,8 +34,7 @@ public:
     ILNDAPI BlockPos const& flowFromPos() const;
 };
 
-class LiquidFlowAfterEvent final : public ll::event::WorldEvent
-{
+class LiquidFlowAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPos;
     int const&      mDepth;
@@ -52,12 +47,10 @@ public:
         int const&      depth,
         BlockPos const& flowFromPos
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mDepth(depth)
-        , mFlowFromPos(flowFromPos)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mDepth(depth),
+      mFlowFromPos(flowFromPos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

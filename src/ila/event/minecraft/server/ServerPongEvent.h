@@ -2,10 +2,8 @@
 #include <ll/api/event/Cancellable.h>
 #include <mc/world/level/GameType.h>
 
-namespace ila::mc::inline server
-{
-class ServerPongBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
-{
+namespace ila::mc::inline server {
+class ServerPongBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     std::string&              mMotd;
     int&                      mProtocolVersion;
@@ -35,20 +33,18 @@ public:
         std::vector<std::string>& other,
         std::string const&        ipAndPort
     )
-        : mMotd(motd)
-        , mProtocolVersion(protocolVersion)
-        , mNetworkVersion(networkVersion)
-        , mPlayerCount(playerCount)
-        , mMaxPlayerCount(maxPlayerCount)
-        , mGuid(guid)
-        , mLevelName(levelName)
-        , mGameMode(gameMode)
-        , mLocalPort(localPort)
-        , mLocalPortV6(localPortV6)
-        , mOther(other)
-        , mIpAndPort(ipAndPort)
-    {
-    }
+    : mMotd(motd),
+      mProtocolVersion(protocolVersion),
+      mNetworkVersion(networkVersion),
+      mPlayerCount(playerCount),
+      mMaxPlayerCount(maxPlayerCount),
+      mGuid(guid),
+      mLevelName(levelName),
+      mGameMode(gameMode),
+      mLocalPort(localPort),
+      mLocalPortV6(localPortV6),
+      mOther(other),
+      mIpAndPort(ipAndPort) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -69,8 +65,7 @@ public:
     ILNDAPI ushort      port() const;
 }; // class ServerPongEvent
 
-class ServerPongAfterEvent final : public ll::event::Event
-{
+class ServerPongAfterEvent final : public ll::event::Event {
 protected:
     std::string const&       mMotd;
     int const&               mProtocolVersion;
@@ -100,20 +95,18 @@ public:
         std::vector<std::string> const& other,
         std::string const&              ipAndPort
     )
-        : mMotd(motd)
-        , mProtocolVersion(protocolVersion)
-        , mNetworkVersion(networkVersion)
-        , mPlayerCount(playerCount)
-        , mMaxPlayerCount(maxPlayerCount)
-        , mGuid(guid)
-        , mLevelName(levelName)
-        , mGameMode(gameMode)
-        , mLocalPort(localPort)
-        , mLocalPortV6(localPortV6)
-        , mOther(other)
-        , mIpAndPort(ipAndPort)
-    {
-    }
+    : mMotd(motd),
+      mProtocolVersion(protocolVersion),
+      mNetworkVersion(networkVersion),
+      mPlayerCount(playerCount),
+      mMaxPlayerCount(maxPlayerCount),
+      mGuid(guid),
+      mLevelName(levelName),
+      mGameMode(gameMode),
+      mLocalPort(localPort),
+      mLocalPortV6(localPortV6),
+      mOther(other),
+      mIpAndPort(ipAndPort) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

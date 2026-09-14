@@ -2,11 +2,9 @@
 #include "ila/base/Gloabl.h"
 #include <mc/server/commands/CommandRegistry.h>
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-void RegisterCmdBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void RegisterCmdBeforeEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
     nbt["name"]        = commandName();
     nbt["description"] = description();
@@ -14,16 +12,13 @@ void RegisterCmdBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["flag1"]       = magic_enum::enum_name(flag1().value);
     nbt["flag2"]       = magic_enum::enum_name(flag2().value);
 }
-void RegisterCmdBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void RegisterCmdBeforeEvent::deserialize(CompoundTag const& nbt) {
     Event::deserialize(nbt);
     description() = nbt["description"];
-    requirement() = magic_enum::enum_cast<CommandPermissionLevel>(nbt["requirement"].get<StringTag>())
-                        .value_or(requirement());
-    flag1().value =
-        magic_enum::enum_cast<CommandFlagValue>(nbt["flag1"].get<StringTag>()).value_or(flag1().value);
-    flag2().value =
-        magic_enum::enum_cast<CommandFlagValue>(nbt["flag2"].get<StringTag>()).value_or(flag2().value);
+    requirement() =
+        magic_enum::enum_cast<CommandPermissionLevel>(nbt["requirement"].get<StringTag>()).value_or(requirement());
+    flag1().value = magic_enum::enum_cast<CommandFlagValue>(nbt["flag1"].get<StringTag>()).value_or(flag1().value);
+    flag2().value = magic_enum::enum_cast<CommandFlagValue>(nbt["flag2"].get<StringTag>()).value_or(flag2().value);
 }
 CommandRegistry&        RegisterCmdBeforeEvent::registry() const { return mRegistry; }
 std::string const&      RegisterCmdBeforeEvent::commandName() const { return mName; }
@@ -32,8 +27,7 @@ CommandPermissionLevel& RegisterCmdBeforeEvent::requirement() const { return mRe
 CommandFlag&            RegisterCmdBeforeEvent::flag1() const { return mFlag1; }
 CommandFlag&            RegisterCmdBeforeEvent::flag2() const { return mFlag2; }
 
-void RegisterCmdAfterEvent::serialize(CompoundTag& nbt) const
-{
+void RegisterCmdAfterEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
     nbt["name"]        = commandName();
     nbt["description"] = description();
@@ -59,9 +53,8 @@ LL_TYPE_INSTANCE_HOOK(
     CommandPermissionLevel pRequirement,
     CommandFlag            pFlag1,
     CommandFlag            pFlag2
-)
-{
-    auto description = std::string { pDescription };
+) {
+    auto description = std::string{pDescription};
     LLEventBus.publish(RegisterCmdBeforeEvent(*this, pName, description, pRequirement, pFlag1, pFlag2));
     origin(pName, description.c_str(), pRequirement, pFlag1, pFlag2);
     LLEventBus.publish(RegisterCmdAfterEvent(*this, pName, description, pRequirement, pFlag1, pFlag2));

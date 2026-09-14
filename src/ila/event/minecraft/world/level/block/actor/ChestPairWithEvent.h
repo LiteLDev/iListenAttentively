@@ -8,25 +8,17 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
-{
-class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block::inline actor {
+class ChestPairWithBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     ChestBlockActor& mChest;
     BlockPos&        mPosition;
 
 public:
-    constexpr explicit ChestPairWithBeforeEvent(
-        BlockSource&     blockSource,
-        ChestBlockActor& chest,
-        BlockPos&        position
-    )
-        : Cancellable(blockSource)
-        , mChest(chest)
-        , mPosition(position)
-    {
-    }
+    constexpr explicit ChestPairWithBeforeEvent(BlockSource& blockSource, ChestBlockActor& chest, BlockPos& position)
+    : Cancellable(blockSource),
+      mChest(chest),
+      mPosition(position) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -35,8 +27,7 @@ public:
     ILNDAPI BlockPos&        pos() const;
 };
 
-class ChestPairWithAfterEvent final : public ll::event::WorldEvent
-{
+class ChestPairWithAfterEvent final : public ll::event::WorldEvent {
 protected:
     ChestBlockActor& mChest;
     BlockPos const&  mPosition;
@@ -47,11 +38,9 @@ public:
         ChestBlockActor& chest,
         BlockPos const&  position
     )
-        : WorldEvent(blockSource)
-        , mChest(chest)
-        , mPosition(position)
-    {
-    }
+    : WorldEvent(blockSource),
+      mChest(chest),
+      mPosition(position) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

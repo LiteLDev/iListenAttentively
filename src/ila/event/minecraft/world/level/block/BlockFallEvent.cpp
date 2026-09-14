@@ -17,19 +17,16 @@
 #include <mc/world/level/block/FallingBlock.h>
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void BlockFallBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void BlockFallBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]      = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]      = ListTag{pos().x, pos().y, pos().z};
     nbt["oldBlock"] = serializeRefObj(oldBlock());
     nbt["creative"] = creative();
     nbt["dimId"]    = getDimensionName(blockSource());
 }
-void BlockFallBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void BlockFallBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     creative() = nbt["creative"];
 }
@@ -37,15 +34,13 @@ BlockPos const& BlockFallBeforeEvent::pos() const { return mPos; }
 Block const&    BlockFallBeforeEvent::oldBlock() const { return mOldBlock; }
 bool&           BlockFallBeforeEvent::creative() const { return mCreative; }
 
-void BlockFallAfterEvent::serialize(CompoundTag& nbt) const
-{
+void BlockFallAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag{pos().x, pos().y, pos().z};
     nbt["self"] = serializeRefObj(self());
 }
 BlockPos const&    BlockFallAfterEvent::pos() const { return mPos; }
-FallingBlockActor& BlockFallAfterEvent::self() const
-{ return static_cast<FallingBlockActor&>(ActorEvent::self()); }
+FallingBlockActor& BlockFallAfterEvent::self() const { return static_cast<FallingBlockActor&>(ActorEvent::self()); }
 
 LL_TYPE_INSTANCE_HOOK(
     BlockFallEventHook,
@@ -57,11 +52,12 @@ LL_TYPE_INSTANCE_HOOK(
     BlockPos const& pPos,
     Block const&    pOldBlock,
     bool            pCreative
-)
-{
+) {
     auto beforeEvent = BlockFallBeforeEvent(pRegion, pPos, pOldBlock, pCreative);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     auto actorContext = pRegion.getLevel().getActorFactory().createSpawnedActor(
         ActorDefinitionIdentifier(ActorType::FallingBlock, ""),
         nullptr,
@@ -74,10 +70,9 @@ LL_TYPE_INSTANCE_HOOK(
     if (!actor || actor->mRemoved) return;
     actor->setFallingBlock(pOldBlock, pCreative);
     actor->mLevel = &pRegion.getLevel();
-    auto syncMsg =
-        ActorBlockSyncMessage { actor->getOrCreateUniqueID(), ActorBlockSyncMessage::MessageId::None };
-    BlockChangeContext context {};
-    context.mContextSource = { ActorChangeContext { actor } };
+    auto syncMsg  = ActorBlockSyncMessage{actor->getOrCreateUniqueID(), ActorBlockSyncMessage::MessageId::None};
+    BlockChangeContext context{};
+    context.mContextSource = {ActorChangeContext{actor}};
     pRegion.setBlock(
         pPos,
         BlockTypeRegistry::mBlockTypeRegistry().mValue.getDefaultBlockState(BedrockBlockNames::Air()),
@@ -86,9 +81,9 @@ LL_TYPE_INSTANCE_HOOK(
         context
     );
     static_cast<FallingBlock const&>(pOldBlock.getBlockType())
-        ._tickBlocksAround2D(pRegion, pPos.add({ 0, 1, 0 }), pOldBlock);
+        ._tickBlocksAround2D(pRegion, pPos.add({0, 1, 0}), pOldBlock);
     static_cast<FallingBlock const&>(pOldBlock.getBlockType())
-        ._tickBlocksAround2D(pRegion, pPos.add({ 0, -1, 0 }), pOldBlock);
+        ._tickBlocksAround2D(pRegion, pPos.add({0, -1, 0}), pOldBlock);
     pRegion.getLevel().addEntity(pRegion, std::move(actorContext));
     LLEventBus.publish(BlockFallAfterEvent(actor, pPos));
 }

@@ -2,11 +2,9 @@
 #include <ll/api/io/PatternFormatter.h>
 #include <mc/deps/core/math/Color.h>
 
-namespace ila
-{
+namespace ila {
 
-class RandomColorLogFormatter : public ll::io::PatternFormatter
-{
+class RandomColorLogFormatter : public ll::io::PatternFormatter {
 public:
     using PatternFormatter::PatternFormatter;
 
@@ -14,8 +12,7 @@ public:
 
     mce::Color  hslToRgb(double h, double s, double l) const noexcept;
     mce::Color  generateRandomBrightColor() const noexcept;
-    std::string gradientText(std::string const& str, mce::Color const& start, mce::Color const& end)
-        const noexcept;
+    std::string gradientText(std::string const& str, mce::Color const& start, mce::Color const& end) const noexcept;
 };
 
 } // namespace ila

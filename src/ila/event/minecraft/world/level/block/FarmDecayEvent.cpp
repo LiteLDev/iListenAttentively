@@ -3,19 +3,16 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/FarmBlock.h>
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void FarmDecayBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]          = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(actor());
     nbt["fallDistance"] = fallDistance();
 }
-void FarmDecayBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void FarmDecayBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x        = nbt["pos"][0];
     pos().y        = nbt["pos"][1];
@@ -26,10 +23,9 @@ BlockPos& FarmDecayBeforeEvent::pos() const { return mPos; }
 Actor*&   FarmDecayBeforeEvent::actor() const { return mActor; }
 float&    FarmDecayBeforeEvent::fallDistance() const { return mFallDistance; }
 
-void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const
-{
+void FarmDecayAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]          = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]          = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]        = getDimensionName(blockSource());
     nbt["actor"]        = serializeRefObj(actor());
     nbt["fallDistance"] = fallDistance();
@@ -48,11 +44,12 @@ LL_TYPE_INSTANCE_HOOK(
     BlockPos const& pPos,
     Actor*          pActor,
     float           pFallDistance
-)
-{
+) {
     auto beforeEvent = FarmDecayBeforeEvent(pRegion, const_cast<BlockPos&>(pPos), pActor, pFallDistance);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(pRegion, pPos, pActor, pFallDistance);
     LLEventBus.publish(FarmDecayAfterEvent(pRegion, pPos, pActor, pFallDistance));
 }

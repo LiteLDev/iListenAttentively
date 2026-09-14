@@ -3,14 +3,12 @@
 #include "ila/event/minecraft/world/level/levelgen/structure/VillageFeatureEvent.h"
 #include <mc/world/level/BlockPos.h>
 
-inline struct EventTest
-{
+inline struct EventTest {
     EventTest();
     ~EventTest() = default;
 } test;
 
-EventTest::EventTest()
-{
+EventTest::EventTest() {
 
     LLEventBus.emplaceListener<ila::mc::world::RedstoneUpdateBeforeEvent>(
         [](ila::mc::world::RedstoneUpdateBeforeEvent& event) -> void {

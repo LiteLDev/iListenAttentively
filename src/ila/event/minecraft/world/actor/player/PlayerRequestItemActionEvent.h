@@ -2,17 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
-#include <mc/world/inventory/network/ItemStackRequestActionType.h>
 #include <mc/world/inventory/network/ItemStackNetResult.h>
+#include <mc/world/inventory/network/ItemStackRequestActionType.h>
 
 // clang-format off
 struct ItemStackRequestSlotInfo;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerRequestItemActionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerRequestItemActionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     ItemStackRequestActionType& mActionType;
     bool&                       mIsDstSerialized;
@@ -31,15 +29,13 @@ public:
         ItemStackRequestSlotInfo&   src,
         ItemStackRequestSlotInfo&   dst
     )
-        : Cancellable(player)
-        , mActionType(actionType)
-        , mIsDstSerialized(isDstSerialized)
-        , mIsAmountSerialized(isAmountSerialized)
-        , mAmount(amount)
-        , mSrc(src)
-        , mDst(dst)
-    {
-    }
+    : Cancellable(player),
+      mActionType(actionType),
+      mIsDstSerialized(isDstSerialized),
+      mIsAmountSerialized(isAmountSerialized),
+      mAmount(amount),
+      mSrc(src),
+      mDst(dst) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -52,8 +48,7 @@ public:
     ILNDAPI ItemStackRequestSlotInfo&   dst() const;
 };
 
-class PlayerRequestItemActionAfterEvent final : public ll::event::player::PlayerEvent
-{
+class PlayerRequestItemActionAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     ItemStackRequestActionType const& mActionType;
     bool const&                       mIsDstSerialized;
@@ -74,16 +69,14 @@ public:
         ItemStackRequestSlotInfo const&   dst,
         ItemStackNetResult&               result
     )
-        : PlayerEvent(player)
-        , mActionType(actionType)
-        , mIsDstSerialized(isDstSerialized)
-        , mIsAmountSerialized(isAmountSerialized)
-        , mAmount(amount)
-        , mSrc(src)
-        , mDst(dst)
-        , mResult(result)
-    {
-    }
+    : PlayerEvent(player),
+      mActionType(actionType),
+      mIsDstSerialized(isDstSerialized),
+      mIsAmountSerialized(isAmountSerialized),
+      mAmount(amount),
+      mSrc(src),
+      mDst(dst),
+      mResult(result) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;

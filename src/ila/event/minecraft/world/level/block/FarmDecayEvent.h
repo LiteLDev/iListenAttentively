@@ -7,28 +7,19 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class FarmDecayBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class FarmDecayBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mPos;
     Actor*&   mActor;
     float&    mFallDistance;
 
 public:
-    constexpr explicit FarmDecayBeforeEvent(
-        BlockSource& blockSource,
-        BlockPos&    pos,
-        Actor*&      actor,
-        float&       fallDistance
-    )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mActor(actor)
-        , mFallDistance(fallDistance)
-    {
-    }
+    constexpr explicit FarmDecayBeforeEvent(BlockSource& blockSource, BlockPos& pos, Actor*& actor, float& fallDistance)
+    : Cancellable(blockSource),
+      mPos(pos),
+      mActor(actor),
+      mFallDistance(fallDistance) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -38,8 +29,7 @@ public:
     ILNDAPI float&    fallDistance() const;
 };
 
-class FarmDecayAfterEvent final : public ll::event::WorldEvent
-{
+class FarmDecayAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPos;
     Actor* const&   mActor;
@@ -52,12 +42,10 @@ public:
         Actor* const&   actor,
         float const&    fallDistance
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mActor(actor)
-        , mFallDistance(fallDistance)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mActor(actor),
+      mFallDistance(fallDistance) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

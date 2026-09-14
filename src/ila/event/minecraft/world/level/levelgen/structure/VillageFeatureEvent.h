@@ -12,11 +12,9 @@ class ChunkPos;
 class Random;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
-{
+namespace ila::mc::inline world::inline level::inline levelgen::inline structure {
 
-class VillageFeatureConstructionEvent final : public ila::mc::StructureEvent
-{
+class VillageFeatureConstructionEvent final : public ila::mc::StructureEvent {
 protected:
     std::vector<BiomeIdType>& mAllowedBiomes;
 
@@ -31,13 +29,11 @@ public:
         int&                      pTownSpacing,
         int&                      pMinTownSeparation
     )
-        : StructureEvent()
-        , mAllowedBiomes(pAllowedBiomes)
-        , mSeed(pSeed)
-        , mTownSpacing(pTownSpacing)
-        , mMinTownSeparation(pMinTownSeparation)
-    {
-    }
+    : StructureEvent(),
+      mAllowedBiomes(pAllowedBiomes),
+      mSeed(pSeed),
+      mTownSpacing(pTownSpacing),
+      mMinTownSeparation(pMinTownSeparation) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -49,8 +45,7 @@ public:
     ILNDAPI int&                      minTownSeparation() const;
 };
 
-class CheckIfItIsAVillageGenerationChunkEvent final : public ll::event::Cancellable<ila::mc::StructureEvent>
-{
+class CheckIfItIsAVillageGenerationChunkEvent final : public ll::event::Cancellable<ila::mc::StructureEvent> {
 protected:
     IPreliminarySurfaceProvider const& mPreliminarySurfaceLevel;
     BiomeSource const&                 mBiomeSource;
@@ -68,15 +63,13 @@ public:
         Random&                            pRandom,
         uint&                              pLevelSeed
     )
-        : Cancellable()
-        , mPreliminarySurfaceLevel(pPreliminarySurfaceLevel)
-        , mBiomeSource(pBiomeSource)
-        , mDimension(pDimension)
-        , mChunkPos(pChunkPos)
-        , mRandom(pRandom)
-        , mLevelSeed(pLevelSeed)
-    {
-    }
+    : Cancellable(),
+      mPreliminarySurfaceLevel(pPreliminarySurfaceLevel),
+      mBiomeSource(pBiomeSource),
+      mDimension(pDimension),
+      mChunkPos(pChunkPos),
+      mRandom(pRandom),
+      mLevelSeed(pLevelSeed) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

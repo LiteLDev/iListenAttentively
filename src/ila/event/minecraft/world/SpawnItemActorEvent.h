@@ -10,10 +10,8 @@ class ItemStack;
 class ItemActor;
 // clang-format on
 
-namespace ila::mc::inline world
-{
-class SpawnItemActorBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world {
+class SpawnItemActorBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     Vec3&      mPos;
     ItemStack& mItem;
@@ -28,13 +26,11 @@ public:
         Actor*&      spawner,
         int&         throwTime
     )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mItem(item)
-        , mSpawner(spawner)
-        , mThrowTime(throwTime)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mItem(item),
+      mSpawner(spawner),
+      mThrowTime(throwTime) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -45,8 +41,7 @@ public:
     ILNDAPI int&       throwTime() const;
 };
 
-class SpawnItemActorAfterEvent final : public ll::event::WorldEvent
-{
+class SpawnItemActorAfterEvent final : public ll::event::WorldEvent {
 protected:
     Vec3 const&      mPos;
     ItemStack const& mItem;
@@ -63,14 +58,12 @@ public:
         int const&       throwTime,
         ItemActor&       itemActor
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mItem(item)
-        , mSpawner(spawner)
-        , mThrowTime(throwTime)
-        , mItemActor(itemActor)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mItem(item),
+      mSpawner(spawner),
+      mThrowTime(throwTime),
+      mItemActor(itemActor) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

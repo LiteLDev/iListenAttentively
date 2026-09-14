@@ -8,25 +8,23 @@
 #include <mc/world/level/levelgen/structure/VanillaStructureFeatureType.h>
 #include <mc/world/level/levelgen/structure/VillageFeature.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
-{
-void VillageFeatureConstructionEvent::serialize(CompoundTag& nbt) const
-{
+namespace ila::mc::inline world::inline level::inline levelgen::inline structure {
+void VillageFeatureConstructionEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
     std::vector<CompoundTagVariant> vctv = {};
-    for (auto& ab : mAllowedBiomes) { vctv.push_back(ab.mValue); }
+    for (auto& ab : mAllowedBiomes) {
+        vctv.push_back(ab.mValue);
+    }
     nbt["allowedBiomes"]     = vctv;
     nbt["seed"]              = seed();
     nbt["townSpacing"]       = townSpacing();
     nbt["minTownSeparation"] = minTownSeparation();
 }
-void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt)
-{
+void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt) {
     Event::deserialize(nbt);
     mAllowedBiomes.clear();
-    for (auto& ab : nbt["allowedBiomes"].get<ListTag>())
-    {
-        mAllowedBiomes.push_back(BiomeIdType { static_cast<ushort>(ab.get<ShortTag>().data) });
+    for (auto& ab : nbt["allowedBiomes"].get<ListTag>()) {
+        mAllowedBiomes.push_back(BiomeIdType{static_cast<ushort>(ab.get<ShortTag>().data)});
     }
     seed()              = nbt["seed"];
     townSpacing()       = nbt["townSpacing"];
@@ -35,7 +33,7 @@ void VillageFeatureConstructionEvent::deserialize(CompoundTag const& nbt)
 std::vector<BiomeIdType>& VillageFeatureConstructionEvent::allowedBiomes() const { return mAllowedBiomes; }
 uint&                     VillageFeatureConstructionEvent::seed() const { return mSeed; }
 int&                      VillageFeatureConstructionEvent::townSpacing() const { return mTownSpacing; }
-int& VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
+int&                      VillageFeatureConstructionEvent::minTownSeparation() const { return mMinTownSeparation; }
 
 LL_TYPE_INSTANCE_HOOK(
     OverworldDimensionCreateGeneratorHook,
@@ -44,8 +42,7 @@ LL_TYPE_INSTANCE_HOOK(
     &OverworldDimension::$createGenerator,
     ::std::unique_ptr<::WorldGenerator>,
     ::br::worldgen::StructureSetRegistry const& pStructureSetRegistry
-)
-{
+) {
     auto result         = origin(pStructureSetRegistry);
     auto villageFeature = static_cast<VillageFeature*>(
         result->mStructureFeatureRegistry->getStructureFeatureOfType(VanillaStructureFeatureType::Village())
@@ -62,19 +59,17 @@ LL_TYPE_INSTANCE_HOOK(
 
 Event_Hook_Factory_Base(VillageFeatureConstruction, <OverworldDimensionCreateGeneratorHook>);
 
-void CheckIfItIsAVillageGenerationChunkEvent::serialize(CompoundTag& nbt) const
-{
+void CheckIfItIsAVillageGenerationChunkEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["preliminarySurfaceLevel"] = serializeRefObj(preliminarySurfaceLevel());
     nbt["biomeSource"]             = serializeRefObj(biomeSource());
     nbt["dimension"]               = serializeRefObj(dimension());
-    nbt["chunkPos"]                = ListTag { chunkPos().x, chunkPos().y, chunkPos().z };
+    nbt["chunkPos"]                = ListTag{chunkPos().x, chunkPos().y, chunkPos().z};
     nbt["random"]                  = serializeRefObj(random());
     nbt["levelSeed"]               = levelSeed();
 }
 
-IPreliminarySurfaceProvider const& CheckIfItIsAVillageGenerationChunkEvent::preliminarySurfaceLevel() const
-{
+IPreliminarySurfaceProvider const& CheckIfItIsAVillageGenerationChunkEvent::preliminarySurfaceLevel() const {
     return mPreliminarySurfaceLevel;
 }
 BiomeSource const& CheckIfItIsAVillageGenerationChunkEvent::biomeSource() const { return mBiomeSource; }
@@ -95,8 +90,7 @@ LL_TYPE_INSTANCE_HOOK(
     uint                               pLevelSeed,
     IPreliminarySurfaceProvider const& pPreliminarySurfaceLevel,
     Dimension const&                   pDimension
-)
-{
+) {
     auto beforeEvent = CheckIfItIsAVillageGenerationChunkEvent(
         pPreliminarySurfaceLevel,
         pBiomeSource,
@@ -106,7 +100,9 @@ LL_TYPE_INSTANCE_HOOK(
         pLevelSeed
     );
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     return origin(pBiomeSource, pRandom, pChunkPos, pLevelSeed, pPreliminarySurfaceLevel, pDimension);
 }
 

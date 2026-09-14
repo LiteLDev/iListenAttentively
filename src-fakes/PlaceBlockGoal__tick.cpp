@@ -21,52 +21,51 @@
 // Reconstructed from IDA MCP for ?tick@PlaceBlockGoal@@UEAAXXZ.
 // The decompiler JUMPOUT is only the /GS security-cookie failure tail.
 
-void PlaceBlockGoal::tick()
-{
+void PlaceBlockGoal::tick() {
     auto& random     = mMob.getRandom();
     auto& definition = *mDefinition;
 
-    auto targetPos = BlockPos { mMob.getPosition() };
+    auto targetPos = BlockPos{mMob.getPosition()};
     auto xOffset   = definition.mXZRange->rangeMin;
-    if (auto const span = definition.mXZRange->rangeMax - xOffset; span > 0)
-    {
+    if (auto const span = definition.mXZRange->rangeMax - xOffset; span > 0) {
         xOffset += random.nextInt(span + 1);
     }
     targetPos.x += xOffset;
 
     auto yOffset = definition.mYRange->rangeMin;
-    if (auto const span = definition.mYRange->rangeMax - yOffset; span > 0)
-    {
+    if (auto const span = definition.mYRange->rangeMax - yOffset; span > 0) {
         yOffset += random.nextInt(span + 1);
     }
     targetPos.y += yOffset;
 
     auto zOffset = definition.mXZRange->rangeMin;
-    if (auto const span = definition.mXZRange->rangeMax - zOffset; span > 0)
-    {
+    if (auto const span = definition.mXZRange->rangeMax - zOffset; span > 0) {
         zOffset += random.nextInt(span + 1);
     }
     targetPos.z += zOffset;
 
     auto& region = const_cast<BlockSource&>(mMob.getDimensionBlockSourceConst());
 
-    if (!region.getBlock(targetPos).isAir()) { return; }
+    if (!region.getBlock(targetPos).isAir()) {
+        return;
+    }
 
-    BlockPos belowPos { targetPos.x, targetPos.y - 1, targetPos.z };
+    BlockPos belowPos{targetPos.x, targetPos.y - 1, targetPos.z};
     auto&    belowBlock = region.getBlock(belowPos);
     // IDA misnames this helper; the function body is a direct cached mIsSolid load.
-    if (belowBlock.isAir() || !belowBlock.mCachedComponentData->mIsSolid) { return; }
+    if (belowBlock.isAir() || !belowBlock.mCachedComponentData->mIsSolid) {
+        return;
+    }
 
-    VariantParameterList params {};
+    VariantParameterList params{};
     params.mSelf   = &mMob;
     params.mTarget = (mMob.mLevel != nullptr && mMob.mTargetId->rawID != -1)
-                         ? mMob.mLevel->fetchEntity(mMob.mTargetId, false)
-                         : nullptr;
+                       ? mMob.mLevel->fetchEntity(mMob.mTargetId, false)
+                       : nullptr;
     params.mBlock  = &targetPos;
 
-    if (!definition.mRandomlyPlaceableBlocks->empty())
-    {
-        VariantParameterListConst constParams {};
+    if (!definition.mRandomlyPlaceableBlocks->empty()) {
+        VariantParameterListConst constParams{};
         constParams.mSelf    = params.mSelf;
         constParams.mOther   = params.mOther;
         constParams.mPlayer  = params.mPlayer;
@@ -78,9 +77,8 @@ void PlaceBlockGoal::tick()
         constParams.mHolder  = params.mHolder;
 
         auto const* randomBlock = _tryGetRandomPlaceBlock(constParams, random);
-        if (randomBlock != nullptr)
-        {
-            BlockChangeContext context {};
+        if (randomBlock != nullptr) {
+            BlockChangeContext context{};
             region.setBlock(targetPos, *randomBlock, 3, nullptr, context);
             region.postGameEvent(&mMob, GameEventRegistry::blockPlace(), targetPos, randomBlock);
             ActorDefinitionDescriptor::executeTrigger(mMob, definition.mOnPlace, params);
@@ -90,16 +88,19 @@ void PlaceBlockGoal::tick()
 
     auto const& carriedItem  = mMob.getCarriedItem();
     auto const* carriedBlock = carriedItem.mBlock;
-    if (carriedBlock != nullptr && carriedBlock->getBlockType().mayPlace(region, targetPos))
-    {
+    if (carriedBlock != nullptr && carriedBlock->getBlockType().mayPlace(region, targetPos)) {
         mMob.setCarriedItem(ItemStack::EMPTY_ITEM());
 
-        MobEquipmentPacket packet {
-            mMob.getRuntimeID(), ItemStack::EMPTY_ITEM(), 0, 0, ContainerID::Inventory,
+        MobEquipmentPacket packet{
+            mMob.getRuntimeID(),
+            ItemStack::EMPTY_ITEM(),
+            0,
+            0,
+            ContainerID::Inventory,
         };
         const_cast<Dimension&>(mMob.getDimensionConst()).sendPacketForEntity(mMob, packet, nullptr);
 
-        BlockChangeContext context {};
+        BlockChangeContext context{};
         region.setBlock(targetPos, *carriedBlock, 3, nullptr, context);
         region.postGameEvent(&mMob, GameEventRegistry::blockPlace(), targetPos, carriedBlock);
         ActorDefinitionDescriptor::executeTrigger(mMob, definition.mOnPlace, params);

@@ -8,18 +8,15 @@
 #include <mc/world/inventory/transaction/InventorySourceType.h>
 #include <mc/world/inventory/transaction/InventoryTransaction.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerDropItemBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["item"] = serializeRefObj(item());
 }
 ItemStack const& PlayerDropItemBeforeEvent::item() const { return mItem; }
 
-void PlayerDropItemAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerDropItemAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
     nbt["item"] = serializeRefObj(item());
 }
@@ -33,13 +30,16 @@ LL_TYPE_INSTANCE_HOOK(
     bool,
     ItemStack const& pItem,
     bool             pRandomly
-)
-{
+) {
     auto beforeEvent = PlayerDropItemBeforeEvent(*this, const_cast<ItemStack&>(pItem));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     auto result = origin(pItem, pRandomly);
-    if (result) { LLEventBus.publish(PlayerDropItemAfterEvent(*this, pItem)); }
+    if (result) {
+        LLEventBus.publish(PlayerDropItemAfterEvent(*this, pItem));
+    }
     return result;
 }
 
@@ -51,22 +51,23 @@ LL_TYPE_INSTANCE_HOOK(
     InventoryTransactionError,
     Player& pPlayer,
     bool    pIsSenderAuthority
-)
-{
-    if (mType != ComplexInventoryTransaction::Type::NormalTransaction)
-    {
+) {
+    if (mType != ComplexInventoryTransaction::Type::NormalTransaction) {
         return origin(pPlayer, pIsSenderAuthority);
     }
-    InventorySource source { InventorySourceType::ContainerInventory, ContainerID::Inventory };
+    InventorySource source{InventorySourceType::ContainerInventory, ContainerID::Inventory};
     auto&           actions = mTransaction->mActions->at(source);
-    if (actions.size() != 1) { return origin(pPlayer, pIsSenderAuthority); }
+    if (actions.size() != 1) {
+        return origin(pPlayer, pIsSenderAuthority);
+    }
     auto& item        = pPlayer.mInventory->mInventory->getItem(actions[0].mSlot);
     auto  beforeEvent = PlayerDropItemBeforeEvent(pPlayer, const_cast<ItemStack&>(item));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return InventoryTransactionError::AuthorityMismatch; }
+    if (beforeEvent.isCancelled()) {
+        return InventoryTransactionError::AuthorityMismatch;
+    }
     auto result = origin(pPlayer, pIsSenderAuthority);
-    if (result == InventoryTransactionError::NoError)
-    {
+    if (result == InventoryTransactionError::NoError) {
         LLEventBus.publish(PlayerDropItemAfterEvent(pPlayer, item));
     }
     return result;

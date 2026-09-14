@@ -7,10 +7,8 @@
 class Vec3;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
-{
-class ActorChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
-{
+namespace ila::mc::inline world::inline actor {
+class ActorChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     DimensionType const& mFromDimensionId;
     DimensionType&       mToDimensionId;
@@ -21,11 +19,9 @@ public:
         DimensionType const& fromDimensionId,
         DimensionType&       toDimensionId
     )
-        : Cancellable(actor)
-        , mFromDimensionId(fromDimensionId)
-        , mToDimensionId(toDimensionId)
-    {
-    }
+    : Cancellable(actor),
+      mFromDimensionId(fromDimensionId),
+      mToDimensionId(toDimensionId) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -34,8 +30,7 @@ public:
     ILNDAPI DimensionType&       toDimensionId() const;
 };
 
-class ActorChangeDimensionAfterEvent final : public ll::event::entity::ActorEvent
-{
+class ActorChangeDimensionAfterEvent final : public ll::event::entity::ActorEvent {
 protected:
     DimensionType const& mFromDimensionId;
     Vec3 const&          mFromPos;
@@ -48,12 +43,10 @@ public:
         Vec3 const&          fromPos,
         DimensionType const& toDimensionId
     )
-        : ActorEvent(actor)
-        , mFromDimensionId(fromDimensionId)
-        , mFromPos(fromPos)
-        , mToDimensionId(toDimensionId)
-    {
-    }
+    : ActorEvent(actor),
+      mFromDimensionId(fromDimensionId),
+      mFromPos(fromPos),
+      mToDimensionId(toDimensionId) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

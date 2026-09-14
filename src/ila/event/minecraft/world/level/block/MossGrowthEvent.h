@@ -8,21 +8,17 @@ class BlockPos;
 class Random;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class MossGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mPos;
     Random&   mRandom;
 
 public:
     constexpr explicit MossGrowthBeforeEvent(BlockSource& blockSource, BlockPos& pos, Random& random)
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mRandom(random) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -31,8 +27,7 @@ public:
     ILNDAPI Random&   random() const;
 };
 
-class MossGrowthAfterEvent final : public ll::event::WorldEvent
-{
+class MossGrowthAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const&          mPos;
     Random const&            mRandom;
@@ -45,12 +40,10 @@ public:
         Random const&            random,
         std::optional<BlockPos>& targetPos
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-        , mTargetPos(targetPos)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mRandom(random),
+      mTargetPos(targetPos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;

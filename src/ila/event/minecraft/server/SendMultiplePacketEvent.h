@@ -11,10 +11,8 @@ class ServerPlayer;
 struct NetworkIdentifierWithSubId;
 // clang-format on
 
-namespace ila::mc::inline server
-{
-class ISendMultiplePacketBeforeEvent : public ll::event::Cancellable<ll::event::Event>
-{
+namespace ila::mc::inline server {
+class ISendMultiplePacketBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
 private:
     NetworkSystem&                                 mNetworkSystem;
     Packet&                                        mPacket;
@@ -26,12 +24,10 @@ public:
         Packet&                                        packet,
         std::vector<NetworkIdentifierWithSubId> const& networkIdentifiers
     )
-        : Cancellable()
-        , mNetworkSystem(networkSystem)
-        , mPacket(packet)
-        , mNetworkIdentifiers(networkIdentifiers)
-    {
-    }
+    : Cancellable(),
+      mNetworkSystem(networkSystem),
+      mPacket(packet),
+      mNetworkIdentifiers(networkIdentifiers) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
@@ -41,24 +37,20 @@ public:
     ILNDAPI optional_ref<ServerPlayer> player(NetworkIdentifierWithSubId const& networkIdentifier) const;
 };
 
-template<std::derived_from<Packet> PacketType = Packet>
-class SendMultiplePacketBeforeEvent final : public ISendMultiplePacketBeforeEvent
-{
+template <std::derived_from<Packet> PacketType = Packet>
+class SendMultiplePacketBeforeEvent final : public ISendMultiplePacketBeforeEvent {
 public:
     constexpr explicit SendMultiplePacketBeforeEvent(
         NetworkSystem&                                 networkSystem,
         PacketType&                                    packet,
         std::vector<NetworkIdentifierWithSubId> const& networkIdentifiers
     )
-        : ISendMultiplePacketBeforeEvent(networkSystem, packet, networkIdentifiers)
-    {
-    }
+    : ISendMultiplePacketBeforeEvent(networkSystem, packet, networkIdentifiers) {}
 
     PacketType& packet() const { return static_cast<PacketType&>(ISendMultiplePacketBeforeEvent::packet()); }
 };
 
-class ISendMultiplePacketAfterEvent : public ll::event::Event
-{
+class ISendMultiplePacketAfterEvent : public ll::event::Event {
 private:
     NetworkSystem&                                 mNetworkSystem;
     Packet const&                                  mPacket;
@@ -70,12 +62,10 @@ public:
         Packet const&                                  packet,
         std::vector<NetworkIdentifierWithSubId> const& networkIdentifiers
     )
-        : Event()
-        , mNetworkSystem(networkSystem)
-        , mPacket(packet)
-        , mNetworkIdentifiers(networkIdentifiers)
-    {
-    }
+    : Event(),
+      mNetworkSystem(networkSystem),
+      mPacket(packet),
+      mNetworkIdentifiers(networkIdentifiers) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
@@ -85,22 +75,16 @@ public:
     ILNDAPI optional_ref<ServerPlayer> player(NetworkIdentifierWithSubId const& networkIdentifier) const;
 };
 
-template<std::derived_from<Packet> PacketType = Packet>
-class SendMultiplePacketAfterEvent final : public ISendMultiplePacketAfterEvent
-{
+template <std::derived_from<Packet> PacketType = Packet>
+class SendMultiplePacketAfterEvent final : public ISendMultiplePacketAfterEvent {
 public:
     constexpr explicit SendMultiplePacketAfterEvent(
         NetworkSystem&                                 networkSystem,
         PacketType const&                              packet,
         std::vector<NetworkIdentifierWithSubId> const& networkIdentifiers
     )
-        : ISendMultiplePacketAfterEvent(networkSystem, packet, networkIdentifiers)
-    {
-    }
+    : ISendMultiplePacketAfterEvent(networkSystem, packet, networkIdentifiers) {}
 
-    PacketType const& packet() const
-    {
-        return static_cast<PacketType const&>(ISendMultiplePacketAfterEvent::packet());
-    }
+    PacketType const& packet() const { return static_cast<PacketType const&>(ISendMultiplePacketAfterEvent::packet()); }
 };
 } // namespace ila::mc::inline server

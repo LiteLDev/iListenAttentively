@@ -21,21 +21,16 @@
 #include <mc/world/level/block/block_events/BlockRandomTickEvent.h>
 #include <mc/world/level/dimension/Dimension.h>
 
-template<>
-struct MutableActorGameplayEvent<void>
-{
-};
+template <>
+struct MutableActorGameplayEvent<void> {};
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void MobTakeBlockBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void MobTakeBlockBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
-void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -43,24 +38,22 @@ void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 }
 BlockPos& MobTakeBlockBeforeEvent::pos() const { return mPos; }
 
-void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const
-{
+void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
 BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
 
-bool BlockDescriptor_anyMatch(std::vector<BlockDescriptor> const& descriptors, Block const& block)
-{
-    for (auto& des : descriptors)
-    {
-        if (des.matches(block)) { return true; }
+bool BlockDescriptor_anyMatch(std::vector<BlockDescriptor> const& descriptors, Block const& block) {
+    for (auto& des : descriptors) {
+        if (des.matches(block)) {
+            return true;
+        }
     }
     return false;
 }
 
-LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void)
-{
+LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void) {
     using namespace ll::memory_literals;
     constexpr static auto ramdonPos = [](Random& random, int& value, IntRange& ranage) -> void {
         auto min = ranage.rangeMin, max = ranage.rangeMax;
@@ -68,7 +61,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
     };
 
     Random& random    = mMob.mLevel->getThreadRandom();
-    auto    targetPos = BlockPos { *mMob.mBuiltInComponents->mStateVectorComponent->mPos };
+    auto    targetPos = BlockPos{*mMob.mBuiltInComponents->mStateVectorComponent->mPos};
 
     ramdonPos(random, targetPos.x, mXZRange);
     ramdonPos(random, targetPos.y, mYRange);

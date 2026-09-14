@@ -4,18 +4,15 @@
 #include <mc/world/level/WorldBlockTarget.h>
 #include <mc/world/level/levelgen/feature/VegetationPatchFeature.h>
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void MossGrowthBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]    = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]  = getDimensionName(blockSource());
     nbt["random"] = serializeRefObj(random());
 }
-void MossGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void MossGrowthBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -24,19 +21,17 @@ void MossGrowthBeforeEvent::deserialize(CompoundTag const& nbt)
 BlockPos& MossGrowthBeforeEvent::pos() const { return mPos; };
 Random&   MossGrowthBeforeEvent::random() const { return mRandom; };
 
-void MossGrowthAfterEvent::serialize(CompoundTag& nbt) const
-{
+void MossGrowthAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["random"]    = serializeRefObj(random());
-    nbt["targetPos"] = ListTag { getTargetPos()->x, getTargetPos()->y, getTargetPos()->z };
+    nbt["targetPos"] = ListTag{getTargetPos()->x, getTargetPos()->y, getTargetPos()->z};
 }
-void MossGrowthAfterEvent::deserialize(CompoundTag const& nbt)
-{
+void MossGrowthAfterEvent::deserialize(CompoundTag const& nbt) {
     WorldEvent::deserialize(nbt);
     auto& pos      = nbt["targetPoss"].get<ListTag>();
-    getTargetPos() = { static_cast<int>(pos[0]), static_cast<int>(pos[1]), static_cast<int>(pos[2]) };
+    getTargetPos() = {static_cast<int>(pos[0]), static_cast<int>(pos[1]), static_cast<int>(pos[2])};
 }
 BlockPos const&          MossGrowthAfterEvent::pos() const { return mPos; };
 Random const&            MossGrowthAfterEvent::random() const { return mRandom; };
@@ -49,18 +44,16 @@ LL_TYPE_INSTANCE_HOOK(
     &VegetationPatchFeature::$place,
     std::optional<::BlockPos>,
     IFeature::PlacementContext const& context
-)
-{
+) {
     auto& region      = static_cast<WorldBlockTarget&>(context.mTarget).mBlockSource;
     auto  beforeEvent = MossGrowthBeforeEvent(region, const_cast<BlockPos&>(*context.mPos), context.mRandom);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return {}; }
+    if (beforeEvent.isCancelled()) {
+        return {};
+    }
     auto result = origin(context);
-    if (result)
-    {
-        LLEventBus.publish(
-            MossGrowthAfterEvent(region, const_cast<BlockPos&>(*context.mPos), context.mRandom, result)
-        );
+    if (result) {
+        LLEventBus.publish(MossGrowthAfterEvent(region, const_cast<BlockPos&>(*context.mPos), context.mRandom, result));
     }
     return result;
 }

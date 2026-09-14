@@ -2,10 +2,8 @@
 #include "ila/base/Gloabl.h"
 #include <ll/api/event/EventRefObjSerializer.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-void PlayerChangeSlotEvent::serialize(CompoundTag& pNbt) const
-{
+namespace ila::mc::inline world::inline actor::inline player {
+void PlayerChangeSlotEvent::serialize(CompoundTag& pNbt) const {
     Cancellable::serialize(pNbt);
     pNbt["container"]     = serializeRefObj(container());
     pNbt["slot"]          = slot();
@@ -31,11 +29,12 @@ LL_TYPE_INSTANCE_HOOK(
     ItemStack const& pOldItem,
     ItemStack const& pNewItem,
     bool             pForceBalanced
-)
-{
+) {
     auto pcse = PlayerChangeSlotEvent(*this, pContainer, pSlot, pOldItem, pNewItem, pForceBalanced);
     LLEventBus.publish(pcse);
-    if (pcse.isCancelled()) { return; }
+    if (pcse.isCancelled()) {
+        return;
+    }
     origin(pContainer, pSlot, pOldItem, pNewItem, pForceBalanced);
 }
 } // namespace ila::mc::inline world::inline actor::inline player

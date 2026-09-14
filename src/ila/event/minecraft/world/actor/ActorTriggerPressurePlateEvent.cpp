@@ -3,20 +3,17 @@
 #include <mc/world/level/BlockPos.h>
 #include <mc/world/level/block/BasePressurePlateBlock.h>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void ActorTriggerPressurePlateBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void ActorTriggerPressurePlateBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
 BlockPos const& ActorTriggerPressurePlateBeforeEvent::pos() const { return mPos; }
 
-void ActorTriggerPressurePlateAfterEvent::serialize(CompoundTag& nbt) const
-{
+void ActorTriggerPressurePlateAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
 BlockPos const& ActorTriggerPressurePlateAfterEvent::pos() const { return mPos; }
 
@@ -29,13 +26,16 @@ LL_TYPE_INSTANCE_HOOK(
     BlockSource&    pRegion,
     BlockPos const& pPos,
     Actor&          pActor
-)
-{
+) {
     auto before = ActorTriggerPressurePlateBeforeEvent(pActor, pPos);
     LLEventBus.publish(before);
-    if (before.isCancelled()) { return false; }
+    if (before.isCancelled()) {
+        return false;
+    }
     auto result = origin(pRegion, pPos, pActor);
-    if (result) { LLEventBus.publish(ActorTriggerPressurePlateAfterEvent(pActor, pPos)); }
+    if (result) {
+        LLEventBus.publish(ActorTriggerPressurePlateAfterEvent(pActor, pPos));
+    }
     return result;
 }
 

@@ -9,11 +9,8 @@
 // However, member variables such as the player"s dimension are not yet initialized at this stage.
 // You need to implement custom checks accordingly.
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerChangeGameTypeBeforeEvent final
-    : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerChangeGameTypeBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent> {
 protected:
     GameType const& mOldGameType;
     GameType&       mNewGameType;
@@ -24,11 +21,9 @@ public:
         GameType const& oldGameType,
         GameType&       newGameType
     )
-        : Cancellable(player)
-        , mOldGameType(oldGameType)
-        , mNewGameType(newGameType)
-    {
-    }
+    : Cancellable(player),
+      mOldGameType(oldGameType),
+      mNewGameType(newGameType) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -37,8 +32,7 @@ public:
     ILNDAPI GameType&       newGameType() const;
 };
 
-class PlayerChangeGameTypeAfterEvent final : public ll::event::player::ServerPlayerEvent
-{
+class PlayerChangeGameTypeAfterEvent final : public ll::event::player::ServerPlayerEvent {
 protected:
     GameType const& mOldGameType;
     GameType const& mNewGameType;
@@ -49,11 +43,9 @@ public:
         GameType const& oldGameType,
         GameType const& newGameType
     )
-        : ServerPlayerEvent(player)
-        , mOldGameType(oldGameType)
-        , mNewGameType(newGameType)
-    {
-    }
+    : ServerPlayerEvent(player),
+      mOldGameType(oldGameType),
+      mNewGameType(newGameType) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

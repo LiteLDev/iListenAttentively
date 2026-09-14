@@ -3,8 +3,7 @@
 #include <mc/world/level/ChunkPos.h>
 #include <mc/world/level/levelgen/structure/StructureFeature.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
-{
+namespace ila::mc::inline world::inline level::inline levelgen::inline structure {
 
 StructureFeatureChunkEvent::StructureFeatureChunkEvent(
     StructureFeature&                  feature,
@@ -16,27 +15,24 @@ StructureFeatureChunkEvent::StructureFeatureChunkEvent(
     Random&                            random,
     uint&                              levelSeed
 )
-    : Cancellable()
-    , mFeature(feature)
-    , mFeatureIdentifier(featureIdentifier)
-    , mPreliminarySurfaceLevel(preliminarySurfaceLevel)
-    , mBiomeSource(biomeSource)
-    , mDimension(dimension)
-    , mChunkPos(chunkPos)
-    , mRandom(random)
-    , mLevelSeed(levelSeed)
-{
-}
+: Cancellable(),
+  mFeature(feature),
+  mFeatureIdentifier(featureIdentifier),
+  mPreliminarySurfaceLevel(preliminarySurfaceLevel),
+  mBiomeSource(biomeSource),
+  mDimension(dimension),
+  mChunkPos(chunkPos),
+  mRandom(random),
+  mLevelSeed(levelSeed) {}
 
-void StructureFeatureChunkEvent::serialize(CompoundTag& nbt) const
-{
+void StructureFeatureChunkEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["structureFeature"]        = serializeRefObj(structureFeature());
     nbt["featureIdentifier"]       = featureIdentifier().getString();
     nbt["preliminarySurfaceLevel"] = serializeRefObj(preliminarySurfaceLevel());
     nbt["biomeSource"]             = serializeRefObj(biomeSource());
     nbt["dimension"]               = serializeRefObj(dimension());
-    nbt["chunkPos"]                = ListTag { chunkPos().x, chunkPos().y, chunkPos().z };
+    nbt["chunkPos"]                = ListTag{chunkPos().x, chunkPos().y, chunkPos().z};
     nbt["random"]                  = serializeRefObj(random());
     nbt["levelSeed"]               = levelSeed();
 }
@@ -45,8 +41,7 @@ StructureFeature& StructureFeatureChunkEvent::structureFeature() const { return 
 
 HashedString const& StructureFeatureChunkEvent::featureIdentifier() const { return mFeatureIdentifier; }
 
-IPreliminarySurfaceProvider const& StructureFeatureChunkEvent::preliminarySurfaceLevel() const
-{
+IPreliminarySurfaceProvider const& StructureFeatureChunkEvent::preliminarySurfaceLevel() const {
     return mPreliminarySurfaceLevel;
 }
 

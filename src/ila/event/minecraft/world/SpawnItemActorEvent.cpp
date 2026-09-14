@@ -4,20 +4,17 @@
 #include <mc/world/actor/item/ItemActor.h>
 #include <mc/world/level/BedrockSpawner.h>
 
-namespace ila::mc::inline world
-{
+namespace ila::mc::inline world {
 
-void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void SpawnItemActorBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(item());
     nbt["spawner"]   = serializeRefObj(spawner());
     nbt["throwTime"] = throwTime();
 }
-void SpawnItemActorBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void SpawnItemActorBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x     = nbt["pos"][0];
     pos().y     = nbt["pos"][1];
@@ -29,10 +26,9 @@ ItemStack& SpawnItemActorBeforeEvent::item() const { return mItem; }
 Actor*&    SpawnItemActorBeforeEvent::spawner() const { return mSpawner; }
 int&       SpawnItemActorBeforeEvent::throwTime() const { return mThrowTime; }
 
-void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const
-{
+void SpawnItemActorAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["item"]      = serializeRefObj(item());
     nbt["spawner"]   = serializeRefObj(spawner());
@@ -56,8 +52,7 @@ LL_TYPE_INSTANCE_HOOK(
     Actor*           pSpawner,
     Vec3 const&      pPos,
     int              pThrowTime
-)
-{
+) {
     auto beforeEvent = SpawnItemActorBeforeEvent(
         pRegion,
         const_cast<Vec3&>(pPos),
@@ -66,10 +61,11 @@ LL_TYPE_INSTANCE_HOOK(
         pThrowTime
     );
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return nullptr; }
+    if (beforeEvent.isCancelled()) {
+        return nullptr;
+    }
     auto* result = origin(pRegion, pItem, pSpawner, pPos, pThrowTime);
-    if (result != nullptr)
-    {
+    if (result != nullptr) {
         LLEventBus.publish(SpawnItemActorAfterEvent(pRegion, pPos, pItem, pSpawner, pThrowTime, *result));
     }
     return result;

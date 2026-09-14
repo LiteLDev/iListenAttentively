@@ -1,17 +1,14 @@
 #include "ila/event/minecraft/world/actor/player/PlayerStopSleepEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerStopSleepBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerStopSleepBeforeEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
     nbt["forcefulWakeUp"]  = forcefulWakeUp();
     nbt["updateLevelList"] = updateLevelList();
 }
-void PlayerStopSleepBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void PlayerStopSleepBeforeEvent::deserialize(CompoundTag const& nbt) {
     PlayerEvent::deserialize(nbt);
     forcefulWakeUp()  = nbt["forcefulWakeUp"];
     updateLevelList() = nbt["updateLevelList"];
@@ -19,8 +16,7 @@ void PlayerStopSleepBeforeEvent::deserialize(CompoundTag const& nbt)
 bool& PlayerStopSleepBeforeEvent::forcefulWakeUp() const { return mForcefulWakeUp; }
 bool& PlayerStopSleepBeforeEvent::updateLevelList() const { return mUpdateLevelList; }
 
-void PlayerStopSleepAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerStopSleepAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
     nbt["forcefulWakeUp"]  = forcefulWakeUp();
     nbt["updateLevelList"] = updateLevelList();
@@ -36,8 +32,7 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     bool forcefulWakeUp,
     bool updateLevelList
-)
-{
+) {
     LLEventBus.publish(PlayerStopSleepBeforeEvent(*this, forcefulWakeUp, updateLevelList));
     origin(forcefulWakeUp, updateLevelList);
     LLEventBus.publish(PlayerStopSleepAfterEvent(*this, forcefulWakeUp, updateLevelList));

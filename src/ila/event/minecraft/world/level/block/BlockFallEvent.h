@@ -9,10 +9,8 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class BlockFallBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class BlockFallBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos const& mPos;
     Block const&    mOldBlock;
@@ -25,12 +23,10 @@ public:
         Block const&    oldBlock,
         bool&           creative
     )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mOldBlock(oldBlock)
-        , mCreative(creative)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mOldBlock(oldBlock),
+      mCreative(creative) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -40,17 +36,14 @@ public:
     ILNDAPI bool&           creative() const;
 };
 
-class BlockFallAfterEvent final : public ll::event::ActorEvent
-{
+class BlockFallAfterEvent final : public ll::event::ActorEvent {
 protected:
     BlockPos const& mPos;
 
 public:
     constexpr explicit BlockFallAfterEvent(FallingBlockActor& actor, BlockPos const& pos)
-        : ActorEvent(actor)
-        , mPos(pos)
-    {
-    }
+    : ActorEvent(actor),
+      mPos(pos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

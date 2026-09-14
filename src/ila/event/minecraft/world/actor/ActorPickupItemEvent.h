@@ -7,36 +7,29 @@
 class ItemActor;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
-{
-class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
-{
+namespace ila::mc::inline world::inline actor {
+class ActorPickupItemBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     ItemActor& mItemActor;
 
 public:
     constexpr explicit ActorPickupItemBeforeEvent(Actor& actor, ItemActor& itemActor)
-        : Cancellable(actor)
-        , mItemActor(itemActor)
-    {
-    }
+    : Cancellable(actor),
+      mItemActor(itemActor) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
     ILNDAPI ItemActor& itemActor() const;
 };
 
-class ActorPickupItemAfterEvent final : public ll::event::entity::ActorEvent
-{
+class ActorPickupItemAfterEvent final : public ll::event::entity::ActorEvent {
 protected:
     ItemActor const& mItemActor;
 
 public:
     constexpr explicit ActorPickupItemAfterEvent(Actor& actor, ItemActor const& itemActor)
-        : ActorEvent(actor)
-        , mItemActor(itemActor)
-    {
-    }
+    : ActorEvent(actor),
+      mItemActor(itemActor) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

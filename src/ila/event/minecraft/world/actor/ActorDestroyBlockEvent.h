@@ -7,19 +7,13 @@
 class Vec3;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
-{
-class ActorDestroyBlockEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent>
-{
+namespace ila::mc::inline world::inline actor {
+class ActorDestroyBlockEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     Vec3 const& mPos;
 
 public:
-    constexpr explicit ActorDestroyBlockEvent(Actor& actor, Vec3 const& pos)
-        : Cancellable(actor)
-        , mPos(pos)
-    {
-    }
+    constexpr explicit ActorDestroyBlockEvent(Actor& actor, Vec3 const& pos) : Cancellable(actor), mPos(pos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

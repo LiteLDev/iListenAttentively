@@ -8,13 +8,11 @@
 #include <mc/world/events/ActorGriefingBlockEvent.h>
 #include <mc/world/events/EventCoordinatorPimpl.h>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void ActorDestroyBlockEvent::serialize(CompoundTag& nbt) const
-{
+void ActorDestroyBlockEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"] = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
 Vec3 const& ActorDestroyBlockEvent::pos() const { return mPos; }
 
@@ -27,27 +25,21 @@ LL_TYPE_INSTANCE_HOOK(
     ActorGameplayHandler*                        handler,
     ActorGameplayEvent<CoordinatorResult> const& event
 )
-try
-{
+try {
     return event.visit([&](auto&& arg) {
         using T = std::decay_t<decltype(arg)>;
-        if constexpr (std::is_same_v<T, Details::ValueOrRef<ActorGriefingBlockEvent const>>)
-        {
+        if constexpr (std::is_same_v<T, Details::ValueOrRef<ActorGriefingBlockEvent const>>) {
             ActorGriefingBlockEvent const& griefingEvent = arg.value();
-            auto                           beforeEvent =
-                ActorDestroyBlockEvent(griefingEvent.mActorContext->tryUnwrap(), griefingEvent.mPos);
+            auto beforeEvent = ActorDestroyBlockEvent(griefingEvent.mActorContext->tryUnwrap(), griefingEvent.mPos);
             LLEventBus.publish(beforeEvent);
-            if (beforeEvent.isCancelled())
-            {
+            if (beforeEvent.isCancelled()) {
                 origin(handler, event);
                 return CoordinatorResult::Cancel;
             }
         }
         return origin(handler, event);
     });
-}
-catch (...)
-{
+} catch (...) {
     return origin(handler, event);
 }
 

@@ -14,11 +14,9 @@ class Random;
 class StructureFeature;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline structure
-{
+namespace ila::mc::inline world::inline level::inline levelgen::inline structure {
 
-class StructureFeatureChunkEvent final : public ll::event::Cancellable<StructureEvent>
-{
+class StructureFeatureChunkEvent final : public ll::event::Cancellable<StructureEvent> {
 protected:
     StructureFeature&                  mFeature;
     HashedString const&                mFeatureIdentifier;

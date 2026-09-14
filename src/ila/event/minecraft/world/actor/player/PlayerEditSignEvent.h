@@ -8,10 +8,8 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerEditSignBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerEditSignBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent> {
 protected:
     BlockPos&           mPos;
     std::string&        mText;
@@ -24,12 +22,10 @@ public:
         std::string&        text,
         SignTextSide const& textSide
     )
-        : Cancellable(player)
-        , mPos(pos)
-        , mText(text)
-        , mTextSide(textSide)
-    {
-    }
+    : Cancellable(player),
+      mPos(pos),
+      mText(text),
+      mTextSide(textSide) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -39,8 +35,7 @@ public:
     ILNDAPI SignTextSide const& textSide() const;
 };
 
-class PlayerEditSignAfterEvent final : public ll::event::player::ServerPlayerEvent
-{
+class PlayerEditSignAfterEvent final : public ll::event::player::ServerPlayerEvent {
 protected:
     BlockPos const&     mPos;
     std::string const&  mText;
@@ -53,12 +48,10 @@ public:
         std::string const&  text,
         SignTextSide const& textSide
     )
-        : ServerPlayerEvent(player)
-        , mPos(pos)
-        , mText(text)
-        , mTextSide(textSide)
-    {
-    }
+    : ServerPlayerEvent(player),
+      mPos(pos),
+      mText(text),
+      mTextSide(textSide) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

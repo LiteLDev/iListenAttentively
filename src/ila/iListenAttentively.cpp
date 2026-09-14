@@ -23,17 +23,14 @@
 #include <utility>
 #include <vector>
 
-namespace ila
-{
+namespace ila {
 
-iListenAttentively& iListenAttentively::getInstance()
-{
+iListenAttentively& iListenAttentively::getInstance() {
     static iListenAttentively instance;
     return instance;
 }
 
-bool iListenAttentively::load()
-{
+bool iListenAttentively::load() {
     getSelf().getLogger().setFormatter(
         ll::makePolymorphic<RandomColorLogFormatter>(
             "{3:.3%T.} {2} {1} {0}",
@@ -49,8 +46,7 @@ bool iListenAttentively::enable() { return true; }
 
 bool iListenAttentively::disable() { return true; }
 
-void iListenAttentively::printLogo() const
-{
+void iListenAttentively::printLogo() const {
     std::vector<std::string> output = {
         R"(    ___   _          _       )",
         R"(   |_ _| | |        / \      )",
@@ -62,21 +58,21 @@ void iListenAttentively::printLogo() const
         fmt::format("Author: {0}", "MiracleForest")
     };
     auto center = std::ranges::max_element(output, {}, &std::string::size)->size();
-    for (auto& line : output) { getSelf().getLogger().info(fmt::format("{0:^{1}}", line, center)); }
+    for (auto& line : output) {
+        getSelf().getLogger().info(fmt::format("{0:^{1}}", line, center));
+    }
 }
 
-void nextTick(std::function<void()> const& func)
-{
+void nextTick(std::function<void()> const& func) {
     ll::thread::ServerThreadExecutor::getDefault().executeAfter(
-        [func { func }]() -> void { func(); },
+        [func{func}]() -> void { func(); },
         std::chrono::duration<int64, std::ratio<1, 20>>(1)
     );
 }
 
 std::string getDimensionName(Dimension& dimension) { return dimension.mName; }
 std::string getDimensionName(BlockSource& region) { return getDimensionName(region.getDimension()); }
-std::string getDimensionName(DimensionType const& dimId)
-{
+std::string getDimensionName(DimensionType const& dimId) {
     return getDimensionName(*ll::service::getLevel()->getOrCreateDimension(dimId).lock());
 }
 DimensionType getDimensionId(std::string const& dimName) { return VanillaDimensions::fromString(dimName); }

@@ -3,17 +3,14 @@
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/gamemode/InteractionResult.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerInteractEntityBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerInteractEntityBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["target"] = serializeRefObj(target());
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]    = ListTag{pos().x, pos().y, pos().z};
 }
-void PlayerInteractEntityBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void PlayerInteractEntityBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -22,11 +19,10 @@ void PlayerInteractEntityBeforeEvent::deserialize(CompoundTag const& nbt)
 Actor& PlayerInteractEntityBeforeEvent::target() const { return mTarget; }
 Vec3&  PlayerInteractEntityBeforeEvent::pos() const { return mPos; }
 
-void PlayerInteractEntityAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerInteractEntityAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
     nbt["target"] = serializeRefObj(target());
-    nbt["pos"]    = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]    = ListTag{pos().x, pos().y, pos().z};
 }
 Actor const& PlayerInteractEntityAfterEvent::target() const { return mTarget; }
 Vec3 const&  PlayerInteractEntityAfterEvent::pos() const { return mPos; }
@@ -39,13 +35,16 @@ LL_TYPE_INSTANCE_HOOK(
     InteractionResult,
     Actor&      pActor,
     Vec3 const& pLocation
-)
-{
+) {
     auto beforeEvent = PlayerInteractEntityBeforeEvent(*this, pActor, const_cast<Vec3&>(pLocation));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return InteractionResult { false, false }; }
+    if (beforeEvent.isCancelled()) {
+        return InteractionResult{false, false};
+    }
     auto result = origin(pActor, pLocation);
-    if (result.mSuccess) { LLEventBus.publish(PlayerInteractEntityAfterEvent(*this, pActor, pLocation)); }
+    if (result.mSuccess) {
+        LLEventBus.publish(PlayerInteractEntityAfterEvent(*this, pActor, pLocation));
+    }
     return result;
 }
 

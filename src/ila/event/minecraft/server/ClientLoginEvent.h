@@ -10,11 +10,9 @@ class ServerNetworkHandler;
 class NetworkIdentifier;
 // clang-format on
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-class ClientLoginBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
-{
+class ClientLoginBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     ServerNetworkHandler&    mServerNetworkHandler;
     NetworkIdentifier const& mNetworkIdentifier;
@@ -24,11 +22,9 @@ public:
         ServerNetworkHandler&    serverNetworkHandler,
         NetworkIdentifier const& networkIdentifier
     )
-        : Cancellable()
-        , mServerNetworkHandler(serverNetworkHandler)
-        , mNetworkIdentifier(networkIdentifier)
-    {
-    }
+    : Cancellable(),
+      mServerNetworkHandler(serverNetworkHandler),
+      mNetworkIdentifier(networkIdentifier) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
@@ -36,8 +32,7 @@ public:
     ILNDAPI NetworkIdentifier const& networkIdentifier() const;
 };
 
-class ClientLoginAfterEvent final : public ll::event::Event
-{
+class ClientLoginAfterEvent final : public ll::event::Event {
 protected:
     ServerNetworkHandler&                    mServerNetworkHandler;
     NetworkIdentifier const&                 mNetworkIdentifier;
@@ -59,16 +54,14 @@ public:
         std::string const&                       ipAndPort,
         std::optional<std::vector<std::string>>& kickReasons
     )
-        : mServerNetworkHandler(serverNetworkHandler)
-        , mNetworkIdentifier(networkIdentifier)
-        , mUuid(uuid)
-        , mServerAuthXuid(serverAuthXuid)
-        , mClientAuthXuid(clientAuthXuid)
-        , mRealName(realName)
-        , mIpAndPort(ipAndPort)
-        , mKickReasons(kickReasons)
-    {
-    }
+    : mServerNetworkHandler(serverNetworkHandler),
+      mNetworkIdentifier(networkIdentifier),
+      mUuid(uuid),
+      mServerAuthXuid(serverAuthXuid),
+      mClientAuthXuid(clientAuthXuid),
+      mRealName(realName),
+      mIpAndPort(ipAndPort),
+      mKickReasons(kickReasons) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

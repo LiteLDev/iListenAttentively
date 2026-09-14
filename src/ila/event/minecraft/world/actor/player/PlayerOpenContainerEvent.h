@@ -7,11 +7,8 @@ class BlockPos;
 struct ActorUniqueID;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerOpenContainerBeforeEvent final
-    : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerOpenContainerBeforeEvent final : public ll::event::Cancellable<ll::event::player::ServerPlayerEvent> {
 protected:
     BlockPos&                           mPos;
     ContainerID&                        mContainerId;
@@ -26,13 +23,11 @@ public:
         SharedTypes::Legacy::ContainerType& containerType,
         ActorUniqueID&                      containerActorId
     )
-        : Cancellable(player)
-        , mPos(pos)
-        , mContainerId(containerId)
-        , mContainerType(containerType)
-        , mContainerActorId(containerActorId)
-    {
-    }
+    : Cancellable(player),
+      mPos(pos),
+      mContainerId(containerId),
+      mContainerType(containerType),
+      mContainerActorId(containerActorId) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -43,8 +38,7 @@ public:
     ILNDAPI ActorUniqueID&                      containerActorId() const;
 };
 
-class PlayerOpenContainerAfterEvent final : public ll::event::player::ServerPlayerEvent
-{
+class PlayerOpenContainerAfterEvent final : public ll::event::player::ServerPlayerEvent {
 protected:
     BlockPos const&                           mPos;
     ContainerID const&                        mContainerId;
@@ -59,13 +53,11 @@ public:
         SharedTypes::Legacy::ContainerType const& containerType,
         ActorUniqueID const&                      containerActorId
     )
-        : ServerPlayerEvent(player)
-        , mPos(pos)
-        , mContainerId(containerId)
-        , mContainerType(containerType)
-        , mContainerActorId(containerActorId)
-    {
-    }
+    : ServerPlayerEvent(player),
+      mPos(pos),
+      mContainerId(containerId),
+      mContainerType(containerType),
+      mContainerActorId(containerActorId) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

@@ -7,21 +7,13 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-namespace PlayerOperatedItemFrameEvent
-{
-    enum class Type
-    {
-        Place,
-        Take,
-        Rotate
-    };
+namespace PlayerOperatedItemFrameEvent {
+enum class Type { Place, Take, Rotate };
 }; // namespace PlayerOperatedItemFrameEvent
 
-class PlayerOperatedItemFrameBeforeEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
-{
+class PlayerOperatedItemFrameBeforeEvent final : public ll::event::Cancellable<ll::event::PlayerEvent> {
 public:
     using Type = PlayerOperatedItemFrameEvent::Type;
 
@@ -35,11 +27,9 @@ public:
         BlockPos const&                    blockPos,
         PlayerOperatedItemFrameEvent::Type type
     )
-        : Cancellable(player)
-        , mBlockPos(blockPos)
-        , mType(type)
-    {
-    }
+    : Cancellable(player),
+      mBlockPos(blockPos),
+      mType(type) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
@@ -47,8 +37,7 @@ public:
     ILNDAPI PlayerOperatedItemFrameEvent::Type const& type() const;
 };
 
-class PlayerOperatedItemFrameAfterEvent final : public ll::event::PlayerEvent
-{
+class PlayerOperatedItemFrameAfterEvent final : public ll::event::PlayerEvent {
 public:
     using Type = PlayerOperatedItemFrameEvent::Type;
 
@@ -62,11 +51,9 @@ public:
         BlockPos const&                           blockPos,
         PlayerOperatedItemFrameEvent::Type const& type
     )
-        : PlayerEvent(player)
-        , mBlockPos(blockPos)
-        , mType(type)
-    {
-    }
+    : PlayerEvent(player),
+      mBlockPos(blockPos),
+      mType(type) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

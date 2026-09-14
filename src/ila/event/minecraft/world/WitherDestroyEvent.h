@@ -8,28 +8,19 @@ class Level;
 class AABB;
 // clang-format on
 
-namespace ila::mc::inline world
-{
-class WitherDestroyBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world {
+class WitherDestroyBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     Level& mLevel;
     AABB&  mBox;
     int&   mRadius;
 
 public:
-    constexpr explicit WitherDestroyBeforeEvent(
-        BlockSource& blockSource,
-        Level&       level,
-        AABB&        box,
-        int&         radius
-    )
-        : Cancellable(blockSource)
-        , mLevel(level)
-        , mBox(box)
-        , mRadius(radius)
-    {
-    }
+    constexpr explicit WitherDestroyBeforeEvent(BlockSource& blockSource, Level& level, AABB& box, int& radius)
+    : Cancellable(blockSource),
+      mLevel(level),
+      mBox(box),
+      mRadius(radius) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -39,8 +30,7 @@ public:
     ILNDAPI int&   radius() const;
 };
 
-class WitherDestroyAfterEvent final : public ll::event::WorldEvent
-{
+class WitherDestroyAfterEvent final : public ll::event::WorldEvent {
 protected:
     Level&      mLevel;
     AABB const& mBox;
@@ -53,12 +43,10 @@ public:
         AABB const&  box,
         int const&   radius
     )
-        : WorldEvent(blockSource)
-        , mLevel(level)
-        , mBox(box)
-        , mRadius(radius)
-    {
-    }
+    : WorldEvent(blockSource),
+      mLevel(level),
+      mBox(box),
+      mRadius(radius) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

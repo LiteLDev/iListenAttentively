@@ -3,36 +3,29 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/WorldEvent.h>
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
-{
-class BlockActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block::inline actor {
+class BlockActorTickBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockActor& mBlockActor;
 
 public:
     constexpr explicit BlockActorTickBeforeEvent(BlockSource& blockSource, BlockActor& blockActor)
-        : Cancellable(blockSource)
-        , mBlockActor(blockActor)
-    {
-    }
+    : Cancellable(blockSource),
+      mBlockActor(blockActor) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
     ILNDAPI BlockActor& blockActor() const;
 };
 
-class BlockActorTickAfterEvent final : public ll::event::WorldEvent
-{
+class BlockActorTickAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockActor& mBlockActor;
 
 public:
     constexpr explicit BlockActorTickAfterEvent(BlockSource& blockSource, BlockActor& blockActor)
-        : WorldEvent(blockSource)
-        , mBlockActor(blockActor)
-    {
-    }
+    : WorldEvent(blockSource),
+      mBlockActor(blockActor) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

@@ -7,21 +7,17 @@
 class Vec3;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerInteractEntityBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerInteractEntityBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     Actor& mTarget;
     Vec3&  mPos;
 
 public:
     constexpr explicit PlayerInteractEntityBeforeEvent(Player& player, Actor& target, Vec3& pos)
-        : Cancellable(player)
-        , mTarget(target)
-        , mPos(pos)
-    {
-    }
+    : Cancellable(player),
+      mTarget(target),
+      mPos(pos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -30,19 +26,16 @@ public:
     ILAPI Vec3&  pos() const;
 };
 
-class PlayerInteractEntityAfterEvent final : public ll::event::player::PlayerEvent
-{
+class PlayerInteractEntityAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     Actor const& mTarget;
     Vec3 const&  mPos;
 
 public:
     constexpr explicit PlayerInteractEntityAfterEvent(Player& player, Actor const& target, Vec3 const& pos)
-        : PlayerEvent(player)
-        , mTarget(target)
-        , mPos(pos)
-    {
-    }
+    : PlayerEvent(player),
+      mTarget(target),
+      mPos(pos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

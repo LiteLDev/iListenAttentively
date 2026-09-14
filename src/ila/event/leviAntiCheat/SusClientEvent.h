@@ -6,26 +6,18 @@
 namespace mce { class UUID; }
 // clang-format on
 
-namespace ila::lac
-{
-class SusClientEvent final : public ll::event::Cancellable<ll::event::Event>
-{
+namespace ila::lac {
+class SusClientEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     mce::UUID const&        mUuid;
     std::string_view const& mName;
     std::string_view const& mIp;
 
 public:
-    constexpr explicit SusClientEvent(
-        mce::UUID const&        uuid,
-        std::string_view const& name,
-        std::string_view const& ip
-    )
-        : mUuid(uuid)
-        , mName(name)
-        , mIp(ip)
-    {
-    }
+    constexpr explicit SusClientEvent(mce::UUID const& uuid, std::string_view const& name, std::string_view const& ip)
+    : mUuid(uuid),
+      mName(name),
+      mIp(ip) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

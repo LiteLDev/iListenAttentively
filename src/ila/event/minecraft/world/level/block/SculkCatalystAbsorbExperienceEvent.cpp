@@ -2,11 +2,9 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/events/gameevents/GameEventContext.h>
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["actor"]      = serializeRefObj(actor());
@@ -14,8 +12,7 @@ void SculkCatalystAbsorbExperienceBeforeEvent::serialize(CompoundTag& nbt) const
 SculkCatalystBlockActor& SculkCatalystAbsorbExperienceBeforeEvent::blockActor() const { return mBlockActor; };
 Actor&                   SculkCatalystAbsorbExperienceBeforeEvent::actor() const { return mActor; };
 
-void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const
-{
+void SculkCatalystAbsorbExperienceAfterEvent::serialize(CompoundTag& nbt) const {
     LevelEvent::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["actor"]      = serializeRefObj(actor());
@@ -32,18 +29,16 @@ LL_TYPE_INSTANCE_HOOK(
     GameEvent const&        gameEvent,
     GameEventContext const& gameEventContext,
     BlockSource&            region
-)
-{
-    if (Actor* const actor = gameEventContext.mSource)
-    {
+) {
+    if (Actor* const actor = gameEventContext.mSource) {
         auto beforeEvent = SculkCatalystAbsorbExperienceBeforeEvent(region.getLevel(), *this, *actor);
         LLEventBus.publish(beforeEvent);
-        if (beforeEvent.isCancelled()) { return; }
+        if (beforeEvent.isCancelled()) {
+            return;
+        }
         origin(gameEvent, gameEventContext, region);
         LLEventBus.publish(SculkCatalystAbsorbExperienceAfterEvent(region.getLevel(), *this, *actor));
-    }
-    else
-    {
+    } else {
         origin(gameEvent, gameEventContext, region);
     }
 }

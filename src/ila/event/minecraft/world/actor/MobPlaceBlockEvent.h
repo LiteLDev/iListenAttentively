@@ -7,21 +7,17 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor
-{
-class MobPlaceBlockBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent>
-{
+namespace ila::mc::inline world::inline actor {
+class MobPlaceBlockBeforeEvent final : public ll::event::Cancellable<ll::event::entity::MobEvent> {
 protected:
     BlockPos&    mPos;
     Block const* mBlock;
 
 public:
     constexpr explicit MobPlaceBlockBeforeEvent(Mob& mob, BlockPos& pos, Block const* block)
-        : Cancellable(mob)
-        , mPos(pos)
-        , mBlock(block)
-    {
-    }
+    : Cancellable(mob),
+      mPos(pos),
+      mBlock(block) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -30,19 +26,16 @@ public:
     ILNDAPI Block const* block() const;
 };
 
-class MobPlaceBlockAfterEvent final : public ll::event::entity::MobEvent
-{
+class MobPlaceBlockAfterEvent final : public ll::event::entity::MobEvent {
 protected:
     BlockPos&    mPos;
     Block const* mBlock;
 
 public:
     constexpr explicit MobPlaceBlockAfterEvent(Mob& mob, BlockPos& pos, Block const* block)
-        : MobEvent(mob)
-        , mPos(pos)
-        , mBlock(block)
-    {
-    }
+    : MobEvent(mob),
+      mPos(pos),
+      mBlock(block) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

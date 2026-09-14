@@ -2,18 +2,15 @@
 #include "ila/base/Macro.h"
 #include <ll/api/event/Cancellable.h>
 
-namespace ila::legacyMoney
-{
-enum class LLMoneyEventType
-{
+namespace ila::legacyMoney {
+enum class LLMoneyEventType {
     Set    = 0x0,
     Add    = 0x1,
     Reduce = 0x2,
     Trans  = 0x3,
 };
 
-class MoneyChangeBeforeEvent final : public ll::event::Cancellable<ll::event::Event>
-{
+class MoneyChangeBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     LLMoneyEventType const& mType;
     std::string&            mFromXuid;
@@ -27,13 +24,11 @@ public:
         std::string&            toXuid,
         llong&                  value
     )
-        : Cancellable()
-        , mType(type)
-        , mFromXuid(fromXuid)
-        , mToXuid(toXuid)
-        , mValue(value)
-    {
-    }
+    : Cancellable(),
+      mType(type),
+      mFromXuid(fromXuid),
+      mToXuid(toXuid),
+      mValue(value) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -44,8 +39,7 @@ public:
     ILNDAPI llong&       value() const;
 }; // class MoneyChangEvent
 
-class MoneyChangeAfterEvent final : public ll::event::Event
-{
+class MoneyChangeAfterEvent final : public ll::event::Event {
 protected:
     LLMoneyEventType const& mType;
     std::string const&      mFromXuid;
@@ -59,12 +53,10 @@ public:
         std::string const&      toXuid,
         llong const&            value
     )
-        : mType(type)
-        , mFromXuid(fromXuid)
-        , mToXuid(toXuid)
-        , mValue(value)
-    {
-    }
+    : mType(type),
+      mFromXuid(fromXuid),
+      mToXuid(toXuid),
+      mValue(value) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

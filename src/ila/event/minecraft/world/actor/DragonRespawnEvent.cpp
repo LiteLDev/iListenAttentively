@@ -5,8 +5,7 @@
 #include <mc/world/level/Level.h>
 #include <mc/world/level/dimension/end/EndDragonFight.h>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
 LL_TYPE_INSTANCE_HOOK(
     DragonRespawnEventHook,
@@ -14,21 +13,18 @@ LL_TYPE_INSTANCE_HOOK(
     EndDragonFight,
     &EndDragonFight::_createNewDragon,
     void,
-)
-{
-    if (mPreviouslyKilled)
-    {
+) {
+    if (mPreviouslyKilled) {
         auto beforeEvent = DragonRespawnBeforeEvent();
         LLEventBus.publish(beforeEvent);
-        if (beforeEvent.isCancelled()) { return; }
+        if (beforeEvent.isCancelled()) {
+            return;
+        }
         origin();
-        if (auto* dragon = ll::service::getLevel()->fetchEntity(mDragonUUID, false))
-        {
+        if (auto* dragon = ll::service::getLevel()->fetchEntity(mDragonUUID, false)) {
             LLEventBus.publish(DragonRespawnAfterEvent(static_cast<EnderDragon&>(*dragon)));
         }
-    }
-    else
-    {
+    } else {
         origin();
     }
 }

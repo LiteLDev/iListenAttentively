@@ -6,11 +6,9 @@
 #include <mc/deps/raknet/RNS2_Windows.h>
 #include <mc/deps/raknet/SystemAddress.h>
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-void ServerPongBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void ServerPongBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["motd"]            = motd();
     nbt["protocolVersion"] = protocolVersion();
@@ -22,12 +20,13 @@ void ServerPongBeforeEvent::serialize(CompoundTag& nbt) const
     nbt["gameMode"]        = magic_enum::enum_name(gameMode());
     nbt["localPort"]       = localPort();
     nbt["localPortV6"]     = localPortV6();
-    nbt["others"]          = ListTag {};
-    for (auto& item : other()) { nbt["others"].push_back(item); }
+    nbt["others"]          = ListTag{};
+    for (auto& item : other()) {
+        nbt["others"].push_back(item);
+    }
     nbt["ipAndPort"] = ipAndPort();
 }
-void ServerPongBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void ServerPongBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     motd()            = nbt["motd"];
     protocolVersion() = nbt["protocolVersion"];
@@ -36,11 +35,13 @@ void ServerPongBeforeEvent::deserialize(CompoundTag const& nbt)
     maxPlayerCount()  = nbt["maxPlayerCount"];
     guid()            = nbt["guid"];
     levelName()       = nbt["levelName"];
-    gameMode()    = magic_enum::enum_cast<GameType>(nbt["gameMode"].get<StringTag>()).value_or(gameMode());
-    localPort()   = nbt["localPort"];
-    localPortV6() = nbt["localPortV6"];
+    gameMode()        = magic_enum::enum_cast<GameType>(nbt["gameMode"].get<StringTag>()).value_or(gameMode());
+    localPort()       = nbt["localPort"];
+    localPortV6()     = nbt["localPortV6"];
     other().clear();
-    for (auto& item : nbt["others"].get<ListTag>()) { other().push_back(item); }
+    for (auto& item : nbt["others"].get<ListTag>()) {
+        other().push_back(item);
+    }
 }
 std::string&              ServerPongBeforeEvent::motd() const { return mMotd; }
 int&                      ServerPongBeforeEvent::protocolVersion() const { return mProtocolVersion; }
@@ -54,19 +55,16 @@ ushort&                   ServerPongBeforeEvent::localPort() const { return mLoc
 ushort&                   ServerPongBeforeEvent::localPortV6() const { return mLocalPortV6; }
 std::vector<std::string>& ServerPongBeforeEvent::other() const { return mOther; }
 std::string const&        ServerPongBeforeEvent::ipAndPort() const { return mIpAndPort; }
-std::string               ServerPongBeforeEvent::ip() const
-{
+std::string               ServerPongBeforeEvent::ip() const {
     auto address = ipAndPort();
     return address.substr(0, address.find('|'));
 }
-ushort ServerPongBeforeEvent::port() const
-{
+ushort ServerPongBeforeEvent::port() const {
     auto address = ipAndPort();
     return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
 }
 
-void ServerPongAfterEvent::serialize(CompoundTag& nbt) const
-{
+void ServerPongAfterEvent::serialize(CompoundTag& nbt) const {
     Event::serialize(nbt);
     nbt["motd"]            = motd();
     nbt["protocolVersion"] = protocolVersion();
@@ -78,8 +76,10 @@ void ServerPongAfterEvent::serialize(CompoundTag& nbt) const
     nbt["gameMode"]        = magic_enum::enum_name(gameMode());
     nbt["localPort"]       = localPort();
     nbt["localPortV6"]     = localPortV6();
-    nbt["others"]          = ListTag {};
-    for (auto& item : other()) { nbt["others"].push_back(item); }
+    nbt["others"]          = ListTag{};
+    for (auto& item : other()) {
+        nbt["others"].push_back(item);
+    }
     nbt["ipAndPort"] = ipAndPort();
 }
 std::string const&              ServerPongAfterEvent::motd() const { return mMotd; }
@@ -94,13 +94,11 @@ ushort const&                   ServerPongAfterEvent::localPort() const { return
 ushort const&                   ServerPongAfterEvent::localPortV6() const { return mLocalPortV6; }
 std::vector<std::string> const& ServerPongAfterEvent::other() const { return mOther; }
 std::string const&              ServerPongAfterEvent::ipAndPort() const { return mIpAndPort; }
-std::string                     ServerPongAfterEvent::ip() const
-{
+std::string                     ServerPongAfterEvent::ip() const {
     auto address = ipAndPort();
     return address.substr(0, address.find('|'));
 }
-ushort ServerPongAfterEvent::port() const
-{
+ushort ServerPongAfterEvent::port() const {
     auto address = ipAndPort();
     return *ll::string_utils::svtous(address.substr(address.find('|') + 1));
 }
@@ -115,34 +113,40 @@ LL_TYPE_INSTANCE_HOOK(
     char const*                  pFile,
     uint                         pLine
 )
-try
-{
-    if (pSendParameters->data[0] != 28) { return origin(pSendParameters, pFile, pLine); }
+try {
+    if (pSendParameters->data[0] != 28) {
+        return origin(pSendParameters, pFile, pLine);
+    }
     constexpr static int head_size = sizeof(int8) + sizeof(uint64) + sizeof(uint64) + 16;
     auto*                data      = pSendParameters->data;
     size_t               strlen    = data[head_size] << 8 | data[head_size + 1];
-    if (static_cast<int>(strlen) != pSendParameters->length - (head_size + 2))
-    {
+    if (static_cast<int>(strlen) != pSendParameters->length - (head_size + 2)) {
         return origin(pSendParameters, pFile, pLine);
     }
-    std::istringstream       iss(std::string({ data + head_size + 2, strlen }));
+    std::istringstream       iss(std::string({data + head_size + 2, strlen}));
     std::string              tmp;
     std::vector<std::string> parts;
-    while (std::getline(iss, tmp, ';')) { parts.push_back(tmp); }
-    if (parts.size() < 13) { return origin(pSendParameters, pFile, pLine); }
+    while (std::getline(iss, tmp, ';')) {
+        parts.push_back(tmp);
+    }
+    if (parts.size() < 13) {
+        return origin(pSendParameters, pFile, pLine);
+    }
 
-    auto motd            = parts[1];
-    auto protocolVersion = std::stoi(parts[2]);
-    auto networkVersion  = parts[3];
-    auto playerCount     = std::stoi(parts[4]);
-    auto maxPlayerCount  = std::stoi(parts[5]);
-    auto guid            = parts[6];
-    auto levelName       = parts[7];
-    auto gameType        = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
-    auto localPort       = static_cast<ushort>(std::stoi(parts[10]));
-    auto localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
+    auto                     motd            = parts[1];
+    auto                     protocolVersion = std::stoi(parts[2]);
+    auto                     networkVersion  = parts[3];
+    auto                     playerCount     = std::stoi(parts[4]);
+    auto                     maxPlayerCount  = std::stoi(parts[5]);
+    auto                     guid            = parts[6];
+    auto                     levelName       = parts[7];
+    auto                     gameType        = magic_enum::enum_cast<GameType>(parts[8]).value_or(GameType::Survival);
+    auto                     localPort       = static_cast<ushort>(std::stoi(parts[10]));
+    auto                     localPortV6     = static_cast<ushort>(std::stoi(parts[11]));
     std::vector<std::string> others;
-    for (size_t i = 13; i < parts.size(); i++) { others.push_back(parts[i]); }
+    for (size_t i = 13; i < parts.size(); i++) {
+        others.push_back(parts[i]);
+    }
 
     std::string ipAndPort;
     ipAndPort.resize(56);
@@ -163,7 +167,9 @@ try
         ipAndPort
     );
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return 133; }
+    if (beforeEvent.isCancelled()) {
+        return 133;
+    }
 
     auto text = fmt::format(
         "MCPE;{};{};{};{};{};{};{};{};1;{};{};0;",
@@ -178,7 +184,9 @@ try
         localPort,
         localPortV6
     );
-    for (auto& other : others) { text += other + ";"; }
+    for (auto& other : others) {
+        text += other + ";";
+    }
 
     std::vector<char> packet;
     packet.reserve(256);
@@ -206,9 +214,7 @@ try
         ipAndPort
     ));
     return result;
-}
-catch (...)
-{
+} catch (...) {
     return origin(pSendParameters, pFile, pLine);
 }
 

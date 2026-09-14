@@ -8,11 +8,9 @@ class CommandRegistry;
 class CommandFlag;
 // clang-format on
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-class RegisterCmdBeforeEvent final : public ll::event::Event
-{
+class RegisterCmdBeforeEvent final : public ll::event::Event {
 protected:
     CommandRegistry&        mRegistry;
     std::string const&      mName;
@@ -30,15 +28,13 @@ public:
         CommandFlag&            flag1,
         CommandFlag&            flag2
     )
-        : Event()
-        , mRegistry(registry)
-        , mName(name)
-        , mDescription(description)
-        , mRequirement(requirement)
-        , mFlag1(flag1)
-        , mFlag2(flag2)
-    {
-    }
+    : Event(),
+      mRegistry(registry),
+      mName(name),
+      mDescription(description),
+      mRequirement(requirement),
+      mFlag1(flag1),
+      mFlag2(flag2) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -51,8 +47,7 @@ public:
     ILNDAPI CommandFlag&            flag2() const;
 };
 
-class RegisterCmdAfterEvent final : public ll::event::Event
-{
+class RegisterCmdAfterEvent final : public ll::event::Event {
 protected:
     CommandRegistry&              mRegistry;
     std::string const&            mName;
@@ -70,15 +65,13 @@ public:
         CommandFlag const&            flag1,
         CommandFlag const&            flag2
     )
-        : Event()
-        , mRegistry(registry)
-        , mName(name)
-        , mDescription(description)
-        , mRequirement(requirement)
-        , mFlag1(flag1)
-        , mFlag2(flag2)
-    {
-    }
+    : Event(),
+      mRegistry(registry),
+      mName(name),
+      mDescription(description),
+      mRequirement(requirement),
+      mFlag1(flag1),
+      mFlag2(flag2) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

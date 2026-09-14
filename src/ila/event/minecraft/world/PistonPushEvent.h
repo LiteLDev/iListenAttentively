@@ -7,10 +7,8 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world
-{
-class PistonPushBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world {
+class PistonPushBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mPistonPos;
     BlockPos& mPushPos;
@@ -25,13 +23,11 @@ public:
         uchar&       branchFacing,
         uchar&       pistonMoveFacing
     )
-        : Cancellable(blockSource)
-        , mPistonPos(pistonPos)
-        , mPushPos(pushPos)
-        , mBranchFacing(branchFacing)
-        , mPistonMoveFacing(pistonMoveFacing)
-    {
-    }
+    : Cancellable(blockSource),
+      mPistonPos(pistonPos),
+      mPushPos(pushPos),
+      mBranchFacing(branchFacing),
+      mPistonMoveFacing(pistonMoveFacing) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -42,8 +38,7 @@ public:
     ILNDAPI uchar&    pistonMoveFacing() const;
 };
 
-class PistonPushAfterEvent final : public ll::event::WorldEvent
-{
+class PistonPushAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPistonPos;
     BlockPos const& mPushPos;
@@ -58,13 +53,11 @@ public:
         uchar&          branchFacing,
         uchar&          pistonMoveFacing
     )
-        : WorldEvent(blockSource)
-        , mPistonPos(pistonPos)
-        , mPushPos(pushPos)
-        , mBranchFacing(branchFacing)
-        , mPistonMoveFacing(pistonMoveFacing)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPistonPos(pistonPos),
+      mPushPos(pushPos),
+      mBranchFacing(branchFacing),
+      mPistonMoveFacing(pistonMoveFacing) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

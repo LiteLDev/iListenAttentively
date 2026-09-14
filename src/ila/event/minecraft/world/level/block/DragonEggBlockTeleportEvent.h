@@ -8,10 +8,8 @@ class Random;
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline level::inline block
-{
-class DragonEggBlockTeleportBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world::inline level::inline block {
+class DragonEggBlockTeleportBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos const& mPos;
     Random&         mRandom;
@@ -24,12 +22,10 @@ public:
         Random&         random,
         BlockPos&       targetPos
     )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-        , mTargetPos(targetPos)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mRandom(random),
+      mTargetPos(targetPos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -39,8 +35,7 @@ public:
     ILNDAPI BlockPos&       targetPos() const;
 };
 
-class DragonEggBlockTeleportAfterEvent final : public ll::event::WorldEvent
-{
+class DragonEggBlockTeleportAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPos;
     Random const&   mRandom;
@@ -53,12 +48,10 @@ public:
         Random const&   random,
         BlockPos const& targetPos
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mRandom(random)
-        , mTargetPos(targetPos)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mRandom(random),
+      mTargetPos(targetPos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

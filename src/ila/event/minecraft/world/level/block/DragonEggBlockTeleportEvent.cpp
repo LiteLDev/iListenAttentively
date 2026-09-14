@@ -14,19 +14,16 @@
 #include <mc/world/level/block/registry/BlockTypeRegistry.h>
 
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void DragonEggBlockTeleportBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["random"]    = serializeRefObj(random());
-    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["targetPos"] = ListTag{targetPos().x, targetPos().y, targetPos().z};
 }
-void DragonEggBlockTeleportBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void DragonEggBlockTeleportBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     targetPos().x = nbt["targetPos"][0];
     targetPos().y = nbt["targetPos"][1];
@@ -36,13 +33,12 @@ BlockPos const& DragonEggBlockTeleportBeforeEvent::pos() const { return mPos; }
 Random&         DragonEggBlockTeleportBeforeEvent::random() const { return mRandom; }
 BlockPos&       DragonEggBlockTeleportBeforeEvent::targetPos() const { return mTargetPos; }
 
-void DragonEggBlockTeleportAfterEvent::serialize(CompoundTag& nbt) const
-{
+void DragonEggBlockTeleportAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["pos"]       = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]       = ListTag{pos().x, pos().y, pos().z};
     nbt["dimId"]     = getDimensionName(blockSource());
     nbt["random"]    = serializeRefObj(random());
-    nbt["targetPos"] = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["targetPos"] = ListTag{targetPos().x, targetPos().y, targetPos().z};
 }
 BlockPos const& DragonEggBlockTeleportAfterEvent::pos() const { return mPos; }
 Random const&   DragonEggBlockTeleportAfterEvent::random() const { return mRandom; }
@@ -56,10 +52,11 @@ LL_STATIC_HOOK(
     BlockSource&    pRegion,
     Random&         pRandom,
     BlockPos const& pPos
-)
-{
+) {
     auto& level = pRegion.getLevel();
-    if (level.isClientSide()) { return; }
+    if (level.isClientSide()) {
+        return;
+    }
 
     int      attemptCount    = 0;
     auto&    randomGenerator = pRandom.mRandom;
@@ -80,7 +77,9 @@ LL_STATIC_HOOK(
 
     auto beforeEvent = DragonEggBlockTeleportBeforeEvent(pRegion, pPos, pRandom, targetPos);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
 
     pRegion.postGameEvent(nullptr, GameEventRegistry::teleport(), pPos, nullptr);
     auto x = pPos.x - targetPos.x;
@@ -94,13 +93,12 @@ LL_STATIC_HOOK(
     );
     pRegion.setBlock(
         targetPos,
-        BlockTypeRegistry::mBlockTypeRegistry()
-            .mValue.getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
+        BlockTypeRegistry::mBlockTypeRegistry().mValue.getDefaultBlockState(VanillaBlockTypeIds::DragonEgg(), true),
         3 /* BlockUpdateFlag::All */,
         nullptr,
-        BlockChangeContext {}
+        BlockChangeContext{}
     );
-    pRegion.removeBlock(pPos, BlockChangeContext {});
+    pRegion.removeBlock(pPos, BlockChangeContext{});
     LLEventBus.publish(DragonEggBlockTeleportAfterEvent(pRegion, pPos, pRandom, targetPos));
 }
 

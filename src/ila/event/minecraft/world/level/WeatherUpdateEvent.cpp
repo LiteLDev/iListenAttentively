@@ -1,19 +1,16 @@
 #include "ila/event/minecraft/world/level/WeatherUpdateEvent.h"
 #include "ila/base/Gloabl.h"
 
-namespace ila::mc::inline world::inline level
-{
+namespace ila::mc::inline world::inline level {
 
-void WeatherUpdateBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void WeatherUpdateBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["rainLevel"]      = rainLevel();
     nbt["rainTime"]       = rainTime();
     nbt["lightningLevel"] = lightningLevel();
     nbt["lightningTime"]  = lightningTime();
 }
-void WeatherUpdateBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void WeatherUpdateBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     rainLevel()      = nbt["rainLevel"];
     rainTime()       = nbt["rainTime"];
@@ -25,8 +22,7 @@ int&   WeatherUpdateBeforeEvent::rainTime() const { return mRainTime; }
 float& WeatherUpdateBeforeEvent::lightningLevel() const { return mLightningLevel; };
 int&   WeatherUpdateBeforeEvent::lightningTime() const { return mLightningTime; };
 
-void WeatherUpdateAfterEvent::serialize(CompoundTag& nbt) const
-{
+void WeatherUpdateAfterEvent::serialize(CompoundTag& nbt) const {
     LevelEvent::serialize(nbt);
     nbt["rainLevel"]      = rainLevel();
     nbt["rainTime"]       = rainTime();
@@ -48,15 +44,14 @@ LL_TYPE_INSTANCE_HOOK(
     int   pRainTime,
     float pLightningLevel,
     int   pLightningTime
-)
-{
-    auto beforeEvent =
-        WeatherUpdateBeforeEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime);
+) {
+    auto beforeEvent = WeatherUpdateBeforeEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(pRainLevel, pRainTime, pLightningLevel, pLightningTime);
-    LLEventBus.publish(WeatherUpdateAfterEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime)
-    );
+    LLEventBus.publish(WeatherUpdateAfterEvent(*this, pRainLevel, pRainTime, pLightningLevel, pLightningTime));
 }
 
 Event_Hook_Factory(WeatherUpdate, <WeatherUpdateEventHook>);

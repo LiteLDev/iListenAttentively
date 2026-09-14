@@ -2,19 +2,16 @@
 #include "ila/base/Gloabl.h"
 #include <windows.h>
 
-namespace ila::legacyMoney
-{
+namespace ila::legacyMoney {
 
-void MoneyChangeBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void MoneyChangeBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["type"]  = magic_enum::enum_name(type());
     nbt["from"]  = fromXuid();
     nbt["to"]    = toXuid();
     nbt["value"] = value();
 }
-void MoneyChangeBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void MoneyChangeBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     mFromXuid = nbt["from"];
     mToXuid   = nbt["to"];
@@ -25,8 +22,7 @@ std::string&            MoneyChangeBeforeEvent::fromXuid() const { return mFromX
 std::string&            MoneyChangeBeforeEvent::toXuid() const { return mToXuid; }
 llong&                  MoneyChangeBeforeEvent::value() const { return mValue; }
 
-void MoneyChangeAfterEvent::serialize(CompoundTag& nbt) const
-{
+void MoneyChangeAfterEvent::serialize(CompoundTag& nbt) const {
     nbt["type"]  = magic_enum::enum_name(type());
     nbt["from"]  = fromXuid();
     nbt["to"]    = toXuid();
@@ -46,16 +42,19 @@ LL_STATIC_HOOK(
     bool,
     std::string xuid,
     llong       money
-)
-{
+) {
     static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Add, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     isRealTrans = false;
     auto result = origin(xuid, money);
     isRealTrans = true;
-    if (result) { LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Add, fromXuid, xuid, money)); }
+    if (result) {
+        LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Add, fromXuid, xuid, money));
+    }
     return result;
 }
 
@@ -66,17 +65,17 @@ LL_STATIC_HOOK(
     bool,
     std::string xuid,
     llong       money
-)
-{
+) {
     static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Reduce, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     isRealTrans = false;
     auto result = origin(xuid, money);
     isRealTrans = true;
-    if (result)
-    {
+    if (result) {
         LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Reduce, fromXuid, xuid, money));
     }
     return result;
@@ -89,16 +88,19 @@ LL_STATIC_HOOK(
     bool,
     std::string xuid,
     llong       money
-)
-{
+) {
     static std::string fromXuid    = "";
     auto               beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Set, fromXuid, xuid, money);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     isRealTrans = false;
     auto result = origin(xuid, money);
     isRealTrans = true;
-    if (result) { LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Set, fromXuid, xuid, money)); }
+    if (result) {
+        LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Set, fromXuid, xuid, money));
+    }
     return result;
 }
 
@@ -111,15 +113,15 @@ LL_STATIC_HOOK(
     std::string        toXuid,
     llong              value,
     std::string const& note
-)
-{
+) {
     if (!isRealTrans) return origin(fromXuid, toXuid, value, note);
     auto beforeEvent = MoneyChangeBeforeEvent(LLMoneyEventType::Trans, fromXuid, toXuid, value);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return false; }
+    if (beforeEvent.isCancelled()) {
+        return false;
+    }
     auto result = origin(fromXuid, toXuid, value, note);
-    if (result)
-    {
+    if (result) {
         LLEventBus.publish(MoneyChangeAfterEvent(LLMoneyEventType::Trans, fromXuid, toXuid, value));
     }
     return result;

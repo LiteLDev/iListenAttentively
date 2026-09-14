@@ -3,17 +3,14 @@
 #include <mc/network/ServerPlayerBlockUseHandler.h>
 #include <mc/world/level/BlockPos.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerAttackBlockBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerAttackBlockBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag{pos().x, pos().y, pos().z};
     nbt["face"] = magic_enum::enum_name(face());
 }
-void PlayerAttackBlockBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void PlayerAttackBlockBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -23,10 +20,9 @@ void PlayerAttackBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 BlockPos& PlayerAttackBlockBeforeEvent::pos() const { return mPos; }
 FacingID& PlayerAttackBlockBeforeEvent::face() const { return mFace; }
 
-void PlayerAttackBlockAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerAttackBlockAfterEvent::serialize(CompoundTag& nbt) const {
     PlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag{pos().x, pos().y, pos().z};
     nbt["face"] = magic_enum::enum_name(face());
 }
 BlockPos const& PlayerAttackBlockAfterEvent::pos() const { return mPos; }
@@ -40,12 +36,13 @@ LL_STATIC_HOOK(
     ServerPlayer&   player,
     BlockPos const& pos,
     int             face
-)
-{
+) {
     auto beforeEvent =
         PlayerAttackBlockBeforeEvent(player, const_cast<BlockPos&>(pos), *reinterpret_cast<FacingID*>(&face));
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(player, pos, face);
     LLEventBus.publish(PlayerAttackBlockAfterEvent(player, pos, *reinterpret_cast<FacingID*>(&face)));
 }

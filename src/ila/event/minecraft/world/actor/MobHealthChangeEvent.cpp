@@ -3,28 +3,25 @@
 #include <mc/world/attribute/AttributeBuff.h>
 #include <mc/world/attribute/HealthAttributeDelegate.h>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void MobHealthChangeBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void MobHealthChangeBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["oldValue"] = oldValue();
     nbt["newValue"] = newValue();
     nbt["buff"]     = {
-        { "amount", buff().mAmount },
-        { "type", magic_enum::enum_name(buff().mType) },
-        { "source", serializePtrObj(buff().mSource.get()) },
-        { "valueAmplifier", serializePtrObj(buff().mValueAmplifier.get()) },
-        { "durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get()) },
-        { "scale", buff().mScale },
-        { "amplification", buff().mAmplification },
-        { "id", buff().mId },
-        { "operand", buff().mOperand },
+        {"amount",            buff().mAmount                                  },
+        {"type",              magic_enum::enum_name(buff().mType)             },
+        {"source",            serializePtrObj(buff().mSource.get())           },
+        {"valueAmplifier",    serializePtrObj(buff().mValueAmplifier.get())   },
+        {"durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get())},
+        {"scale",             buff().mScale                                   },
+        {"amplification",     buff().mAmplification                           },
+        {"id",                buff().mId                                      },
+        {"operand",           buff().mOperand                                 },
     };
 }
-void MobHealthChangeBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void MobHealthChangeBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     oldValue()     = nbt["oldValue"];
     newValue()     = nbt["newValue"];
@@ -40,21 +37,20 @@ float&         MobHealthChangeBeforeEvent::oldValue() const { return mOlaValue; 
 float&         MobHealthChangeBeforeEvent::newValue() const { return mNewValue; }
 AttributeBuff& MobHealthChangeBeforeEvent::buff() const { return mBuff; }
 
-void MobHealthChangeAfterEvent::serialize(CompoundTag& nbt) const
-{
+void MobHealthChangeAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
     nbt["oldValue"] = oldValue();
     nbt["newValue"] = newValue();
     nbt["buff"]     = {
-        { "amount", buff().mAmount },
-        { "type", magic_enum::enum_name(buff().mType) },
-        { "source", serializePtrObj(buff().mSource.get()) },
-        { "valueAmplifier", serializePtrObj(buff().mValueAmplifier.get()) },
-        { "durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get()) },
-        { "scale", buff().mScale },
-        { "amplification", buff().mAmplification },
-        { "id", buff().mId },
-        { "operand", buff().mOperand },
+        {"amount",            buff().mAmount                                  },
+        {"type",              magic_enum::enum_name(buff().mType)             },
+        {"source",            serializePtrObj(buff().mSource.get())           },
+        {"valueAmplifier",    serializePtrObj(buff().mValueAmplifier.get())   },
+        {"durationAmplifier", serializePtrObj(buff().mDurationAmplifier.get())},
+        {"scale",             buff().mScale                                   },
+        {"amplification",     buff().mAmplification                           },
+        {"id",                buff().mId                                      },
+        {"operand",           buff().mOperand                                 },
     };
 }
 float const&         MobHealthChangeAfterEvent::oldValue() const { return mOldValue; }
@@ -70,16 +66,15 @@ LL_TYPE_INSTANCE_HOOK(
     float                oldValue,
     float                newValue,
     AttributeBuff const& buff
-)
-{
+) {
     auto before = MobHealthChangeBeforeEvent(*mMob, oldValue, newValue, const_cast<AttributeBuff&>(buff));
     LLEventBus.publish(before);
-    if (before.isCancelled()) { return oldValue; }
+    if (before.isCancelled()) {
+        return oldValue;
+    }
     auto result = origin(oldValue, newValue, buff);
     if (result)
-        LLEventBus.publish(
-            MobHealthChangeAfterEvent(*mMob, oldValue, *result, const_cast<AttributeBuff&>(buff))
-        );
+        LLEventBus.publish(MobHealthChangeAfterEvent(*mMob, oldValue, *result, const_cast<AttributeBuff&>(buff)));
     return result;
 }
 

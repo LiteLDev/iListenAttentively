@@ -5,22 +5,18 @@
 #include <mc/world/level/biome/components/BiomeDecorationFeature.h>
 #include <mc/world/level/biome/systems/BiomeDecorationSystem.h>
 
-namespace ila::mc::inline world::inline level::inline levelgen::inline system
-{
-class BiomeDecorationSystemEvent : public ll::event::Event
-{
+namespace ila::mc::inline world::inline level::inline levelgen::inline system {
+class BiomeDecorationSystemEvent : public ll::event::Event {
     LevelChunk&        mLevelChunk;
     std::string const& mPass;
     Random&            mRandom;
 
 public:
     explicit BiomeDecorationSystemEvent(LevelChunk& pLevelChunk, std::string const& pPass, Random& pRandom)
-        : Event()
-        , mLevelChunk(pLevelChunk)
-        , mPass(pPass)
-        , mRandom(pRandom)
-    {
-    }
+    : Event(),
+      mLevelChunk(pLevelChunk),
+      mPass(pPass),
+      mRandom(pRandom) {}
 
 public:
     ILAPI LevelChunk& levelChunk() const;
@@ -31,8 +27,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const;
 };
 
-class DecorateEvent final : public ll::event::Cancellable<BiomeDecorationSystemEvent>
-{
+class DecorateEvent final : public ll::event::Cancellable<BiomeDecorationSystemEvent> {
     BlockSource&                            mBlockSource;
     gsl::span<gsl::not_null<Biome const*>>& mUniqueBiomes;
     IPreliminarySurfaceProvider const&      mPreliminarySurfaceProvider;
@@ -46,12 +41,10 @@ public:
         std::string const&                      pPass,
         IPreliminarySurfaceProvider const&      pPreliminarySurfaceProvider
     )
-        : Cancellable(pLevelChunk, pPass, pRandom)
-        , mBlockSource(pBlockSource)
-        , mUniqueBiomes(pUniqueBiomes)
-        , mPreliminarySurfaceProvider(pPreliminarySurfaceProvider)
-    {
-    }
+    : Cancellable(pLevelChunk, pPass, pRandom),
+      mBlockSource(pBlockSource),
+      mUniqueBiomes(pUniqueBiomes),
+      mPreliminarySurfaceProvider(pPreliminarySurfaceProvider) {}
 
 public:
     ILAPI BlockSource& blockSource() const;
@@ -62,8 +55,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const;
 };
 
-class DecorateBiomeEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
-{
+class DecorateBiomeEvent final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent> {
     gsl::span<BiomeDecorationFeature const>& mFeatureList;
     Biome const*&                            mBiome;
     IPreliminarySurfaceProvider const&       mPreliminarySurfaceProvider;
@@ -79,13 +71,11 @@ public:
         Biome const*&                            pBiome,
         IPreliminarySurfaceProvider const&       pPreliminarySurfaceProvider
     )
-        : Cancellable(pLevelChunk, pPass, pRandom)
-        , mFeatureList(pFeatureList)
-        , mBiome(pBiome)
-        , mPreliminarySurfaceProvider(pPreliminarySurfaceProvider)
-        , mBlockSource(pBlockSource)
-    {
-    }
+    : Cancellable(pLevelChunk, pPass, pRandom),
+      mFeatureList(pFeatureList),
+      mBiome(pBiome),
+      mPreliminarySurfaceProvider(pPreliminarySurfaceProvider),
+      mBlockSource(pBlockSource) {}
 
 public:
     ILAPI gsl::span<::BiomeDecorationFeature const>& featureList() const;
@@ -97,8 +87,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const;
 };
 
-class DecorateLargeFeature1Event final : public ll::event::Cancellable<BiomeDecorationSystemEvent>
-{
+class DecorateLargeFeature1Event final : public ll::event::Cancellable<BiomeDecorationSystemEvent> {
     GeneratorType&                             mGeneratorType;
     uint const&                                mSeed;
     BlockVolumeTarget&                         mTarget;
@@ -115,14 +104,12 @@ public:
         ChunkPos const&                          pChunkPos,
         std::string const&                       pPass
     )
-        : Cancellable(*pTarget.getChunk(pChunkPos), pPass, pRandom)
-        , mGeneratorType(pGeneratorType)
-        , mSeed(pSeed)
-        , mTarget(pTarget)
-        , mFeatureList(pFeatureList)
-        , mChunkPos(pChunkPos)
-    {
-    }
+    : Cancellable(*pTarget.getChunk(pChunkPos), pPass, pRandom),
+      mGeneratorType(pGeneratorType),
+      mSeed(pSeed),
+      mTarget(pTarget),
+      mFeatureList(pFeatureList),
+      mChunkPos(pChunkPos) {}
 
 public:
     ILAPI GeneratorType&     generatorType() const;
@@ -135,8 +122,7 @@ public:
     ILAPI void serialize(CompoundTag& nbt) const;
 };
 
-class DecorateLargeFeature2Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent>
-{
+class DecorateLargeFeature2Event final : public ::ll::event::Cancellable<BiomeDecorationSystemEvent> {
     Biome const&       mBiome;
     BlockVolumeTarget& mTarget;
     ChunkPos const&    mChunkPos;
@@ -150,12 +136,10 @@ public:
         ChunkPos const&    pChunkPos,
         std::string const& pPass
     )
-        : Cancellable(pLevelChunk, pPass, pRandom)
-        , mBiome(pBiome)
-        , mTarget(pTarget)
-        , mChunkPos(pChunkPos)
-    {
-    }
+    : Cancellable(pLevelChunk, pPass, pRandom),
+      mBiome(pBiome),
+      mTarget(pTarget),
+      mChunkPos(pChunkPos) {}
 
 public:
     ILAPI Biome const&       biome() const;

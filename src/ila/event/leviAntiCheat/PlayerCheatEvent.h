@@ -3,11 +3,9 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/player/PlayerEvent.h>
 
-namespace ila::lac
-{
+namespace ila::lac {
 
-enum class CheckType
-{
+enum class CheckType {
     IllegalMovement,
     Timer,
     Spam,
@@ -33,21 +31,12 @@ enum class CheckType
     BadPacket,
 };
 
-enum class PunishType
-{
-    Warning = 0,
-    Mute    = 1,
-    Kick    = 2,
-    Ban     = 3,
-    Cancel  = 4,
-    None    = 5
-};
+enum class PunishType { Warning = 0, Mute = 1, Kick = 2, Ban = 3, Cancel = 4, None = 5 };
 
 using ExtraInfo =
     std::unordered_map<std::string, std::variant<std::string, int, ullong, llong, std::string_view, float>>;
 
-class PlayerCheatEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
-{
+class PlayerCheatEvent final : public ll::event::Cancellable<ll::event::PlayerEvent> {
 protected:
     CheckType const&  mCheatType;
     ExtraInfo const&  mExtraData;
@@ -62,13 +51,11 @@ public:
         int const&        duration,
         PunishType const& type
     )
-        : Cancellable(player)
-        , mCheatType(cheatType)
-        , mExtraData(extraData)
-        , mDuration(duration)
-        , mType(type)
-    {
-    }
+    : Cancellable(player),
+      mCheatType(cheatType),
+      mExtraData(extraData),
+      mDuration(duration),
+      mType(type) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

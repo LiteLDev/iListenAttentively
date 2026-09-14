@@ -2,19 +2,16 @@
 #include "ila/base/Gloabl.h"
 #include <mc/world/level/block/actor/VanillaBlockActor.h>
 
-namespace ila::mc::inline world::inline level::inline block::inline actor
-{
+namespace ila::mc::inline world::inline level::inline block::inline actor {
 
-void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void BlockActorTickBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["dimId"]      = getDimensionName(blockSource());
 }
 BlockActor& BlockActorTickBeforeEvent::blockActor() const { return mBlockActor; }
 
-void BlockActorTickAfterEvent::serialize(CompoundTag& nbt) const
-{
+void BlockActorTickAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
     nbt["blockActor"] = serializeRefObj(blockActor());
     nbt["dimId"]      = getDimensionName(blockSource());
@@ -28,11 +25,12 @@ LL_TYPE_INSTANCE_HOOK(
     &VanillaBlockActor::$tick,
     void,
     BlockSource& pRegion
-)
-{
+) {
     auto beforeEvent = BlockActorTickBeforeEvent(pRegion, *this);
     LLEventBus.publish(beforeEvent);
-    if (beforeEvent.isCancelled()) { return; }
+    if (beforeEvent.isCancelled()) {
+        return;
+    }
     origin(pRegion);
     LLEventBus.publish(BlockActorTickAfterEvent(pRegion, *this));
 }

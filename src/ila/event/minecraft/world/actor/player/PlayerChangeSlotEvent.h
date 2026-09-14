@@ -8,10 +8,8 @@ class Container;
 class ItemStack;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerChangeSlotEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerChangeSlotEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     Container&       mContainer;
     int&             mSlot;
@@ -28,14 +26,12 @@ public:
         ItemStack const& pNewItem,
         bool&            pForceBalanced
     )
-        : ll::event::Cancellable<ll::event::player::PlayerEvent>(pPlayer)
-        , mContainer(pContainer)
-        , mSlot(pSlot)
-        , mOldItem(pOldItem)
-        , mNewItem(pNewItem)
-        , mForceBalanced(pForceBalanced)
-    {
-    }
+    : ll::event::Cancellable<ll::event::player::PlayerEvent>(pPlayer),
+      mContainer(pContainer),
+      mSlot(pSlot),
+      mOldItem(pOldItem),
+      mNewItem(pNewItem),
+      mForceBalanced(pForceBalanced) {}
 
 public:
     ILAPI void serialize(CompoundTag& pNbt) const override;

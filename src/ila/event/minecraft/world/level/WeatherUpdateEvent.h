@@ -3,10 +3,8 @@
 #include <ll/api/event/Cancellable.h>
 #include <ll/api/event/world/LevelEvent.h>
 
-namespace ila::mc::inline world::inline level
-{
-class WeatherUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent>
-{
+namespace ila::mc::inline world::inline level {
+class WeatherUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::LevelEvent> {
 protected:
     float& mRainLevel;
     int&   mRainTime;
@@ -21,13 +19,11 @@ public:
         float& lightningLevel,
         int&   lightningTime
     )
-        : Cancellable(level)
-        , mRainLevel(rainLevel)
-        , mRainTime(rainTime)
-        , mLightningLevel(lightningLevel)
-        , mLightningTime(lightningTime)
-    {
-    }
+    : Cancellable(level),
+      mRainLevel(rainLevel),
+      mRainTime(rainTime),
+      mLightningLevel(lightningLevel),
+      mLightningTime(lightningTime) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -38,8 +34,7 @@ public:
     ILNDAPI int&   lightningTime() const;
 };
 
-class WeatherUpdateAfterEvent final : public ll::event::LevelEvent
-{
+class WeatherUpdateAfterEvent final : public ll::event::LevelEvent {
 protected:
     float const& mRainLevel;
     int const&   mRainTime;
@@ -54,13 +49,11 @@ public:
         float const& lightningLevel,
         int const&   lightningTime
     )
-        : LevelEvent(level)
-        , mRainLevel(rainLevel)
-        , mRainTime(rainTime)
-        , mLightningLevel(lightningLevel)
-        , mLightningTime(lightningTime)
-    {
-    }
+    : LevelEvent(level),
+      mRainLevel(rainLevel),
+      mRainTime(rainTime),
+      mLightningLevel(lightningLevel),
+      mLightningTime(lightningTime) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

@@ -5,23 +5,20 @@
 #include <mc/world/level/block/Block.h>
 #include <mc/world/level/block/MultifaceSpreader.h>
 
-namespace ila::mc::inline world::inline level::inline block
-{
+namespace ila::mc::inline world::inline level::inline block {
 
-void SculkSpreadBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void SculkSpreadBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["selfPos"]     = ListTag { selfPos().x, selfPos().y, selfPos().z };
+    nbt["selfPos"]     = ListTag{selfPos().x, selfPos().y, selfPos().z};
     nbt["selfBlock"]   = serializeRefObj(selfBlock());
     nbt["selfFace"]    = selfFace();
-    nbt["targetPos"]   = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["targetPos"]   = ListTag{targetPos().x, targetPos().y, targetPos().z};
     nbt["targetBlock"] = serializeRefObj(targetBlock());
     nbt["targetFace"]  = targetFace();
     nbt["facing"]      = facing();
     nbt["dimId"]       = getDimensionName(blockSource());
 }
-void SculkSpreadBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void SculkSpreadBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     selfPos().x   = nbt["selfPos"][0];
     selfPos().y   = nbt["selfPos"][1];
@@ -42,13 +39,12 @@ uchar&    SculkSpreadBeforeEvent::targetFace() const { return mTargetFace; }
 uchar&    SculkSpreadBeforeEvent::facing() const { return mFacing; }
 
 
-void SculkSpreadAfterEvent::serialize(CompoundTag& nbt) const
-{
+void SculkSpreadAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
-    nbt["selfPos"]     = ListTag { selfPos().x, selfPos().y, selfPos().z };
+    nbt["selfPos"]     = ListTag{selfPos().x, selfPos().y, selfPos().z};
     nbt["selfBlock"]   = serializeRefObj(selfBlock());
     nbt["selfFace"]    = selfFace();
-    nbt["targetPos"]   = ListTag { targetPos().x, targetPos().y, targetPos().z };
+    nbt["targetPos"]   = ListTag{targetPos().x, targetPos().y, targetPos().z};
     nbt["targetBlock"] = serializeRefObj(targetBlock());
     nbt["targetFace"]  = targetFace();
     nbt["facing"]      = facing();
@@ -76,11 +72,9 @@ LL_TYPE_INSTANCE_HOOK(
     BlockPos const&    pPos,
     uchar              pFacing,
     uchar              pFace
-)
-{
+) {
     auto result = origin(pTarget, pSelf, pBlock, pPos, pFacing, pFace);
-    if (result.has_value())
-    {
+    if (result.has_value()) {
         auto& region      = (static_cast<WorldBlockTarget&>(pTarget)).mBlockSource;
         auto  beforeEvent = SculkSpreadBeforeEvent(
             region,
@@ -93,7 +87,9 @@ LL_TYPE_INSTANCE_HOOK(
             pFacing
         );
         LLEventBus.publish(beforeEvent);
-        if (beforeEvent.isCancelled()) { return std::nullopt; }
+        if (beforeEvent.isCancelled()) {
+            return std::nullopt;
+        }
         LLEventBus.publish(
             SculkSpreadAfterEvent(region, pPos, pSelf, pFace, result->first, pBlock, result->second, pFacing)
         );

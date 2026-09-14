@@ -8,19 +8,13 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerStartSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent>
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerStartSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     BlockPos& mPos;
 
 public:
-    constexpr explicit PlayerStartSleepBeforeEvent(Player& player, BlockPos& pos)
-        : Cancellable(player)
-        , mPos(pos)
-    {
-    }
+    constexpr explicit PlayerStartSleepBeforeEvent(Player& player, BlockPos& pos) : Cancellable(player), mPos(pos) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -28,23 +22,16 @@ public:
     ILNDAPI BlockPos& pos() const;
 };
 
-class PlayerStartSleepAfterEvent final : public ll::event::player::PlayerEvent
-{
+class PlayerStartSleepAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     BlockPos const&    mPos;
     BedSleepingResult& mResult;
 
 public:
-    constexpr explicit PlayerStartSleepAfterEvent(
-        Player&            player,
-        BlockPos const&    pos,
-        BedSleepingResult& result
-    )
-        : PlayerEvent(player)
-        , mPos(pos)
-        , mResult(result)
-    {
-    }
+    constexpr explicit PlayerStartSleepAfterEvent(Player& player, BlockPos const& pos, BedSleepingResult& result)
+    : PlayerEvent(player),
+      mPos(pos),
+      mResult(result) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;

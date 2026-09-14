@@ -5,18 +5,15 @@
 #include <mc/world/level/BlockSource.h>
 #include <mc/world/level/block/actor/SignBlockActor.h>
 
-namespace ila::mc::inline world::inline actor::inline player
-{
+namespace ila::mc::inline world::inline actor::inline player {
 
-void PlayerEditSignBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerEditSignBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag{pos().x, pos().y, pos().z};
     nbt["side"] = magic_enum::enum_name(textSide());
     nbt["text"] = text();
 }
-void PlayerEditSignBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void PlayerEditSignBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -27,10 +24,9 @@ BlockPos&           PlayerEditSignBeforeEvent::pos() const { return mPos; }
 SignTextSide const& PlayerEditSignBeforeEvent::textSide() const { return mTextSide; }
 std::string&        PlayerEditSignBeforeEvent::text() const { return mText; }
 
-void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const
-{
+void PlayerEditSignAfterEvent::serialize(CompoundTag& nbt) const {
     ServerPlayerEvent::serialize(nbt);
-    nbt["pos"]  = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]  = ListTag{pos().x, pos().y, pos().z};
     nbt["side"] = magic_enum::enum_name(textSide());
     nbt["text"] = text();
 }
@@ -46,24 +42,20 @@ LL_TYPE_INSTANCE_HOOK(
     void,
     NetworkIdentifier const&              pSource,
     std::shared_ptr<BlockActorDataPacket> pPacket
-)
-{
-    if (pPacket == nullptr || !pPacket->mData->contains("id", Tag::Type::String)
-        || (*pPacket->mData)["id"] != "Sign")
+) {
+    if (pPacket == nullptr || !pPacket->mData->contains("id", Tag::Type::String) || (*pPacket->mData)["id"] != "Sign")
         return origin(pSource, pPacket);
 
     auto* player = thisFor<NetEventCallback>()->_getServerPlayer(pSource, pPacket->mSenderSubId);
     if (!player) return origin(pSource, pPacket);
 
-    auto* blockActor =
-        static_cast<SignBlockActor*>(player->getDimensionBlockSource().getBlockEntity(pPacket->mPos));
+    auto* blockActor = static_cast<SignBlockActor*>(player->getDimensionBlockSource().getBlockEntity(pPacket->mPos));
     if (blockActor == nullptr) return origin(pSource, pPacket);
 
     bool frontEdit = false;
     bool backEdit  = false;
 
-    if (blockActor->mTextFront->getMessage() != pPacket->mData.get()["FrontText"]["Text"])
-    {
+    if (blockActor->mTextFront->getMessage() != pPacket->mData.get()["FrontText"]["Text"]) {
         frontEdit        = true;
         auto beforeEvent = PlayerEditSignBeforeEvent(
             *player,
@@ -74,8 +66,7 @@ LL_TYPE_INSTANCE_HOOK(
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) return;
     }
-    if (blockActor->mTextBack->getMessage() != pPacket->mData.get()["BackText"]["Text"])
-    {
+    if (blockActor->mTextBack->getMessage() != pPacket->mData.get()["BackText"]["Text"]) {
         backEdit         = true;
         auto beforeEvent = PlayerEditSignBeforeEvent(
             *player,
@@ -89,8 +80,7 @@ LL_TYPE_INSTANCE_HOOK(
 
     origin(pSource, pPacket);
 
-    if (frontEdit)
-    {
+    if (frontEdit) {
         LLEventBus.publish(PlayerEditSignAfterEvent(
             *player,
             pPacket->mPos.get(),
@@ -98,8 +88,7 @@ LL_TYPE_INSTANCE_HOOK(
             SignTextSide::Front
         ));
     }
-    if (backEdit)
-    {
+    if (backEdit) {
         LLEventBus.publish(PlayerEditSignAfterEvent(
             *player,
             pPacket->mPos.get(),

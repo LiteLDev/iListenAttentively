@@ -7,10 +7,8 @@
 class BlockPos;
 // clang-format on
 
-namespace ila::mc::inline world
-{
-class RedstoneUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent>
-{
+namespace ila::mc::inline world {
+class RedstoneUpdateBeforeEvent final : public ll::event::Cancellable<ll::event::WorldEvent> {
 protected:
     BlockPos& mPos;
     int&      mStrength;
@@ -23,12 +21,10 @@ public:
         int&         strength,
         bool&        isFirstTime
     )
-        : Cancellable(blockSource)
-        , mPos(pos)
-        , mStrength(strength)
-        , mIsFirstTime(isFirstTime)
-    {
-    }
+    : Cancellable(blockSource),
+      mPos(pos),
+      mStrength(strength),
+      mIsFirstTime(isFirstTime) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
     ILAPI void deserialize(CompoundTag const& nbt) override;
@@ -38,8 +34,7 @@ public:
     ILNDAPI bool&     isFirstTime() const;
 };
 
-class RedstoneUpdateAfterEvent final : public ll::event::WorldEvent
-{
+class RedstoneUpdateAfterEvent final : public ll::event::WorldEvent {
 protected:
     BlockPos const& mPos;
     int const&      mStrength;
@@ -52,12 +47,10 @@ public:
         int const&      strength,
         bool const&     isFirstTime
     )
-        : WorldEvent(blockSource)
-        , mPos(pos)
-        , mStrength(strength)
-        , mIsFirstTime(isFirstTime)
-    {
-    }
+    : WorldEvent(blockSource),
+      mPos(pos),
+      mStrength(strength),
+      mIsFirstTime(isFirstTime) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 

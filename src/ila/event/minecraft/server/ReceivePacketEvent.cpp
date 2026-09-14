@@ -18,46 +18,34 @@
 #include <mc/world/events/IncomingPacketEvent.h>
 
 
-template<>
-struct GameplayHandlerResult<CoordinatorResult>
-{
+template <>
+struct GameplayHandlerResult<CoordinatorResult> {
     HandlerResult     mHandlerResult;
     CoordinatorResult mReturnValue;
 };
 
-namespace ila::mc::inline server
-{
+namespace ila::mc::inline server {
 
-void IReceivePacketBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void IReceivePacketBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["packet"]            = serializeRefObj(packet());
     nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
 }
 Packet&                    IReceivePacketBeforeEvent::packet() const { return mPacket; }
 NetworkIdentifier const&   IReceivePacketBeforeEvent::networkIdentifier() const { return mNetworkIdentifier; }
-optional_ref<ServerPlayer> IReceivePacketBeforeEvent::player() const
-{
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(
-        networkIdentifier(),
-        packet().mSenderSubId
-    );
+optional_ref<ServerPlayer> IReceivePacketBeforeEvent::player() const {
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), packet().mSenderSubId);
 }
 
-void IReceivePacketAfterEvent::serialize(CompoundTag& nbt) const
-{
+void IReceivePacketAfterEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
     nbt["packet"]            = serializeRefObj(packet());
     nbt["networkIdentifier"] = serializeRefObj(networkIdentifier());
 }
 Packet const&              IReceivePacketAfterEvent::packet() const { return mPacket; }
 NetworkIdentifier const&   IReceivePacketAfterEvent::networkIdentifier() const { return mNetworkIdentifier; }
-optional_ref<ServerPlayer> IReceivePacketAfterEvent::player() const
-{
-    return ll::service::getServerNetworkHandler()->_getServerPlayer(
-        networkIdentifier(),
-        packet().mSenderSubId
-    );
+optional_ref<ServerPlayer> IReceivePacketAfterEvent::player() const {
+    return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), packet().mSenderSubId);
 }
 
 thread_local static NetworkConnection* mCurrentNetworkConnection = nullptr;
@@ -72,8 +60,7 @@ LL_TYPE_INSTANCE_HOOK(
     NetworkPeer::DataStatus,
     std::string&                                                    receiveBuffer,
     std::shared_ptr<::std::chrono::steady_clock::time_point> const& timepointPtr
-)
-{
+) {
     mCurrentNetworkConnection = this;
     auto result               = origin(receiveBuffer, timepointPtr);
     mCurrentNetworkConnection = nullptr;
@@ -87,22 +74,19 @@ LL_TYPE_INSTANCE_HOOK(
     &ScriptServerNetworkEventHandler::$handleEvent,
     GameplayHandlerResult<CoordinatorResult>,
     IncomingPacketEvent& packetEvent
-)
-{
-    if (auto result = origin(packetEvent); result.mHandlerResult == HandlerResult::BypassListeners
-                                           || result.mReturnValue == CoordinatorResult::Cancel)
-    {
+) {
+    if (auto result = origin(packetEvent);
+        result.mHandlerResult == HandlerResult::BypassListeners || result.mReturnValue == CoordinatorResult::Cancel) {
         return result;
     }
     auto                 networkSystem = ll::service::getNetworkSystem();
     ReadOnlyBinaryStream stream(networkSystem->mReceiveBuffer.get(), false);
     auto                 header = stream.getUnsignedVarInt();
-    if (!header.has_value())
-    {
-        va_list args {};
+    if (!header.has_value()) {
+        va_list args{};
         BedrockLog::log_va(
             BedrockLog::LogCategory::LogArea,
-            { 1 },
+            {1},
             BedrockLog::LogRule::DefaultRules,
             LogAreaID::LogAreaNetwork,
             static_cast<uint>(Bedrock::LogLevel::Type::Error),
@@ -113,78 +97,75 @@ LL_TYPE_INSTANCE_HOOK(
         );
     }
     auto packet = MinecraftPackets::createPacket(static_cast<MinecraftPacketIds>(header.value() & 0x3ff));
-    if (!packet) { return { HandlerResult::BypassListeners, CoordinatorResult::Cancel }; }
-    if (!mCurrentNetworkConnection || mCurrentNetworkConnection->mShouldCloseConnection)
-    {
-        return { HandlerResult::NotifyListeners, CoordinatorResult::Continue };
+    if (!packet) {
+        return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
+    }
+    if (!mCurrentNetworkConnection || mCurrentNetworkConnection->mShouldCloseConnection) {
+        return {HandlerResult::NotifyListeners, CoordinatorResult::Continue};
     }
     auto now                                   = std::chrono::steady_clock::now();
     mCurrentNetworkConnection->mLastPacketTime = now;
     packet->mReceiveTimepoint                  = now;
-    if (auto result = packet->checkSize(stream.mView.size() - stream.mReadPointer, true); !result.has_value())
-    {
-        return { HandlerResult::BypassListeners, CoordinatorResult::Cancel };
+    if (auto result = packet->checkSize(stream.mView.size() - stream.mReadPointer, true); !result.has_value()) {
+        return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
-    if (auto result = packet->read(stream); !result.has_value())
-    {
-        return { HandlerResult::BypassListeners, CoordinatorResult::Cancel };
+    if (auto result = packet->read(stream); !result.has_value()) {
+        return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
-    if (!packet->mHandler) { return { HandlerResult::BypassListeners, CoordinatorResult::Cancel }; }
+    if (!packet->mHandler) {
+        return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
+    }
 
     auto beforeEvent = ReceivePacketBeforeEvent<Packet>(*packet, mCurrentNetworkConnection->mId);
     LLEventBus.publish(beforeEvent);
     LLEventBus.publish(beforeEvent, [&]() -> ll::event::EventId {
-        auto packetName = std::string { magic_enum::enum_name(packet->getId()) };
+        auto packetName = std::string{magic_enum::enum_name(packet->getId())};
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventId { fmt::format(
-            "{0}<class {1}>",
-            ll::reflection::type_name_v<ReceivePacketBeforeEvent<Packet>>,
-            packetName
-        ) };
+        return ll::event::EventId{
+            fmt::format("{0}<class {1}>", ll::reflection::type_name_v<ReceivePacketBeforeEvent<Packet>>, packetName)
+        };
     }());
-    if (beforeEvent.isCancelled()) { return { HandlerResult::BypassListeners, CoordinatorResult::Cancel }; }
+    if (beforeEvent.isCancelled()) {
+        return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
+    }
     packet->mHandler->handle(mCurrentNetworkConnection->mId, ll::service::getServerNetworkHandler(), packet);
     auto afterEvent = ReceivePacketAfterEvent(*packet, mCurrentNetworkConnection->mId);
     LLEventBus.publish(afterEvent);
     LLEventBus.publish(afterEvent, [&]() -> ll::event::EventId {
-        auto packetName = std::string { magic_enum::enum_name(packet->getId()) };
+        auto packetName = std::string{magic_enum::enum_name(packet->getId())};
         if (!packetName.ends_with("Packet")) packetName += "Packet";
-        return ll::event::EventId { fmt::format(
-            "{0}<class {1}>",
-            ll::reflection::type_name_v<ReceivePacketAfterEvent<Packet>>,
-            packetName
-        ) };
+        return ll::event::EventId{
+            fmt::format("{0}<class {1}>", ll::reflection::type_name_v<ReceivePacketAfterEvent<Packet>>, packetName)
+        };
     }());
-    return { HandlerResult::BypassListeners, CoordinatorResult::Cancel };
+    return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
 }
 
 static std::unique_ptr<ll::event::EmitterBase> ReceivePacketEventEmitterFactory();
-class ReceivePacketEventEventEmitter : public ll::event::Emitter<ReceivePacketEventEmitterFactory>
-{
+class ReceivePacketEventEventEmitter : public ll::event::Emitter<ReceivePacketEventEmitterFactory> {
 private:
     static inline bool reg = []() -> bool {
         constexpr static auto addEvent = [](std::string const& eventName) -> void {
             LLEventBus.setEventEmitter(
                 ReceivePacketEventEmitterFactory,
-                ll::event::EventId { fmt::format(
+                ll::event::EventId{fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<ReceivePacketBeforeEvent<Packet>>,
                     eventName
-                ) }
+                )}
             );
             LLEventBus.setEventEmitter(
                 ReceivePacketEventEmitterFactory,
-                ll::event::EventId { fmt::format(
+                ll::event::EventId{fmt::format(
                     "{0}<class {1}>",
                     ll::reflection::type_name_v<ReceivePacketAfterEvent<Packet>>,
                     eventName
-                ) }
+                )}
             );
         };
-        for (auto& [id, name] : magic_enum::enum_entries<MinecraftPacketIds>())
-        {
+        for (auto& [id, name] : magic_enum::enum_entries<MinecraftPacketIds>()) {
             if (id == MinecraftPacketIds::EndId) continue;
-            auto packetName = std::string { name };
+            auto packetName = std::string{name};
             if (!packetName.ends_with("Packet")) packetName += "Packet";
             addEvent(packetName);
         }
@@ -196,7 +177,8 @@ public:
     ReceivePacketEventEventEmitter() { ll::memory::HookRegistrar<ReceivePacketEventHook2>().hook(); }
     ~ReceivePacketEventEventEmitter() { ll::memory::HookRegistrar<ReceivePacketEventHook2>().unhook(); }
 };
-static std::unique_ptr<ll::event::EmitterBase> ReceivePacketEventEmitterFactory()
-{ return std::make_unique<ReceivePacketEventEventEmitter>(); }
+static std::unique_ptr<ll::event::EmitterBase> ReceivePacketEventEmitterFactory() {
+    return std::make_unique<ReceivePacketEventEventEmitter>();
+}
 
 } // namespace ila::mc::inline server

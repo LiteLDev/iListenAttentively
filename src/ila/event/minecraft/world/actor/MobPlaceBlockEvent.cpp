@@ -32,17 +32,14 @@
 #include <utility>
 #include <vector>
 
-namespace ila::mc::inline world::inline actor
-{
+namespace ila::mc::inline world::inline actor {
 
-void MobPlaceBlockBeforeEvent::serialize(CompoundTag& nbt) const
-{
+void MobPlaceBlockBeforeEvent::serialize(CompoundTag& nbt) const {
     Cancellable::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag{pos().x, pos().y, pos().z};
     nbt["block"] = serializePtrObj(block());
 }
-void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt)
-{
+void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt) {
     Cancellable::deserialize(nbt);
     pos().x = nbt["pos"][0];
     pos().y = nbt["pos"][1];
@@ -51,21 +48,16 @@ void MobPlaceBlockBeforeEvent::deserialize(CompoundTag const& nbt)
 BlockPos&    MobPlaceBlockBeforeEvent::pos() const { return mPos; }
 Block const* MobPlaceBlockBeforeEvent::block() const { return mBlock; }
 
-void MobPlaceBlockAfterEvent::serialize(CompoundTag& nbt) const
-{
+void MobPlaceBlockAfterEvent::serialize(CompoundTag& nbt) const {
     ActorEvent::serialize(nbt);
-    nbt["pos"]   = ListTag { pos().x, pos().y, pos().z };
+    nbt["pos"]   = ListTag{pos().x, pos().y, pos().z};
     nbt["block"] = serializePtrObj(block());
 }
 BlockPos const& MobPlaceBlockAfterEvent::pos() const { return mPos; }
 Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 
-Block const* PlaceBlockGoal_tryGetRandomPlaceBlock(
-    PlaceBlockGoal*               goal,
-    ::VariantParameterList const& params,
-    ::Random&                     random
-)
-{
+Block const*
+PlaceBlockGoal_tryGetRandomPlaceBlock(PlaceBlockGoal* goal, ::VariantParameterList const& params, ::Random& random) {
     // 原版通过 VariantParameterList::operator VariantParameterListConst 转换,
     // SDK 头文件未声明该转换运算符,这里手动构造等价结构
     // clang-format off
@@ -83,42 +75,46 @@ Block const* PlaceBlockGoal_tryGetRandomPlaceBlock(
     // clang-format on
 
     std::vector<PlaceBlockGoal::WeightedBlockDescriptor const*> candidates;
-    for (auto const& desc : *goal->mRandomlyPlaceableBlocks)
-    {
-        if (desc.mFilter->evaluateActor(goal->mMob, constParams)) { candidates.emplace_back(&desc); }
+    for (auto const& desc : *goal->mRandomlyPlaceableBlocks) {
+        if (desc.mFilter->evaluateActor(goal->mMob, constParams)) {
+            candidates.emplace_back(&desc);
+        }
     }
 
     int totalWeight = 0;
-    for (auto* desc : candidates) { totalWeight += desc->mWeight; }
+    for (auto* desc : candidates) {
+        totalWeight += desc->mWeight;
+    }
 
     int weight = totalWeight != 0 ? random.nextInt(totalWeight) : 0;
-    for (auto* desc : candidates)
-    {
+    for (auto* desc : candidates) {
         weight -= desc->mWeight;
-        if (weight < 0) { return desc->mBlock->tryGetBlock(); }
+        if (weight < 0) {
+            return desc->mBlock->tryGetBlock();
+        }
     }
     return nullptr;
 }
 
-LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void)
-{
+LL_TYPE_INSTANCE_HOOK(MobPlaceBlockHook, HookPriority::Low, PlaceBlockGoal, &PlaceBlockGoal::$tick, void) {
     constexpr static auto ramdonPos = [](Random& random, int& value, IntRange& ranage) -> void {
         auto min = ranage.rangeMin, max = ranage.rangeMax;
         value += min < max && random.nextInt(max + 1 - min);
     };
 
     auto& random    = mMob.getRandom();
-    auto  targetPos = BlockPos { mMob.getPosition() };
+    auto  targetPos = BlockPos{mMob.getPosition()};
 
     ramdonPos(random, targetPos.x, mXZRange);
     ramdonPos(random, targetPos.y, mYRange);
     ramdonPos(random, targetPos.z, mXZRange);
 
     auto& region = mMob.getDimension().getBlockSourceFromMainChunkSource();
-    if (!region.getBlock(targetPos).isAir()) { return; }
-    if (auto& block = region.getBlock(targetPos.add({ 0, -1, 0 }));
-        block.isAir() || !block.mCachedComponentData->mIsSolid)
-    {
+    if (!region.getBlock(targetPos).isAir()) {
+        return;
+    }
+    if (auto& block = region.getBlock(targetPos.add({0, -1, 0}));
+        block.isAir() || !block.mCachedComponentData->mIsSolid) {
         return;
     }
 

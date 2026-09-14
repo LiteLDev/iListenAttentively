@@ -7,10 +7,8 @@ class ChangeDimensionRequest;
 class Dimension;
 // clang-format on
 
-namespace ila::mc::inline world::inline actor::inline player
-{
-class PlayerChangeDimensionBeforeEvent final : public ll::event::player::PlayerEvent
-{
+namespace ila::mc::inline world::inline actor::inline player {
+class PlayerChangeDimensionBeforeEvent final : public ll::event::player::PlayerEvent {
 protected:
     ChangeDimensionRequest const& mChangeDimensionRequest;
     Dimension const&              mDimension;
@@ -21,11 +19,9 @@ public:
         ChangeDimensionRequest const& changeDimensionRequest,
         Dimension const&              dimension
     )
-        : PlayerEvent(player)
-        , mChangeDimensionRequest(changeDimensionRequest)
-        , mDimension(dimension)
-    {
-    }
+    : PlayerEvent(player),
+      mChangeDimensionRequest(changeDimensionRequest),
+      mDimension(dimension) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
@@ -33,8 +29,7 @@ public:
     ILNDAPI Dimension const&              dimension() const;
 };
 
-class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent
-{
+class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     ChangeDimensionRequest const& mChangeDimensionRequest;
     Dimension const&              mDimension;
@@ -45,11 +40,9 @@ public:
         ChangeDimensionRequest const& changeDimensionRequest,
         Dimension const&              dimension
     )
-        : PlayerEvent(player)
-        , mChangeDimensionRequest(changeDimensionRequest)
-        , mDimension(dimension)
-    {
-    }
+    : PlayerEvent(player),
+      mChangeDimensionRequest(changeDimensionRequest),
+      mDimension(dimension) {}
 
     ILAPI void serialize(CompoundTag& nbt) const override;
 
