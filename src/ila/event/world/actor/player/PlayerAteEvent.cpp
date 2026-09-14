@@ -27,9 +27,8 @@ LL_TYPE_INSTANCE_HOOK(PlayerCompleteUsingItemHook, HookPriority::Normal, Player,
     if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id()) {
         return origin();
     }
-    static std::set<std::string> mItmemNames =
-        {VanillaItemNames::Potion(), VanillaItemNames::MilkBucket(), "minecraft:medicine"};
-    auto slot = mItemInUse->mSlot->mSlot;
+    static std::set<std::string> mItmemNames = {"minecraft:potion", "minecraft:milk_bucket", "minecraft:medicine"};
+    auto                         slot        = mItemInUse->mSlot->mSlot;
     if (!mItemInUse->mItem->mItem->isFood() && !mItmemNames.contains(mItemInUse->mItem->getTypeName())) {
         return origin();
     }

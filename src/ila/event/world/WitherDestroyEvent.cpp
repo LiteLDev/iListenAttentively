@@ -25,9 +25,11 @@ void WitherDestroyBeforeEvent::deserialize(CompoundTag const& nbt) {
     box().max.z = nbt["box"]["max"][2];
     radius()    = nbt["radius"];
 }
-Level& WitherDestroyBeforeEvent::level() const { return mLevel; }
-AABB&  WitherDestroyBeforeEvent::box() const { return mBox; };
-int&   WitherDestroyBeforeEvent::radius() const { return mRadius; };
+Level&                        WitherDestroyBeforeEvent::level() const { return mLevel; }
+AABB&                         WitherDestroyBeforeEvent::box() const { return mBox; };
+int&                          WitherDestroyBeforeEvent::radius() const { return mRadius; };
+WitherBoss::WitherAttackType& WitherDestroyBeforeEvent::type() const { return mType; };
+WitherBoss&                   WitherDestroyBeforeEvent::wither() const { return mWither; };
 
 void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const {
     WorldEvent::serialize(nbt);
@@ -39,9 +41,11 @@ void WitherDestroyAfterEvent::serialize(CompoundTag& nbt) const {
     nbt["radius"] = radius();
     nbt["dimId"]  = getDimensionName(blockSource());
 }
-Level&      WitherDestroyAfterEvent::level() const { return mLevel; }
-AABB const& WitherDestroyAfterEvent::box() const { return mBox; };
-int const&  WitherDestroyAfterEvent::radius() const { return mRadius; };
+Level&                              WitherDestroyAfterEvent::level() const { return mLevel; }
+AABB const&                         WitherDestroyAfterEvent::box() const { return mBox; };
+int const&                          WitherDestroyAfterEvent::radius() const { return mRadius; };
+WitherBoss::WitherAttackType const& WitherDestroyAfterEvent::type() const { return mType; };
+WitherBoss&                         WitherDestroyAfterEvent::wither() const { return mWither; };
 
 LL_TYPE_INSTANCE_HOOK(
     WitherDestroyEventHook,
@@ -55,13 +59,13 @@ LL_TYPE_INSTANCE_HOOK(
     int                          pRange,
     WitherBoss::WitherAttackType pType
 ) {
-    auto beforeEvent = WitherDestroyBeforeEvent(pRegion, pLevel, const_cast<AABB&>(pBox), pRange);
+    auto beforeEvent = WitherDestroyBeforeEvent(pRegion, pLevel, const_cast<AABB&>(pBox), pRange, pType, *this);
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
         return;
     }
     origin(pLevel, pBox, pRegion, pRange, pType);
-    LLEventBus.publish(WitherDestroyAfterEvent(pRegion, pLevel, pBox, pRange));
+    LLEventBus.publish(WitherDestroyAfterEvent(pRegion, pLevel, pBox, pRange, pType, *this));
 }
 
 Event_Hook_Factory(WitherDestroy, <WitherDestroyEventHook>);
