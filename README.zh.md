@@ -50,4 +50,5 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 
 ## 许可证
 
-版权所有 © 2026 MiracleForest 与 LeviMC(LiteLDev)，保留所有权利。
+版权所有 © 2026 MiracleForest 与 LeviMC(LiteLDev)  
+根据 GNU 宽通用公共许可证（LGPL）第 3 版授权

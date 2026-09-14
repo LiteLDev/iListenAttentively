@@ -50,4 +50,5 @@ This project exists thanks to all the people who contribute.
 
 ## License
 
-Copyright © 2026 MiracleForest and LeviMC(LiteLDev), All rights reserved.
+Copyright © 2026 MiracleForest and LeviMC(LiteLDev)  
+Licensed under the GNU Lesser General Public License v3.0
