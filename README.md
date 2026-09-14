@@ -25,7 +25,7 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=MiracleForest/iListenAttentively&type=Date)](https://star-history.com/#MiracleForest/iListenAttentively&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LiteLDev/iListenAttentively&type=Date)](https://star-history.com/#LiteLDev/iListenAttentively&Date)
 
 ## ⭐Contributing⭐
 
@@ -33,9 +33,9 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 >
 > You can **contribute** to the ***iListenAttentively*** project in the following ways
 >
-> - ⭐ Add new functionality by [**pulling request**](https://github.com/MiracleForest/iListenAttentively/pulls) contribution code
+> - ⭐ Add new functionality by [**pulling request**](https://github.com/LiteLDev/iListenAttentively/pulls) contribution code
 > - ⭐ Help us modify or optimize **documents**
-> - ⭐ Feedback on [**GitHub Issues**](https://github.com/MiracleForest/iListenAttentively/issues) for problems, suggestions, etc.
+> - ⭐ Feedback on [**GitHub Issues**](https://github.com/LiteLDev/iListenAttentively/issues) for problems, suggestions, etc.
 > - ⭐ Help us promote ***iListenAttentively*** and support our development!
 >
 > Very much looking forward to and welcoming your contribution!

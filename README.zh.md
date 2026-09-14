@@ -25,7 +25,7 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 
 ## 星标历史图
 
-[![星标历史图](https://api.star-history.com/svg?repos=MiracleForest/iListenAttentively&type=Date)](https://star-history.com/#MiracleForest/iListenAttentively&Date)
+[![星标历史图](https://api.star-history.com/svg?repos=LiteLDev/iListenAttentively&type=Date)](https://star-history.com/#LiteLDev/iListenAttentively&Date)
 
 ## ⭐贡献⭐
 
@@ -33,9 +33,9 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 >
 > 您可以通过以下方式为**ilistenintently** 项目 ***贡献***
 >
-> - ⭐ 通过[**pull request**](https://github.com/MiracleForest/iListenAttentively/pulls)贡献代码添加新功能
+> - ⭐ 通过[**pull request**](https://github.com/LiteLDev/iListenAttentively/pulls)贡献代码添加新功能
 > - ⭐ 帮助我们修改或优化**文档**
-> - ⭐ 对[**GitHub Issues**](https://github.com/MiracleForest/iListenAttentively/issues)的问题、建议等的反馈
+> - ⭐ 对[**GitHub Issues**](https://github.com/LiteLDev/iListenAttentively/issues)的问题、建议等的反馈
 > - ⭐ 帮助我们推广 ***iListenAttentively*** 并支持我们的发展！
 >
 > 非常期待并欢迎您的贡献！
