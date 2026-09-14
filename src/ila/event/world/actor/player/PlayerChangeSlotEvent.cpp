@@ -37,4 +37,12 @@ LL_TYPE_INSTANCE_HOOK(
     }
     origin(pContainer, pSlot, pOldItem, pNewItem, pForceBalanced);
 }
+
+static std::unique_ptr<ll::event::EmitterBase> PlayerChangeSlotEmitterFactory();
+class PlayerChangeSlotEventEmitter : public ll::event::Emitter<PlayerChangeSlotEmitterFactory, PlayerChangeSlotEvent> {
+    ll::memory::HookRegistrar<PlayerChangeSlotHook> hook;
+};
+static std::unique_ptr<ll::event::EmitterBase> PlayerChangeSlotEmitterFactory() {
+    return std::make_unique<PlayerChangeSlotEventEmitter>();
+}
 } // namespace ila::mc::inline world::inline actor::inline player
