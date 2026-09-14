@@ -89,8 +89,9 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
             std::make_shared<BlockSourceHandle>(region)
         };
         auto& coordinator = mMob.mLevel->getActorEventCoordinator();
+        auto* handler = coordinator.mActorGameplayHandler.get();
         if (
-            coordinator._processEvent(coordinator.mActorGameplayHandler.get(), const_cast<ActorGameplayEvent<CoordinatorResult> const&>(EventRef<ActorGameplayEvent<CoordinatorResult>> { griefEvent }.get())) == CoordinatorResult::Continue
+           handler && coordinator._processEvent(handler, const_cast<ActorGameplayEvent<CoordinatorResult> const&>(EventRef<ActorGameplayEvent<CoordinatorResult>> { griefEvent }.get())) == CoordinatorResult::Continue
         ) {
             ItemStack item;
             item.reinit(*block.mBlockType->mDefaultState, 1);
