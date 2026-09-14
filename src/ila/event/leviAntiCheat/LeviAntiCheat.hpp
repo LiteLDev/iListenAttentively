@@ -4,22 +4,15 @@
 #include <ll/api/event/player/PlayerEvent.h>
 #include <mc/platform/UUID.h>
 
-namespace lac::punish
-{
+namespace lac::punish {
 
-enum class BanWaveType
-{
-    Kick,
-    Ban
-};
+enum class BanWaveType { Kick, Ban };
 
-enum class CheckType
-{
+enum class CheckType {
     IllegalMovement,
     Timer,
     Spam,
     InvalidFilterString,
-    IllegalTrade,
     IllegalBreaking,
     FakeName,
     SpawnXpOrbs,
@@ -40,35 +33,24 @@ enum class CheckType
     BadPacket,
 };
 
-enum class PunishType
-{
-    Warning = 0,
-    Mute    = 1,
-    Kick    = 2,
-    Ban     = 3,
-    Cancel  = 4,
-    None    = 5
-};
+enum class PunishType { Warning = 0, Mute = 1, Kick = 2, Ban = 3, Cancel = 4, None = 5 };
 
 using ExtraInfo =
     std::unordered_map<std::string, std::variant<std::string, int, ullong, llong, std::string_view, float>>;
 
-class SusClientEvent final : public ll::event::Cancellable<ll::event::Event>
-{
+class SusClientEvent final : public ll::event::Cancellable<ll::event::Event> {
 public:
     mce::UUID const*        mUuid;
     std::string_view const* mName;
     std::string_view const* mIp;
 };
 
-class PlayerBanWaveEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
-{
+class PlayerBanWaveEvent final : public ll::event::Cancellable<ll::event::PlayerEvent> {
 public:
     BanWaveType mType;
 };
 
-class PlayerCheatEvent final : public ll::event::Cancellable<ll::event::PlayerEvent>
-{
+class PlayerCheatEvent final : public ll::event::Cancellable<ll::event::PlayerEvent> {
 public:
     CheckType const*  mCheatType;
     ExtraInfo const*  mExtraData;
