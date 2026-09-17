@@ -58,25 +58,10 @@ Block const*    MobPlaceBlockAfterEvent::block() const { return mBlock; }
 
 Block const*
 PlaceBlockGoal_tryGetRandomPlaceBlock(PlaceBlockGoal* goal, ::VariantParameterList const& params, ::Random& random) {
-    // 原版通过 VariantParameterList::operator VariantParameterListConst 转换,
-    // SDK 头文件未声明该转换运算符,这里手动构造等价结构
-    // clang-format off
-    ::VariantParameterListConst constParams {
-        params.mSelf,
-        params.mOther,
-        params.mPlayer,
-        params.mTarget,
-        params.mParent,
-        params.mBaby,
-        params.mBlock,
-        params.mDamager,
-        params.mHolder
-    };
-    // clang-format on
-
     std::vector<PlaceBlockGoal::WeightedBlockDescriptor const*> candidates;
     for (auto const& desc : *goal->mRandomlyPlaceableBlocks) {
-        if (desc.mFilter->evaluateActor(goal->mMob, constParams)) {
+        // TODO: Forgot to add const for the operator, delete this in next release of LeviLamina
+        if (desc.mFilter->evaluateActor(goal->mMob, const_cast<VariantParameterList&>(params))) {
             candidates.emplace_back(&desc);
         }
     }

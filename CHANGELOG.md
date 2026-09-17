@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.1] - 2026-09-17
+
+### Fixed
+
+- Fixed self() of MobTakeBlockAfterEvent
+
 ## [0.16.0] - 2026-09-15
 
 ### Changed
@@ -329,7 +335,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#36]: https://github.com/LiteLDev/iListenAttentively/issues/36
 [#38]: https://github.com/LiteLDev/iListenAttentively/issues/38
 
-[Unreleased]: https://github.com/LiteLDev/iListenAttentively/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/LiteLDev/iListenAttentively/compare/v0.16.1...HEAD
+[0.16.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/LiteLDev/iListenAttentively/compare/v0.15.1...v0.16.0
 [0.15.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/LiteLDev/iListenAttentively/compare/v0.14.2...v0.15.0

@@ -1,5 +1,6 @@
 #include "ila/event/world/actor/MobTakeBlockEvent.h"
 #include "ila/base/Gloabl.h"
+#include <algorithm>
 #include <mc/deps/ecs/gamerefs_entity/GameRefsEntity.h>
 #include <mc/deps/vanilla_components/StateVectorComponent.h>
 #include <mc/gameplayhandlers/ActorGameplayHandler.h>
@@ -39,19 +40,10 @@ void MobTakeBlockBeforeEvent::deserialize(CompoundTag const& nbt) {
 BlockPos& MobTakeBlockBeforeEvent::pos() const { return mPos; }
 
 void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const {
-    ActorEvent::serialize(nbt);
+    MobEvent::serialize(nbt);
     nbt["pos"] = ListTag{pos().x, pos().y, pos().z};
 }
 BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
-
-bool BlockDescriptor_anyMatch(std::vector<BlockDescriptor> const& descriptors, Block const& block) {
-    for (auto& des : descriptors) {
-        if (des.matches(block)) {
-            return true;
-        }
-    }
-    return false;
-}
 
 LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void) {
     using namespace ll::memory_literals;
@@ -73,7 +65,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
         auto& block = region.getBlock(targetPos);
         !block.isAir() && ( // 这个判断isAir是我自己加的，原版没有这个判断
             mValidBlocks->empty()
-            || BlockDescriptor_anyMatch(mValidBlocks, block)
+            || BlockDescriptor::anyMatch(mValidBlocks, block)
         ) && (
             !mRequiresLineOfSight
             || mMob.canSee(targetPos, ShapeType::Collision))
