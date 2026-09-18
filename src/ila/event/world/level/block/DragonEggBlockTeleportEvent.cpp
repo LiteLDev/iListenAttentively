@@ -65,9 +65,9 @@ LL_STATIC_HOOK(
     // clang-format off
     while (true)
     {
-        int verticalOffset = (randomGenerator->mObject._genRandInt32() & 7) - (randomGenerator->mObject._genRandInt32() & 7);
-        targetPos.x = ((randomGenerator->mObject._genRandInt32() & 0xF) - (randomGenerator->mObject._genRandInt32() & 0xF)) + pPos.x;
-        targetPos.z = (randomGenerator->mObject._genRandInt32() & 0xF) + pPos.z - (randomGenerator->mObject._genRandInt32() & 0xF);
+        int verticalOffset = (randomGenerator->mObject._genRandInt32(false) & 7) - (randomGenerator->mObject._genRandInt32(false) & 7);
+        targetPos.x = ((randomGenerator->mObject._genRandInt32(false) & 0xF) - (randomGenerator->mObject._genRandInt32(false) & 0xF)) + pPos.x;
+        targetPos.z = (randomGenerator->mObject._genRandInt32(false) & 0xF) + pPos.z - (randomGenerator->mObject._genRandInt32(false) & 0xF);
         targetPos.y = (verticalOffset > pRegion.getMaxHeight() ? 0 : verticalOffset) + pPos.y;
 
         if (pRegion.getBlock({targetPos.x, targetPos.y, targetPos.z}).isAir()) { break; }

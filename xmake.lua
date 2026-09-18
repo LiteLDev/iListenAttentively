@@ -9,7 +9,7 @@ option("target_type")
     set_values("server", "client")
 option_end()
 
-add_requires("levilamina 26.40.*", {configs = {target_type = get_config("target_type")}})
+add_requires("levilamina main", {configs = {target_type = get_config("target_type")}})
 add_requires("levibuildscript")
 
 if not has_config("vs_runtime") then

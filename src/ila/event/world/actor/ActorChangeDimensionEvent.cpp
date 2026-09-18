@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/level/ActorDimensionTransferManager.h>
+#include <mc/world/level/ActorDimensionTransferRequest.h>
 #include <mc/world/level/dimension/Dimension.h>
 
 namespace ila::mc::inline world::inline actor {
@@ -53,17 +54,17 @@ LL_TYPE_INSTANCE_HOOK(
     ActorDimensionTransferManager,
     &ActorDimensionTransferManager::actorChangeDimension,
     void,
-    Actor&                     pActor,
-    DimensionType              pToId,
-    std::optional<Vec3> const& actorPosition
+    Actor&                               pActor,
+    ActorDimensionTransferRequest const& pRequest
 ) {
-    auto const fromId  = *pActor.mDimension->lock()->mId;
-    auto const fromPos = pActor.getPosition();
-    origin(pActor, pToId, actorPosition);
-    if (fromId == pToId) {
+    auto const          fromId  = *pActor.mDimension->lock()->mId;
+    auto const          fromPos = pActor.getPosition();
+    DimensionType const toId    = pRequest.mToId;
+    origin(pActor, pRequest);
+    if (fromId == toId) {
         return;
     }
-    LLEventBus.publish(ActorChangeDimensionAfterEvent(const_cast<Actor&>(pActor), fromId, fromPos, pToId));
+    LLEventBus.publish(ActorChangeDimensionAfterEvent(const_cast<Actor&>(pActor), fromId, fromPos, toId));
 }
 
 Event_Hook_Factory(ActorChangeDimension, <ActorChangeDimensionEventHook1, ActorChangeDimensionEventHook2>);
