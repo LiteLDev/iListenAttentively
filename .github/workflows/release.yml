@@ -2,7 +2,7 @@ on:
   release:
     types:
       - published
-  
+
 jobs:
   build:
     runs-on: windows-latest
@@ -60,6 +60,31 @@ jobs:
         with:
           body: |
             ${{ steps.extract-release-notes.outputs.release_notes }}
+
+  upload-to-sentry:
+    needs: build
+    strategy:
+      matrix:
+        target_type:
+          - client
+          - server
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: matbour/setup-sentry-cli@v3
+        with:
+          token: ${{ SECRETS.SENTRY_TOKEN }}
+          organization: ${{ SECRETS.SENTRY_ORG }}
+          project: ${{ SECRETS.SENTRY_PROJECT }}
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ github.event.repository.name }}-${{ github.sha }}-${{ matrix.target_type }}-windows-x64
+          path: artifact
+
+      - run: |
+          sentry-cli debug-files upload --include-sources artifact
 
   upload-to-release:
     needs:
