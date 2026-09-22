@@ -45,6 +45,10 @@ void MobTakeBlockAfterEvent::serialize(CompoundTag& nbt) const {
 }
 BlockPos const& MobTakeBlockAfterEvent::pos() const { return mPos; }
 
+bool anyMatch(::std::vector<::BlockDescriptor> const& blockDescriptors, ::Block const& block) {
+    return std::ranges::any_of(blockDescriptors, [&block](auto&& des) { return des.matches(block); });
+}
+
 LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeBlockGoal::$tick, void) {
     using namespace ll::memory_literals;
     constexpr static auto ramdonPos = [](Random& random, int& value, IntRange& ranage) -> void {
@@ -65,7 +69,7 @@ LL_TYPE_INSTANCE_HOOK(MobTakeBlockHook, HookPriority::Low, TakeBlockGoal, &TakeB
         auto& block = region.getBlock(targetPos);
         !block.isAir() && ( // 这个判断isAir是我自己加的，原版没有这个判断
             mValidBlocks->empty()
-            || BlockDescriptor::anyMatch(mValidBlocks, block)
+            || anyMatch(mValidBlocks, block)
         ) && (
             !mRequiresLineOfSight
             || mMob.canSee(targetPos, ShapeType::Collision))
