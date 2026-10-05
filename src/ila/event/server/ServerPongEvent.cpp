@@ -15,7 +15,6 @@
 #include <mc/deps/raknet/SystemAddress.h>
 #include <mc/external/webrtc/Socket.h>
 #include <mc/external/webrtc/SocketAddress.h>
-#include <mc/server/PropertiesSettings.h>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <string_view>
@@ -590,8 +589,8 @@ LL_TYPE_INSTANCE_HOOK(
     }
 
     ushort localPort = 0;
-    if (auto settings = ll::service::getPropertiesSettings()) {
-        localPort = settings->mServerPort;
+    if (netherNetHttpSocket) {
+        localPort = netherNetHttpSocket->GetLocalAddress().port();
     }
 
     std::string              motd        = json.value("name", std::string{});
