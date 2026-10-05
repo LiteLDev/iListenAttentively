@@ -24,7 +24,8 @@ void PlayerAteAfterEvent::serialize(CompoundTag& nbt) const {
 int PlayerAteAfterEvent::slot() const { return mSlot; }
 
 LL_TYPE_INSTANCE_HOOK(PlayerCompleteUsingItemHook, HookPriority::Normal, Player, &Player::completeUsingItem, void) {
-    if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id()) {
+    auto serverInstance = ll::service::getServerInstance();
+    if (!serverInstance || std::this_thread::get_id() != serverInstance->mServerInstanceThread->get_id()) {
         return origin();
     }
     static std::set<std::string> mItmemNames = {"minecraft:potion", "minecraft:milk_bucket", "minecraft:medicine"};

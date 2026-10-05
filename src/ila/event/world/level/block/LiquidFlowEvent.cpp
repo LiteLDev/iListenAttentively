@@ -53,7 +53,8 @@ LL_TYPE_INSTANCE_HOOK(
     BlockPos const& pFlowFromPos,
     uchar           pFlowFromDirection
 ) {
-    if (std::this_thread::get_id() != ll::service::getServerInstance()->mServerInstanceThread->get_id()) {
+    auto serverInstance = ll::service::getServerInstance();
+    if (!serverInstance || std::this_thread::get_id() != serverInstance->mServerInstanceThread->get_id()) {
         return origin(pRegion, pPos, pNeighbor, pFlowFromPos, pFlowFromDirection);
     }
     if (pPos.y < pRegion.getMinHeight() || !pRegion.hasBlock(pPos)) {

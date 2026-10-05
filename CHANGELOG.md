@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed crash when LiquidFlow and PlayerAte hooks run without a server instance (e.g. during level exit)
+
 ## [0.17.1] - 2026-09-22
 
 ### Fixed
