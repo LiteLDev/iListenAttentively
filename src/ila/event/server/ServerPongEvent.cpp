@@ -1,7 +1,6 @@
 #include "ila/event/server/ServerPongEvent.h"
 #include "ila/base/Gloabl.h"
 #include <ll/api/Versions.h>
-#include <ll/api/service/TargetedBedrock.h>
 #include <mc/deps/core/utility/BinaryStream.h>
 #include <mc/deps/core/utility/ReadOnlyBinaryStream.h>
 #include <mc/deps/nether_net/NetworkID.h>
@@ -457,10 +456,7 @@ LL_TYPE_INSTANCE_HOOK(
 
     std::string ipAndPort = destination.HostAsURIString() + '|' + std::to_string(destination.port());
     std::string guid      = from.toString();
-    ushort      localPort = 0;
-    if (auto settings = ll::service::getPropertiesSettings()) {
-        localPort = settings->mServerPort;
-    }
+    ushort      localPort = static_cast<ushort>(dAccess<uint32>(&mUnk1aa682, 0x18));
     ushort                   localPortV6 = 0;
     std::vector<std::string> others;
     auto                     gameMode = static_cast<GameType>(serverData.gameType);
