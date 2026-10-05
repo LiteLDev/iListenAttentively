@@ -1,4 +1,5 @@
 #include "ila/base/Gloabl.h"
+#include "ila/event/server/ServerPongEvent.h"
 #include "ila/event/world/RedstoneUpdateEvent.h"
 #include "ila/event/world/level/levelgen/VillageFeatureEvent.h"
 #include <mc/world/level/BlockPos.h>
@@ -27,6 +28,36 @@ EventTest::EventTest() {
 
     ll::event::EventBus::getInstance().emplaceListener<ila::mc::levelgen::VillageFeatureConstructionEvent>(
         []([[maybe_unused]] ila::mc::levelgen::VillageFeatureConstructionEvent& ev) {}
+    );
+
+    LLEventBus.emplaceListener<ila::mc::server::ServerPongBeforeEvent>(
+        [](ila::mc::server::ServerPongBeforeEvent& event) -> void {
+            SelfLogger.info(
+                "ServerPongBeforeEvent motd={}, protocol={}, network={}, players={}/{}, level={}, gameMode={}, localPort={}, ipAndPort={}",
+                event.motd(),
+                event.protocolVersion(),
+                event.networkVersion(),
+                event.playerCount(),
+                event.maxPlayerCount(),
+                event.levelName(),
+                static_cast<int>(event.gameMode()),
+                event.localPort(),
+                event.ipAndPort()
+            );
+
+        }
+    );
+
+    LLEventBus.emplaceListener<ila::mc::server::ServerPongAfterEvent>(
+        [](ila::mc::server::ServerPongAfterEvent& event) -> void {
+            SelfLogger.info(
+                "ServerPongAfterEvent motd={}, players={}/{}, level={}",
+                event.motd(),
+                event.playerCount(),
+                event.maxPlayerCount(),
+                event.levelName()
+            );
+        }
     );
 
     // static std::vector<ll::event::EventId> mEventList;
