@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.2] - 2026-10-12
+
 ### Fixed
 
 - Fixed crash when LiquidFlow and PlayerAte hooks run without a server instance (e.g. during level exit)
@@ -352,7 +354,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#36]: https://github.com/LiteLDev/iListenAttentively/issues/36
 [#38]: https://github.com/LiteLDev/iListenAttentively/issues/38
 
-[Unreleased]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.1...HEAD
+[Unreleased]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.2...HEAD
+[0.17.2]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.1...v0.17.2
 [0.17.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.0...v0.17.1
 [0.17.0]: https://github.com/LiteLDev/iListenAttentively/compare/v0.16.1...v0.17.0
 [0.16.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.16.0...v0.16.1
