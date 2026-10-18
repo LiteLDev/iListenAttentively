@@ -25,7 +25,7 @@ lip install github.com/MiracleForest/iListenAttentively-Release@0.13.0
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LiteLDev/iListenAttentively&type=Date)](https://star-history.com/#LiteLDev/iListenAttentively&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=liteldev/ilistenattentively&type=Date)](https://www.star-history.com/#LiteLDev/iListenAttentively&Date)
 
 ## ⭐Contributing⭐
 

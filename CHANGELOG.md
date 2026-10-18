@@ -335,24 +335,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Addeded the initial batch of events. @zimuya4153
 
-[#7]: https://github.com/LiteLDev/iListenAttentively/issues/7
-[#9]: https://github.com/LiteLDev/iListenAttentively/issues/9
-[#10]: https://github.com/LiteLDev/iListenAttentively/issues/10
-[#11]: https://github.com/LiteLDev/iListenAttentively/issues/11
-[#12]: https://github.com/LiteLDev/iListenAttentively/issues/12
-[#13]: https://github.com/LiteLDev/iListenAttentively/issues/13
-[#14]: https://github.com/LiteLDev/iListenAttentively/issues/14
-[#15]: https://github.com/LiteLDev/iListenAttentively/issues/15
-[#16]: https://github.com/LiteLDev/iListenAttentively/issues/16
-[#17]: https://github.com/LiteLDev/iListenAttentively/issues/17
-[#18]: https://github.com/LiteLDev/iListenAttentively/issues/18
-[#19]: https://github.com/LiteLDev/iListenAttentively/issues/19
-[#28]: https://github.com/LiteLDev/iListenAttentively/issues/28
-[#29]: https://github.com/LiteLDev/iListenAttentively/issues/29
-[#34]: https://github.com/LiteLDev/iListenAttentively/issues/34
-[#35]: https://github.com/LiteLDev/iListenAttentively/issues/35
-[#36]: https://github.com/LiteLDev/iListenAttentively/issues/36
-[#38]: https://github.com/LiteLDev/iListenAttentively/issues/38
+[#7]: https://github.com/MiracleForest/iListenAttentively-Release/issues/7
+[#9]: https://github.com/MiracleForest/iListenAttentively-Release/issues/9
+[#10]: https://github.com/MiracleForest/iListenAttentively-Release/issues/10
+[#11]: https://github.com/MiracleForest/iListenAttentively-Release/issues/11
+[#12]: https://github.com/MiracleForest/iListenAttentively-Release/issues/12
+[#13]: https://github.com/MiracleForest/iListenAttentively-Release/issues/13
+[#14]: https://github.com/MiracleForest/iListenAttentively-Release/issues/14
+[#15]: https://github.com/MiracleForest/iListenAttentively-Release/issues/15
+[#16]: https://github.com/MiracleForest/iListenAttentively-Release/issues/16
+[#17]: https://github.com/MiracleForest/iListenAttentively-Release/issues/17
+[#18]: https://github.com/MiracleForest/iListenAttentively-Release/issues/18
+[#19]: https://github.com/MiracleForest/iListenAttentively-Release/issues/19
+[#28]: https://github.com/MiracleForest/iListenAttentively-Release/issues/28
+[#29]: https://github.com/MiracleForest/iListenAttentively-Release/issues/29
+[#34]: https://github.com/MiracleForest/iListenAttentively-Release/issues/34
+[#35]: https://github.com/MiracleForest/iListenAttentively-Release/issues/35
+[#36]: https://github.com/MiracleForest/iListenAttentively-Release/issues/36
+[#38]: https://github.com/MiracleForest/iListenAttentively-Release/issues/38
 
 [Unreleased]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.2...HEAD
 [0.17.2]: https://github.com/LiteLDev/iListenAttentively/compare/v0.17.1...v0.17.2
@@ -385,7 +385,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/LiteLDev/iListenAttentively/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/LiteLDev/iListenAttentively/compare/v0.2.2...v0.2.3
-[0.2.2]: https://github.com/LiteLDev/iListenAttentively/compare/v0.2.1...v0.2.2
-[0.2.1]: https://github.com/LiteLDev/iListenAttentively/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/LiteLDev/iListenAttentively/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/LiteLDev/iListenAttentively/releases/tag/v0.1.0
+[0.2.2]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/MiracleForest/iListenAttentively-Release/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/MiracleForest/iListenAttentively-Release/releases/tag/v0.1.0
