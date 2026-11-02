@@ -48,25 +48,6 @@ optional_ref<ServerPlayer> IReceivePacketAfterEvent::player() const {
     return ll::service::getServerNetworkHandler()->_getServerPlayer(networkIdentifier(), packet().mSenderSubId);
 }
 
-thread_local static NetworkConnection* mCurrentNetworkConnection = nullptr;
-
-// Only NetworkSystem::_sortAndPacketizeEvents calls NetworkConnection::receivePacket, so we can replace the
-// former with the latter.
-LL_TYPE_INSTANCE_HOOK(
-    ReceivePacketEventHook1,
-    HookPriority::Normal,
-    NetworkConnection,
-    &NetworkConnection::receivePacket,
-    NetworkPeer::DataStatus,
-    std::string&                                                    receiveBuffer,
-    std::shared_ptr<::std::chrono::steady_clock::time_point> const& timepointPtr
-) {
-    mCurrentNetworkConnection = this;
-    auto result               = origin(receiveBuffer, timepointPtr);
-    mCurrentNetworkConnection = nullptr;
-    return result;
-}
-
 LL_TYPE_INSTANCE_HOOK(
     ReceivePacketEventHook2,
     HookPriority::Normal,
@@ -100,12 +81,18 @@ LL_TYPE_INSTANCE_HOOK(
     if (!packet) {
         return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
-    if (!mCurrentNetworkConnection || mCurrentNetworkConnection->mShouldCloseConnection) {
+    NetworkConnection* connection = nullptr;
+    if (auto sender = packetEvent.mSender.get().lock()) {
+        if (auto identifier = sender->tryGetComponent<UserEntityIdentifierComponent>()) {
+            connection = networkSystem->getConnectionFromId(identifier->mNetworkId);
+        }
+    }
+    if (!connection || connection->mShouldCloseConnection) {
         return {HandlerResult::NotifyListeners, CoordinatorResult::Continue};
     }
-    auto now                                   = std::chrono::steady_clock::now();
-    mCurrentNetworkConnection->mLastPacketTime = now;
-    packet->mReceiveTimepoint                  = now;
+    auto now                    = std::chrono::steady_clock::now();
+    connection->mLastPacketTime = now;
+    packet->mReceiveTimepoint   = now;
     if (auto result = packet->checkSize(stream.mView.size() - stream.mReadPointer, true); !result.has_value()) {
         return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
@@ -116,7 +103,7 @@ LL_TYPE_INSTANCE_HOOK(
         return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
 
-    auto beforeEvent = ReceivePacketBeforeEvent<Packet>(*packet, mCurrentNetworkConnection->mId);
+    auto beforeEvent = ReceivePacketBeforeEvent<Packet>(*packet, connection->mId);
     LLEventBus.publish(beforeEvent);
     LLEventBus.publish(beforeEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string{magic_enum::enum_name(packet->getId())};
@@ -128,8 +115,8 @@ LL_TYPE_INSTANCE_HOOK(
     if (beforeEvent.isCancelled()) {
         return {HandlerResult::BypassListeners, CoordinatorResult::Cancel};
     }
-    packet->mHandler->handle(mCurrentNetworkConnection->mId, ll::service::getServerNetworkHandler(), packet);
-    auto afterEvent = ReceivePacketAfterEvent(*packet, mCurrentNetworkConnection->mId);
+    packet->mHandler->handle(connection->mId, ll::service::getServerNetworkHandler(), packet);
+    auto afterEvent = ReceivePacketAfterEvent(*packet, connection->mId);
     LLEventBus.publish(afterEvent);
     LLEventBus.publish(afterEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string{magic_enum::enum_name(packet->getId())};

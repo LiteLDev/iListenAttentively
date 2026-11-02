@@ -61,7 +61,7 @@ LL_TYPE_INSTANCE_HOOK(
         return;
     }
     if (auto& block = pRegion.getLiquidBlock(pPos).mBlockType;
-        block->mMaterial == mMaterial || block->mMaterial.mType == SharedTypes::v1_26_20::MaterialType::Lava
+        block->mMaterial.get() == mMaterial.get() || block->mMaterial.get().mType == SharedTypes::v1_26_20::MaterialType::Lava
         || _isLiquidBlocking(pRegion, pPos, pFlowFromPos, pFlowFromDirection)) {
         return;
     }
@@ -71,7 +71,7 @@ LL_TYPE_INSTANCE_HOOK(
         return;
     }
     origin(pRegion, pPos, pNeighbor, pFlowFromPos, pFlowFromDirection);
-    if (pRegion.getBlock(pPos).mBlockType->mMaterial.mLiquid) {
+    if (pRegion.getBlock(pPos).getMaterial().mLiquid) {
         LLEventBus.publish(LiquidFlowAfterEvent(pRegion, pPos, pNeighbor, pFlowFromPos));
     }
 }

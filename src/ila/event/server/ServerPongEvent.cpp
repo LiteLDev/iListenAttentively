@@ -14,9 +14,11 @@
 #include <mc/deps/raknet/SystemAddress.h>
 #include <mc/external/webrtc/Socket.h>
 #include <mc/external/webrtc/SocketAddress.h>
+#include <mc/platform/brstd/basic_cstring_view.h>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <string_view>
+
 
 
 namespace brstd {
@@ -43,8 +45,14 @@ public:
     using CompletionHandler = ::std::function<void(IAsyncResult const&)>;
 
     virtual void addOnComplete(CompletionHandler) = 0;
+
+    virtual ::Bedrock::Threading::AsyncBase::DiagnosticInfo getAsyncDiagnosticInfo() const override { return {}; }
 };
 
+} // namespace Bedrock::Threading
+
+namespace Bedrock::Threading {
+AsyncBase::DiagnosticInfo AsyncBase::getAsyncDiagnosticInfo() const { return {}; }
 } // namespace Bedrock::Threading
 
 namespace ila::mc::inline server {
@@ -454,9 +462,9 @@ LL_TYPE_INSTANCE_HOOK(
         return origin(destination, from, std::move(data));
     }
 
-    std::string ipAndPort = destination.HostAsURIString() + '|' + std::to_string(destination.port());
-    std::string guid      = from.toString();
-    ushort      localPort = static_cast<ushort>(dAccess<uint32>(&mUnk1aa682, 0x18));
+    std::string              ipAndPort   = destination.HostAsURIString() + '|' + std::to_string(destination.port());
+    std::string              guid        = from.toString();
+    ushort                   localPort   = mUnk94a6fe.as<ushort>();
     ushort                   localPortV6 = 0;
     std::vector<std::string> others;
     auto                     gameMode = static_cast<GameType>(serverData.gameType);
@@ -552,6 +560,7 @@ LL_TYPE_INSTANCE_HOOK(
         ::Bedrock::Threading::AsyncStatus getStatus() const override {
             return ::Bedrock::Threading::AsyncStatus::Completed;
         }
+        ::Bedrock::Threading::AsyncBase::DiagnosticInfo getAsyncDiagnosticInfo() const override { return {}; }
         ::std::error_code getError() const override { return {}; }
         void              cancel() override {}
         Value             getResult() const override { return mValue; }

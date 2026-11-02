@@ -2,9 +2,13 @@
 #include "ila/base/Gloabl.h"
 #include <ll/api/service/Bedrock.h>
 #include <ll/api/utils/StringUtils.h>
+#include <mc/network/ClientNetworkSystem.h>
+#include <mc/network/ClientOrServerNetworkSystemRef.h>
+#include <mc/network/LoopbackPacketSender.h>
 #include <mc/network/NetworkIdentifierWithSubId.h>
 #include <mc/network/NetworkSystem.h>
 #include <mc/network/Packet.h>
+#include <mc/network/ServerNetworkSystem.h>
 #include <mc/network/ServerNetworkHandler.h>
 
 
@@ -61,14 +65,18 @@ ISendMultiplePacketAfterEvent::player(NetworkIdentifierWithSubId const& networkI
 LL_TYPE_INSTANCE_HOOK(
     SendMultiplePacketEventHook,
     HookPriority::Normal,
-    NetworkSystem,
-    &NetworkSystem::sendToMultiple,
+    LoopbackPacketSender,
+    &LoopbackPacketSender::$sendToClients,
     void,
     std::vector<NetworkIdentifierWithSubId> const& ids,
     Packet const&                                  packet
 ) {
+    auto& networkSystem = std::visit(
+        [](auto& ref) -> NetworkSystem& { return ref.get(); },
+        mNetwork.get()
+    );
     auto& eventBus    = LLEventBus;
-    auto  beforeEvent = SendMultiplePacketBeforeEvent<Packet>(*this, const_cast<Packet&>(packet), ids);
+    auto  beforeEvent = SendMultiplePacketBeforeEvent<Packet>(networkSystem, const_cast<Packet&>(packet), ids);
     eventBus.publish(beforeEvent);
     eventBus.publish(beforeEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string{magic_enum::enum_name(packet.getId())};
@@ -81,7 +89,7 @@ LL_TYPE_INSTANCE_HOOK(
     }());
     if (beforeEvent.isCancelled()) return;
     origin(ids, packet);
-    auto afterEvent = SendMultiplePacketAfterEvent(*this, const_cast<Packet&>(packet), ids);
+    auto afterEvent = SendMultiplePacketAfterEvent(networkSystem, const_cast<Packet&>(packet), ids);
     eventBus.publish(afterEvent);
     eventBus.publish(afterEvent, [&]() -> ll::event::EventId {
         auto packetName = std::string{magic_enum::enum_name(packet.getId())};

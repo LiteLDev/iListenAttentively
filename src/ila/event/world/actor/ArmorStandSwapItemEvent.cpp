@@ -1,6 +1,9 @@
 #include "ila/event/world/actor/ArmorStandSwapItemEvent.h"
 #include "ila/base/Gloabl.h"
+#include <mc/entity/components_json_legacy/Interaction.h>
 #include <mc/world/actor/ArmorStand.h>
+#include <mc/world/actor/provider/ActorEquipment.h>
+#include <mc/world/item/ItemStack.h>
 
 namespace ila::mc::inline world::inline actor {
 
@@ -28,21 +31,38 @@ LL_TYPE_INSTANCE_HOOK(
     ArmorStandSwapItemEventHook,
     HookPriority::Normal,
     ArmorStand,
-    &ArmorStand::_trySwapItem,
-    bool,
-    Player&                            pPlayer,
-    SharedTypes::Legacy::EquipmentSlot pSlot
+    &ArmorStand::$getInteraction,
+    Interaction,
+    Player&      pPlayer,
+    Vec3 const&  pLocation,
+    HandSlot     pHandSlot
 ) {
-    auto beforeEvent = ArmorStandSwapItemBeforeEvent(*this, pPlayer, pSlot);
+    auto const& held = pHandSlot == HandSlot::Offhand
+                         ? ActorEquipment::getHandContainer(pPlayer.mEntityContext).getItem(1)
+                         : pPlayer.getCarriedItem();
+    SharedTypes::Legacy::EquipmentSlot slot = SharedTypes::Legacy::EquipmentSlot::None;
+    if (!held.isNull() && held.isHumanoidWearableItem()) {
+        slot = static_cast<SharedTypes::Legacy::EquipmentSlot>(static_cast<int>(held.getArmorSlot()) + 2);
+    }
+    if (slot == SharedTypes::Legacy::EquipmentSlot::None) {
+        return origin(pPlayer, pLocation, pHandSlot);
+    }
+
+    auto beforeEvent = ArmorStandSwapItemBeforeEvent(*this, pPlayer, slot);
     LLEventBus.publish(beforeEvent);
+    auto interaction = origin(pPlayer, pLocation, pHandSlot);
     if (beforeEvent.isCancelled()) {
-        return false;
+        interaction.mCallback.get() = nullptr;
+        return interaction;
     }
-    auto result = origin(pPlayer, pSlot);
-    if (result) {
-        LLEventBus.publish(ArmorStandSwapItemAfterEvent(*this, pPlayer, pSlot));
+    if (interaction.mCallback.get()) {
+        auto original = std::move(interaction.mCallback.get());
+        interaction.mCallback.get() = [this, &pPlayer, slot, original = std::move(original)]() mutable {
+            std::move(original)();
+            LLEventBus.publish(ArmorStandSwapItemAfterEvent(*this, pPlayer, slot));
+        };
     }
-    return result;
+    return interaction;
 }
 
 Event_Hook_Factory(ArmorStandSwapItem, <ArmorStandSwapItemEventHook>);

@@ -2,6 +2,7 @@
 #include "ila/base/Gloabl.h"
 #include <mc/deps/core/math/Vec3.h>
 #include <mc/world/gamemode/InteractionResult.h>
+#include <mc/world/item/HandSlot.h>
 
 namespace ila::mc::inline world::inline actor::inline player {
 
@@ -34,14 +35,15 @@ LL_TYPE_INSTANCE_HOOK(
     &Player::interact,
     InteractionResult,
     Actor&      pActor,
-    Vec3 const& pLocation
+    Vec3 const& pLocation,
+    HandSlot    pHandSlot
 ) {
     auto beforeEvent = PlayerInteractEntityBeforeEvent(*this, pActor, const_cast<Vec3&>(pLocation));
     LLEventBus.publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
         return InteractionResult{false, false};
     }
-    auto result = origin(pActor, pLocation);
+    auto result = origin(pActor, pLocation, pHandSlot);
     if (result.mSuccess) {
         LLEventBus.publish(PlayerInteractEntityAfterEvent(*this, pActor, pLocation));
     }

@@ -51,7 +51,7 @@ LL_TYPE_INSTANCE_HOOK(
         auto beforeEvent = FireworkRocketDealDamageBeforeEvent(*fireWorkActor);
         LLEventBus.publish(beforeEvent);
         if (beforeEvent.isCancelled()) {
-            return ActorHurtResult{false, false};
+            return ActorHurtResult{::ActorHurtResult::Type::NotHurt, std::nullopt, false};
         }
         return origin(source, damage, hurtParameters);
         LLEventBus.publish(FireworkRocketDealDamageAfterEvent(*fireWorkActor));
