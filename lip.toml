@@ -1,0 +1,48 @@
+format = 4
+id = "github.com/LiteLDev/iListenAttentively"
+version = "0.18.0"
+
+[info]
+name = "iListenAttentively"
+description = "iListenAttentively is a rich and modern LeviLamina Minecraft event library!"
+tags = ["library", "event"]
+
+# The default variant holds both builds: the server one for LeviLamina, and the client one for
+# LeviLamina#client. The variant "client" holds the same client entry, since earlier releases,
+# LeviLauncher and mods depending on iListenAttentively#client install it under that name.
+
+[[variants.""]]
+side = "server"
+platform = "win-x64"
+
+[variants."".deps]
+"github.com/LiteLDev/LeviLamina" = "26.60.*"
+
+[[variants."".assets]]
+type = "zip"
+urls = ["https://{{id}}/releases/download/v{{version}}/iListenAttentively-server-windows-x64.zip"]
+place = [{ src = "iListenAttentively/", dest = "mods/iListenAttentively/" }]
+
+[[variants.""]]
+side = "client"
+platform = "win-x64"
+
+[variants."".deps]
+"github.com/LiteLDev/LeviLamina#client" = "26.60.*"
+
+[[variants."".assets]]
+type = "zip"
+urls = ["https://{{id}}/releases/download/v{{version}}/iListenAttentively-client-windows-x64.zip"]
+place = [{ src = "iListenAttentively/", dest = "mods/iListenAttentively/" }]
+
+[[variants.client]]
+side = "client"
+platform = "win-x64"
+
+[variants.client.deps]
+"github.com/LiteLDev/LeviLamina#client" = "26.60.*"
+
+[[variants.client.assets]]
+type = "zip"
+urls = ["https://{{id}}/releases/download/v{{version}}/iListenAttentively-client-windows-x64.zip"]
+place = [{ src = "iListenAttentively/", dest = "mods/iListenAttentively/" }]
