@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Migrated the lip package file from tooth.json to lip.toml (format 4, lip 0.40.0). The default variant now installs the client build on the client side; the variant `client` is kept
+- Migrated the lip package file from tooth.json to lip.toml (format 4, lip 0.40.0). The default variant now installs the client build on the client side, and there is no variant `client` any more: install and depend on `github.com/LiteLDev/iListenAttentively` on both sides
 
 ## [0.18.0] - 2026-11-03
 

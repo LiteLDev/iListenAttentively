@@ -7,9 +7,10 @@ name = "iListenAttentively"
 description = "iListenAttentively is a rich and modern LeviLamina Minecraft event library!"
 tags = ["library", "event"]
 
-# The default variant holds both builds: the server one for LeviLamina, and the client one for
-# LeviLamina#client. The variant "client" holds the same client entry, since earlier releases,
-# LeviLauncher and mods depending on iListenAttentively#client install it under that name.
+# The default variant holds both builds: the server build for the server side and the client build
+# for the client side. There is no "client" variant. The client entry depends on
+# github.com/LiteLDev/LeviLamina#client because all LeviLamina releases in range are tooth.json;
+# switch it to the bare id once only lip.toml releases of LeviLamina are targeted.
 
 [[variants.""]]
 side = "server"
@@ -31,18 +32,6 @@ platform = "win-x64"
 "github.com/LiteLDev/LeviLamina#client" = "26.60.*"
 
 [[variants."".assets]]
-type = "zip"
-urls = ["https://{{id}}/releases/download/v{{version}}/iListenAttentively-client-windows-x64.zip"]
-place = [{ src = "iListenAttentively/", dest = "mods/iListenAttentively/" }]
-
-[[variants.client]]
-side = "client"
-platform = "win-x64"
-
-[variants.client.deps]
-"github.com/LiteLDev/LeviLamina#client" = "26.60.*"
-
-[[variants.client.assets]]
 type = "zip"
 urls = ["https://{{id}}/releases/download/v{{version}}/iListenAttentively-client-windows-x64.zip"]
 place = [{ src = "iListenAttentively/", dest = "mods/iListenAttentively/" }]
